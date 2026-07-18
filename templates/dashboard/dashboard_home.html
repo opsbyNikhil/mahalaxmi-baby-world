@@ -1,0 +1,641 @@
+{% extends 'dashboard/dashboard_base.html' %}
+
+{% block page_title %}Products Overview{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* ----- Light theme overrides ----- */
+    :root {
+        --bg-body: #f8f9fc;
+        --text-primary: #1e293b;
+        --text-secondary: #475569;
+        --text-muted: #94a3b8;
+        --border-light: #e9edf2;
+        --accent: #fb8500;
+        --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        --input-bg: #ffffff;
+    }
+
+    body {
+        background-color: var(--bg-body);
+        color: var(--text-primary);
+    }
+
+    /* ---------- Stat cards ---------- */
+    .stat-card {
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 1.2rem 1.5rem;
+        box-shadow: var(--card-shadow);
+        border: 1px solid var(--border-light);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.07);
+    }
+
+    .stat-label {
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: var(--text-secondary);
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+    }
+
+    .stat-number {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        line-height: 1.2;
+        margin-top: 4px;
+    }
+
+    .stat-icon {
+        font-size: 1.6rem;
+        opacity: 0.7;
+    }
+
+    /* ---------- Table wrapper ---------- */
+    .glass-table-wrap {
+        background: #ffffff;
+        border-radius: 12px;
+        border: 1px solid var(--border-light);
+        box-shadow: var(--card-shadow);
+        overflow: hidden;
+    }
+
+    /* ---------- Table header ---------- */
+    .table-header {
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid var(--border-light);
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        background: #fafbfc;
+    }
+
+    .table-header h6 {
+        font-weight: 600;
+        color: var(--text-primary);
+        margin: 0;
+    }
+
+    /* ---------- Filters & inputs ---------- */
+    .search-box-input,
+    .category-filter {
+        background: var(--input-bg);
+        border: 1px solid var(--border-light);
+        color: var(--text-primary);
+        border-radius: 6px;
+        padding: 0.4rem 0.75rem;
+        font-size: 0.875rem;
+    }
+
+    .search-box-input::placeholder {
+        color: var(--text-muted);
+    }
+
+    .search-box-input:focus,
+    .category-filter:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(251, 133, 0, 0.15);
+        background: #ffffff;
+        color: var(--text-primary);
+    }
+
+    .category-filter {
+        max-width: 180px;
+    }
+
+    .category-filter option {
+        background: #ffffff;
+        color: var(--text-primary);
+    }
+
+    .search-box-input {
+        max-width: 280px;
+    }
+
+    /* ---------- Refresh button ---------- */
+    .refresh-btn {
+        background: #ffffff;
+        border: 1px solid var(--border-light);
+        color: var(--text-secondary);
+        transition: transform 0.3s ease, background 0.2s ease, color 0.2s ease;
+        border-radius: 6px;
+        padding: 0.35rem 0.7rem;
+    }
+
+    .refresh-btn:hover {
+        background: #f1f4f9;
+        color: var(--text-primary);
+    }
+
+    .refresh-btn.spinning {
+        animation: spin 0.6s linear;
+    }
+
+    @keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* ---------- Toggle switch (light) ---------- */
+    .form-switch .form-check-input {
+        background-color: #d1d5db;
+        border-color: #d1d5db;
+    }
+
+    .form-switch .form-check-input:checked {
+        background-color: var(--accent);
+        border-color: var(--accent);
+    }
+
+    .form-switch .form-check-label {
+        color: var(--text-secondary);
+    }
+
+    /* ---------- Table ---------- */
+    #productTable {
+        color: var(--text-primary) !important;
+        /* override Bootstrap */
+    }
+
+    #productTable thead th {
+        color: var(--text-secondary) !important;
+        font-weight: 600;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        border-bottom: 2px solid var(--border-light);
+        background: #fafbfc;
+        padding: 0.75rem 1rem;
+    }
+
+    #productTable tbody td {
+        color: var(--text-primary);
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid var(--border-light);
+        vertical-align: middle;
+    }
+
+    #productTable tbody tr:hover td {
+        background-color: #f8fafc;
+    }
+
+    #productTable tbody tr.highlight td {
+        background-color: rgba(251, 133, 0, 0.07) !important;
+    }
+
+    /* ----- Badges ----- */
+    .badge {
+        font-weight: 500;
+        padding: 0.35rem 0.65rem;
+        border-radius: 20px;
+    }
+
+    .badge.bg-danger {
+        background-color: #ef4444 !important;
+        color: #fff;
+    }
+
+    .badge.bg-warning {
+        background-color: #f59e0b !important;
+        color: #1e293b;
+    }
+
+    .badge.bg-success {
+        background-color: #22c55e !important;
+        color: #fff;
+    }
+
+    .badge.bg-secondary {
+        background-color: #94a3b8 !important;
+        color: #fff;
+    }
+
+    /* Category badge (filter indicator) */
+    .category-badge {
+        background: rgba(251, 133, 0, 0.12);
+        color: var(--accent);
+        font-weight: 500;
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+    }
+
+    a[style*="color: var(--accent);"] {
+        color: var(--accent) !important;
+        text-decoration: none;
+    }
+
+    a[style*="color: var(--accent);"]:hover {
+        text-decoration: underline;
+    }
+
+    /* ---------- "Add product" button ---------- */
+    .btn[style*="background: var(--accent);"] {
+        background: var(--accent) !important;
+        color: #fff !important;
+        border: none;
+        border-radius: 6px;
+        padding: 0.35rem 1rem;
+        font-weight: 500;
+        transition: background 0.2s ease;
+    }
+
+    .btn[style*="background: var(--accent);"]:hover {
+        background: #e67600 !important;
+    }
+
+    /* ---------- Actions ---------- */
+    .table-action-btn {
+        color: var(--text-secondary);
+        margin: 0 0.2rem;
+        transition: color 0.15s ease;
+        font-size: 1.1rem;
+    }
+
+    .table-action-btn.edit:hover {
+        color: var(--accent);
+    }
+
+    .table-action-btn.delete:hover {
+        color: #ef4444;
+    }
+
+    /* ---------- Footer ---------- */
+    .table-footer {
+        padding: 0.75rem 1.5rem;
+        border-top: 1px solid var(--border-light);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        background: #fafbfc;
+        color: var(--text-secondary);
+        font-size: 0.85rem;
+    }
+
+    .last-updated {
+        color: var(--text-muted);
+    }
+
+    /* ---------- No results / empty ---------- */
+    .no-results {
+        display: none;
+    }
+
+    .text-muted {
+        color: var(--text-muted) !important;
+    }
+
+    /* ---------- Responsive tweaks ---------- */
+    @media (max-width: 576px) {
+
+        .search-box-input,
+        .category-filter {
+            max-width: 100%;
+            width: 100%;
+        }
+
+        .table-header {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .table-header .d-flex {
+            flex-wrap: wrap;
+        }
+    }
+
+    /* Override Bootstrap's default table dark text on light bg */
+    .table> :not(caption)>*>* {
+        color: var(--text-primary) !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Stats cards -->
+<div class="row g-4 mb-4">
+    <div class="col-6 col-lg-3">
+        <div class="stat-card">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="stat-label">Total Products</div>
+                    <div class="stat-number" id="stat-total">{{ total_products }}</div>
+                </div>
+                <i class="bi bi-box-seam stat-icon" style="color: #4f8cf7;"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="stat-card">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="stat-label">Low Stock (≤5)</div>
+                    <div class="stat-number" id="stat-low">{{ low_stock_count }}</div>
+                </div>
+                <i class="bi bi-exclamation-triangle stat-icon" style="color: #f59e0b;"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="stat-card">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="stat-label">Out of Stock</div>
+                    <div class="stat-number" id="stat-out">{{ out_of_stock_count }}</div>
+                </div>
+                <i class="bi bi-x-circle stat-icon" style="color: #ef4444;"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="stat-card">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="stat-label">Inventory Value</div>
+                    <div class="stat-number" id="stat-value">${{ total_inventory_value|floatformat:2 }}</div>
+                </div>
+                <i class="bi bi-currency-dollar stat-icon" style="color: #22c55e;"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Product table with search, category filter & refresh controls -->
+<div class="glass-table-wrap">
+    <div class="table-header">
+        <div>
+            <h6 class="mb-0">All Products</h6>
+            {% if selected_category %}
+            <div class="mt-2">
+                <span class="text-muted small">Filtered by category:</span>
+                <span class="badge category-badge">
+                    {% for cat in sidebar_categories %}{% if cat.slug == selected_category %}{{ cat.name }}{% endif %}{%endfor %}
+                </span>
+                <a href="{% url 'dashboard_home' %}" class="small ms-2" style="color: var(--accent);">Clear</a>
+            </div>
+            {% endif %}
+        </div>
+        <div class="d-flex flex-wrap gap-2 align-items-center">
+            <!-- Category filter -->
+            <select id="categoryFilter" class="form-select form-select-sm category-filter">
+                <option value="">All categories</option>
+            </select>
+            <!-- Search input -->
+            <input type="text" id="productSearch" class="form-control form-control-sm search-box-input"
+                placeholder="Search by name, category, brand…">
+            <!-- Refresh button -->
+            <button class="btn btn-sm refresh-btn" id="refreshBtn" title="Refresh data">
+                <i class="bi bi-arrow-clockwise"></i>
+            </button>
+            <!-- Auto-refresh toggle -->
+            <div class="form-check form-switch mb-0">
+                <input class="form-check-input" type="checkbox" id="autoRefreshToggle" checked>
+                <label class="form-check-label small text-muted" for="autoRefreshToggle">
+                    Auto
+                </label>
+            </div>
+            <!-- Add product button -->
+            <a href="{% url 'dashboard_product_add' %}" class="btn btn-sm"
+                style="background: var(--accent); color: #fff;">
+                <i class="bi bi-plus-lg"></i> Add
+            </a>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0" id="productTable">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                    <th>Status</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="productTableBody">
+                {% for product in products %}
+                <tr data-name="{{ product.name|lower }}" data-category="{{ product.category|default:''|lower }}"
+                    data-brand="{{ product.brand|default:''|lower }}">
+                    <td>{{ forloop.counter }}</td>
+                    <td>
+                        <div class="d-flex align-items-center gap-2">
+                            {% if product.image %}
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}"
+                                style="width: 40px; height: 40px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border-light);">
+                            {% else %}
+                            <div
+                                style="width: 40px; height: 40px; background: #f1f4f9; border-radius: 6px; border: 1px solid var(--border-light);">
+                            </div>
+                            {% endif %}
+                            <span>{{ product.name }}</span>
+                        </div>
+                    </td>
+                    <td>{{ product.category|default:"—" }}</td>
+                    <td>${{ product.price }}</td>
+                    <td>
+                        {% if product.stock == 0 %}
+                        <span class="badge bg-danger">0</span>
+                        {% elif product.stock <= 5 %} <span class="badge bg-warning text-dark">{{ product.stock }}</span>
+                            {% else %}
+                            <span class="badge bg-success">{{ product.stock }}</span>
+                            {% endif %}
+                    </td>
+                    <td>
+                        {% if product.is_available %}
+                        <span class="badge bg-success">Available</span>
+                        {% else %}
+                        <span class="badge bg-secondary">Unavailable</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-end">
+                        <a href="{% url 'dashboard_product_edit' product.pk %}" class="table-action-btn edit"
+                            title="Edit">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+                        <a href="{% url 'dashboard_product_delete' product.pk %}" class="table-action-btn delete"
+                            title="Delete">
+                            <i class="bi bi-trash3"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr id="noProductsRow">
+                    <td colspan="7" class="text-center py-4 text-muted">
+                        <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+                        No products yet. <a href="{% url 'dashboard_product_add' %}" style="color: var(--accent);">Add
+                            one</a>.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <!-- No results message (hidden by default) -->
+    <div id="noResultsMessage" class="text-center py-4 text-muted d-none">
+        <i class="bi bi-search fs-2 d-block mb-2"></i>
+        No products match your search.
+    </div>
+    <div class="table-footer">
+        <span class="last-updated">
+            <i class="bi bi-clock"></i> Last updated: <span id="lastUpdateTime">{{ now|date:"H:i:s" }}</span>
+        </span>
+        <span class="text-muted small" id="rowCountDisplay">{{ products|length }} products</span>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    (function () {
+        'use strict';
+
+        // ─── DOM refs ────────────────────────────────────────────────
+        const searchInput = document.getElementById('productSearch');
+        const categoryFilter = document.getElementById('categoryFilter');
+        const tableBody = document.getElementById('productTableBody');
+        const rows = tableBody.querySelectorAll('tr:not(#noProductsRow)'); // only product rows
+        const noResultsMsg = document.getElementById('noResultsMessage');
+        const noProductsRow = document.getElementById('noProductsRow');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const autoToggle = document.getElementById('autoRefreshToggle');
+        const lastUpdateSpan = document.getElementById('lastUpdateTime');
+        const rowCountDisplay = document.getElementById('rowCountDisplay');
+
+        // ─── Populate category filter from table data ────────────────
+        function populateCategoryFilter() {
+            const categories = new Set();
+            rows.forEach(row => {
+                const cat = row.dataset.category;
+                if (cat) categories.add(cat);
+            });
+
+            const sorted = Array.from(categories).sort();
+            sorted.forEach(cat => {
+                const option = document.createElement('option');
+                option.value = cat;
+                option.textContent = cat.charAt(0).toUpperCase() + cat.slice(1);
+                categoryFilter.appendChild(option);
+            });
+
+            if (sorted.length === 0) {
+                categoryFilter.disabled = true;
+            }
+        }
+
+        populateCategoryFilter();
+
+        // ─── Search / category filter ─────────────────────────────────
+        function filterTable() {
+            const query = searchInput.value.toLowerCase().trim();
+            const selectedCategory = categoryFilter.value.toLowerCase();
+            let visibleCount = 0;
+
+            rows.forEach(row => {
+                const name = row.dataset.name || '';
+                const category = row.dataset.category || '';
+                const brand = row.dataset.brand || '';
+
+                const matchesSearch = name.includes(query) || category.includes(query) || brand.includes(query);
+                const matchesCategory = !selectedCategory || category === selectedCategory;
+                const match = matchesSearch && matchesCategory;
+
+                row.style.display = match ? '' : 'none';
+                if (match) visibleCount++;
+                row.classList.toggle('highlight', match && query.length > 0);
+            });
+
+            if (rows.length === 0) {
+                noResultsMsg.classList.add('d-none');
+            } else {
+                if (visibleCount === 0) {
+                    noResultsMsg.classList.remove('d-none');
+                } else {
+                    noResultsMsg.classList.add('d-none');
+                }
+            }
+
+            rowCountDisplay.textContent = visibleCount + ' products';
+        }
+
+        searchInput.addEventListener('input', filterTable);
+        categoryFilter.addEventListener('change', filterTable);
+
+        // ─── Refresh (manual + auto) ────────────────────────────────
+        function refreshPage() {
+            refreshBtn.classList.add('spinning');
+            window.location.reload();
+        }
+
+        refreshBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            refreshPage();
+        });
+
+        // ─── Auto-refresh ─────────────────────────────────────────────
+        let autoRefreshInterval = null;
+
+        function startAutoRefresh(intervalMs) {
+            if (autoRefreshInterval) clearInterval(autoRefreshInterval);
+            autoRefreshInterval = setInterval(() => {
+                if (autoToggle.checked) {
+                    window.location.reload();
+                }
+            }, intervalMs);
+        }
+
+        function stopAutoRefresh() {
+            if (autoRefreshInterval) {
+                clearInterval(autoRefreshInterval);
+                autoRefreshInterval = null;
+            }
+        }
+
+        autoToggle.addEventListener('change', function () {
+            if (this.checked) {
+                startAutoRefresh(30000);
+            } else {
+                stopAutoRefresh();
+            }
+        });
+
+        if (autoToggle.checked) {
+            startAutoRefresh(30000);
+        }
+
+        const now = new Date();
+        lastUpdateSpan.textContent = now.toLocaleTimeString();
+
+        window.addEventListener('beforeunload', function () {
+            stopAutoRefresh();
+        });
+
+        if (noProductsRow) {
+            if (rows.length === 0) {
+                searchInput.disabled = true;
+                searchInput.placeholder = 'No products to search';
+            }
+        }
+
+        window.filterProducts = filterTable;
+
+    })();
+</script>
+{% endblock %}

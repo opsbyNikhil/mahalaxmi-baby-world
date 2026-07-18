@@ -1,0 +1,231 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }} - BabyShop{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+            <li class="breadcrumb-item">
+                <a href="{% url 'category_products' product.category.slug %}">
+                    {{ product.category.name }}
+                </a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+        </ol>
+    </nav>
+
+    <div class="row g-4">
+
+        <!-- Product Image -->
+        <div class="col-md-6">
+            <div class="card p-3">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" class="img-fluid rounded" alt="{{ product.name }}">
+                {% else %}
+                <img src="{% static 'images/placeholder.png' %}" class="img-fluid rounded" alt="No image">
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Product Info -->
+        <div class="col-md-6">
+            <h1 class="mb-2">{{ product.name }}</h1>
+
+            <!-- Brand & Category -->
+            <p class="text-muted">
+                {% if product.brand %}<strong>Brand:</strong> {{ product.brand }}<br>{% endif %}
+                <strong>Category:</strong> {{ product.category.name }}
+            </p>
+
+            <!-- Price -->
+            <h3 class="text-primary mb-3">₹{{ product.price }}</h3>
+
+            <!-- Stock Status -->
+            <p>
+                {% if product.stock > 0 %}
+                <span class="badge bg-success">In Stock ({{ product.stock }} available)</span>
+                {% else %}
+                <span class="badge bg-danger">Out of Stock</span>
+                {% endif %}
+            </p>
+
+            <!-- Description -->
+            <p class="lead">{{ product.description|linebreaks }}</p>
+
+            <!-- Specifications (new fields) -->
+            <hr>
+            <div class="row spec-row">
+                <div class="col-sm-4"><strong>Product Type</strong></div>
+                <div class="col-sm-8">{{ product.product_type }}</div>
+
+                {% if product.theme %}
+                <div class="col-sm-4"><strong>Theme</strong></div>
+                <div class="col-sm-8">{{ product.theme }}</div>
+                {% endif %}
+
+                <div class="col-sm-4"><strong>Material</strong></div>
+                <div class="col-sm-8">{{ product.material }}</div>
+
+                <div class="col-sm-4"><strong>Recommended Age</strong></div>
+                <div class="col-sm-8">{{ product.recommended_age }}</div>
+
+                <div class="col-sm-4"><strong>Color</strong></div>
+                <div class="col-sm-8">{{ product.color }}</div>
+
+                <div class="col-sm-4"><strong>Care Instructions</strong></div>
+                <div class="col-sm-8">{{ product.care_instructions|linebreaks }}</div>
+            </div>
+            <hr>
+
+            {% if package_list %}
+            <div class="col-sm-4"><strong>Package Includes</strong></div>
+            <div class="col-sm-8">
+                <ul class="list-unstyled mb-0">
+                    {% for item in package_list %}
+                    <li>• {{ item }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            <!-- Add to Cart -->
+            {% if product.stock > 0 %}
+            <div class="row g-2 align-items-center mt-3">
+                <div class="col-auto">
+                    <label for="qty" class="col-form-label">Qty</label>
+                </div>
+                <div class="col-auto">
+                    <input type="number" id="qty" class="form-control" value="1" min="1" max="{{ product.stock }}"
+                        style="width: 80px;">
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-warning btn-lg" id="add-to-cart-btn" data-product-id="{{ product.id }}">
+                        🛒 Add to Cart
+                    </button>
+                </div>
+            </div>
+            {% else %}
+            <button class="btn btn-secondary btn-lg mt-3" disabled>Out of Stock</button>
+            {% endif %}
+
+            <!-- Back link -->
+            <div class="mt-4">
+                <a href="{% url 'home' %}" class="btn btn-outline-secondary">← Continue Shopping</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Related Products -->
+    {% if related_products %}
+    <hr class="my-5">
+    <h3 class="mb-4">You might also like</h3>
+    <div class="row g-4">
+        {% for item in related_products %}
+        <div class="col-md-3">
+            <div class="card product-card h-100">
+                <div class="product-media">
+                    {% if item.image %}
+                    <img src="{{ item.image.url }}" class="img-fluid" alt="{{ item.name }}">
+                    {% else %}
+                    <span>🛏️</span>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    <h6>{{ item.name }}</h6>
+                    <p class="text-muted small">₹{{ item.price }}</p>
+                    <a href="{% url 'product_detail' item.id %}" class="btn btn-sm btn-outline-primary w-100">View</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+</div>
+
+<!-- Add to Cart Toast -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1080;">
+    <div id="cartToast" class="toast align-items-center border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body" id="cartToastBody">
+                Added to cart!
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    </div>
+</div>
+
+<!-- Basic JS for Add to Cart -->
+<script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function showCartToast(message, isError = false) {
+        const toastEl = document.getElementById('cartToast');
+        const toastBody = document.getElementById('cartToastBody');
+
+        toastBody.textContent = message;
+        toastEl.classList.remove('text-bg-success', 'text-bg-danger');
+        toastEl.classList.add(isError ? 'text-bg-danger' : 'text-bg-success');
+
+        const toast = new bootstrap.Toast(toastEl, { delay: 2500 });
+        toast.show();
+    }
+
+    document.getElementById('add-to-cart-btn')?.addEventListener('click', function (e) {
+        const productId = this.dataset.productId;
+        const quantity = document.getElementById('qty').value;
+        const csrftoken = getCookie('csrftoken');
+
+        fetch("{% url 'add_to_cart' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': csrftoken,
+            },
+            body: new URLSearchParams({
+                'product_id': productId,
+                'quantity': quantity
+            })
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    const cartBadge = document.getElementById('cart-badge');
+                    if (cartBadge) {
+                        cartBadge.textContent = data.cart_count;
+                    }
+                    showCartToast(data.message || 'Added to cart!');
+                } else {
+                    showCartToast('Error: ' + data.message, true);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showCartToast('Something went wrong. Please try again.', true);
+            });
+    });
+</script>
+{% endblock %}

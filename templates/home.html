@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <div class="row align-items-center g-4">
+
+            <div class="col-lg-7">
+                <span class="hero-eyebrow">Hyderabad's Baby Store</span>
+                <h1>Everything Your Little One Needs</h1>
+                <p class="lead">
+                    Strollers, carry cots, swings, walkers and more — chosen for
+                    comfort, safety and a whole lot of giggles.
+                </p>
+                <a href="#featured" class="btn btn-primary btn-lg mt-2">Shop Now</a>
+
+                <div class="trust-strip">
+                    <span class="trust-item">🚚 Free delivery over ₹999</span>
+                    <span class="trust-item">↩️ 7-day easy returns</span>
+                    <span class="trust-item">📍 Hyderabad store</span>
+                    <span class="trust-item">💳 Cash on delivery</span>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="hero-mobile" aria-hidden="true">
+                    <div class="mobile-rod"></div>
+                    <div class="mobile-strings">
+                        <div class="mobile-string moon">
+                            <div class="thread"></div>
+                            <div class="mobile-item">
+                                <div class="shape-moon"></div>
+                            </div>
+                        </div>
+                        <div class="mobile-string star">
+                            <div class="thread"></div>
+                            <div class="mobile-item">
+                                <div class="shape-star"></div>
+                            </div>
+                        </div>
+                        <div class="mobile-string cloud">
+                            <div class="thread"></div>
+                            <div class="mobile-item">
+                                <div class="shape-cloud"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Featured Products -->
+    <div id="featured" class="mt-5 pt-3">
+        <div class="section-heading">
+            <span class="eyebrow">Handpicked</span>
+            <h2>Featured Baby Products</h2>
+        </div>
+
+        <div class="row g-4">
+            {% for product in products %}
+            <div class="col-md-4 col-lg-3">
+                <div class="card product-card h-100">
+                    <div class="product-media">
+                        {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid">
+                        {% else %}
+                        <!-- fallback icon or placeholder -->
+                        <span>🪑</span>
+                        {% endif %}
+                        <span class="badge-category">{{ product.category.name }}</span>
+                    </div>
+                    <div class="card-body">
+                        <h5>{{ product.name }}</h5>
+                        <p class="text-muted">{{ product.description|truncatewords:10 }}</p>
+                        <p class="fw-bold">₹{{ product.price }}</p>
+                        <div class="d-flex gap-2">
+                            <a href="{% url 'product_detail' product.id %}"
+                                class="btn btn-outline-primary w-50">View</a>
+                            <button class="btn btn-warning w-50 add-to-cart-btn" data-product-id="{{ product.id }}">
+                                🛒 Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <p>No products available at the moment.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+
+</div>
+
+<!-- Add to Cart Toast -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1080;">
+    <div id="cartToast" class="toast align-items-center border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body" id="cartToastBody">
+                Added to cart!
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function showCartToast(message, isError = false) {
+        const toastEl = document.getElementById('cartToast');
+        const toastBody = document.getElementById('cartToastBody');
+
+        toastBody.textContent = message;
+        toastEl.classList.remove('text-bg-success', 'text-bg-danger');
+        toastEl.classList.add(isError ? 'text-bg-danger' : 'text-bg-success');
+
+        const toast = new bootstrap.Toast(toastEl, { delay: 2500 });
+        toast.show();
+    }
+
+    document.querySelectorAll('.add-to-cart-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const productId = this.dataset.productId;
+            const csrftoken = getCookie('csrftoken');
+
+            fetch("{% url 'add_to_cart' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': csrftoken,
+                },
+                body: new URLSearchParams({
+                    'product_id': productId,
+                    'quantity': 1
+                })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        const cartBadge = document.getElementById('cart-badge');
+                        if (cartBadge) {
+                            cartBadge.textContent = data.cart_count;
+                        }
+                        showCartToast(data.message || 'Added to cart!');
+                    } else {
+                        showCartToast('Error: ' + data.message, true);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showCartToast('Something went wrong. Please try again.', true);
+                });
+        });
+    });
+</script>
+
+{% endblock %}

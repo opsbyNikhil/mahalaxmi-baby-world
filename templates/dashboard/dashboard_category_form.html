@@ -1,0 +1,164 @@
+{% extends 'dashboard/dashboard_base.html' %}
+{% load static %}
+
+{% block title %}{% if is_edit %}Edit{% else %}Add{% endif %} Category · BabyShop{% endblock %}
+
+{% block page_title %}{% if is_edit %}Edit Category{% else %}Add New Category{% endif %}{% endblock %}
+
+{% block content %}
+<div class="category-form-wrapper">
+    <form method="post" enctype="multipart/form-data" id="categoryForm" novalidate>
+        {% csrf_token %}
+
+        <div class="row g-4">
+            <!-- Left column: main fields -->
+            <div class="col-lg-8">
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-body p-4">
+                        <h6 class="card-title fw-semibold mb-3"><i class="bi bi-tag me-2"></i>Category Details </h6>
+
+                        <div class="row g-3">
+                            <!-- Name -->
+                            <div class="col-12">
+                                <label for="{{ form.name.id_for_label }}" class="form-label fw-semibold">{{ form.name.label }}</label>
+                                {{ form.name }}
+                                {% if form.name.errors %}
+                                <div class="invalid-feedback d-block">{{ form.name.errors }}</div>
+                                {% endif %}
+                                <small class="text-muted d-block mt-1">The URL slug is generated automatically from this name.</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right column: image & actions -->
+            <div class="col-lg-4">
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-body p-4">
+                        <h6 class="card-title fw-semibold mb-3"><i class="bi bi-image me-2"></i>Category Image</h6>
+
+                        <div class="text-center">
+                            <div class="image-preview-wrapper mb-3" id="imagePreviewWrapper">
+                                {% if category and category.image %}
+                                <img src="{{ category.image.url }}" alt="Current image" class="img-fluid rounded border"
+                                    style="max-height: 200px; width: auto;" id="imagePreview">
+                                {% else %}
+                                <img src="#" alt="Image preview" class="img-fluid rounded border d-none"
+                                    id="imagePreview">
+                                <div class="placeholder-image bg-light rounded border d-flex align-items-center justify-content-center"
+                                    style="height: 160px; color: #adb5bd;">
+                                    <i class="bi bi-camera" style="font-size: 2.5rem;"></i>
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="mb-2">
+                                <label for="{{ form.image.id_for_label }}" class="btn btn-outline-primary btn-sm w-100">
+                                    <i class="bi bi-upload me-1"></i> Choose Image
+                                </label>
+                                {{ form.image }}
+                            </div>
+                            <small class="text-muted d-block">Recommended: 400x400px, max 5MB</small>
+                            {% if form.image.errors %}
+                            <div class="invalid-feedback d-block">{{ form.image.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action buttons -->
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-warning btn-lg fw-semibold">
+                        <i class="bi bi-check-circle me-2"></i>{% if is_edit %}Save Changes{% else %}Add Category{% endif %}
+                    </button>
+                    <a href="{% url 'dashboard_home' %}" class="btn btn-outline-secondary btn-lg">
+                        <i class="bi bi-arrow-left me-2"></i>Cancel
+                    </a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<style>
+    .category-form-wrapper .card {
+        border-radius: 16px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+    }
+
+    .category-form-wrapper .form-control,
+    .category-form-wrapper .form-select {
+        border-radius: 10px;
+        border: 1.5px solid #e2e8f0;
+        padding: 10px 14px;
+        font-size: 0.9rem;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .category-form-wrapper .form-control:focus,
+    .category-form-wrapper .form-select:focus {
+        border-color: #fb8500;
+        box-shadow: 0 0 0 3px rgba(251, 133, 0, 0.10);
+    }
+
+    #id_image {
+        display: none;
+    }
+
+    .image-preview-wrapper {
+        min-height: 140px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #fafbfc;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .placeholder-image {
+        width: 100%;
+        height: 160px;
+        background: #f8fafc;
+        border: 2px dashed #d1d9e6;
+        border-radius: 12px;
+    }
+
+    .invalid-feedback {
+        font-size: 0.8rem;
+        margin-top: 4px;
+    }
+
+    @media (max-width: 768px) {
+        .category-form-wrapper .card-body {
+            padding: 1.25rem !important;
+        }
+    }
+</style>
+
+<script>
+    (function () {
+        const imageInput = document.getElementById('id_image');
+        const preview = document.getElementById('imagePreview');
+        const placeholder = document.querySelector('.placeholder-image');
+
+        if (imageInput) {
+            imageInput.addEventListener('change', function (e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (ev) {
+                        if (placeholder) placeholder.style.display = 'none';
+                        preview.src = ev.target.result;
+                        preview.classList.remove('d-none');
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    if (placeholder) placeholder.style.display = 'flex';
+                    preview.classList.add('d-none');
+                }
+            });
+        }
+    })();
+</script>
+{% endblock %}
