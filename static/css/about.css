@@ -1,0 +1,112 @@
+/* ==========================================================
+   About page — Mahalaxmi Baby World
+   Reuses --bb-* variables already loaded globally by home.css
+   ========================================================== */
+
+.bb-about-hero {
+    padding: 3rem 0 2rem;
+    text-align: center;
+}
+
+.bb-about-hero h1 {
+    font-size: clamp(2rem, 3.6vw, 2.7rem);
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.bb-about-hero p {
+    max-width: 38rem;
+    margin: 0 auto;
+    color: var(--bb-plum-soft);
+    font-size: 1.05rem;
+}
+
+.bb-story {
+    background: var(--bb-white);
+    border-radius: 24px;
+    padding: 2.25rem;
+    box-shadow: 0 2px 10px -4px rgba(58, 48, 66, 0.1);
+    margin-bottom: 3rem;
+}
+
+.bb-story p {
+    color: var(--bb-plum-soft);
+    line-height: 1.7;
+    margin-bottom: 1rem;
+}
+
+.bb-story p:last-child {
+    margin-bottom: 0;
+}
+
+.bb-values {
+    padding: 1rem 0 3.5rem;
+}
+
+.bb-value-card {
+    background: var(--bb-cream-deep);
+    border-radius: 20px;
+    padding: 1.75rem 1.5rem;
+    height: 100%;
+    text-align: center;
+}
+
+.bb-value-icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 1rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    background: var(--bb-sage);
+    color: var(--bb-white);
+}
+
+.bb-value-card:nth-of-type(4n+2) .bb-value-icon { background: var(--bb-coral); }
+.bb-value-card:nth-of-type(4n+3) .bb-value-icon { background: var(--bb-sun); }
+.bb-value-card:nth-of-type(4n+4) .bb-value-icon { background: var(--bb-sky); }
+
+.bb-value-card h5 {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    font-size: 1.05rem;
+    margin-bottom: 0.5rem;
+}
+
+.bb-value-card p {
+    font-size: 0.9rem;
+    color: var(--bb-plum-soft);
+    margin: 0;
+}
+
+.bb-stats-strip {
+    background: var(--bb-sage);
+    border-radius: 24px;
+    padding: 2rem 1rem;
+    margin-bottom: 3.5rem;
+}
+
+.bb-stat {
+    text-align: center;
+    color: var(--bb-white);
+}
+
+.bb-stat .bb-stat-number {
+    display: block;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 2rem;
+    line-height: 1.1;
+}
+
+.bb-stat .bb-stat-label {
+    font-size: 0.85rem;
+    opacity: 0.9;
+}
+
+.bb-about-cta {
+    text-align: center;
+    padding-bottom: 3.5rem;
+}

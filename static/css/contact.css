@@ -1,0 +1,116 @@
+/* ==========================================================
+   Contact page — Mahalaxmi Baby World
+   Reuses --bb-* variables already loaded globally by home.css
+   ========================================================== */
+
+.bb-contact-hero {
+    padding: 3rem 0 2rem;
+    text-align: center;
+}
+
+.bb-contact-hero h1 {
+    font-size: clamp(2rem, 3.6vw, 2.7rem);
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.bb-contact-hero p {
+    max-width: 34rem;
+    margin: 0 auto;
+    color: var(--bb-plum-soft);
+    font-size: 1.05rem;
+}
+
+.bb-contact-wrap {
+    padding-bottom: 3.5rem;
+}
+
+.bb-contact-form {
+    background: var(--bb-white);
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: 0 2px 10px -4px rgba(58, 48, 66, 0.1);
+}
+
+.bb-contact-form label {
+    font-family: 'Nunito Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.88rem;
+    color: var(--bb-plum);
+    margin-bottom: 0.35rem;
+}
+
+.bb-contact-form .form-control {
+    border: 1.5px solid rgba(58, 48, 66, 0.12);
+    border-radius: 14px;
+    padding: 0.7rem 0.9rem;
+    font-family: 'Nunito Sans', sans-serif;
+    margin-bottom: 1.1rem;
+}
+
+.bb-contact-form .form-control:focus {
+    border-color: var(--bb-sage);
+    box-shadow: 0 0 0 3px rgba(124, 148, 115, 0.15);
+}
+
+.bb-contact-form button {
+    border: none;
+    width: 100%;
+}
+
+.bb-contact-info {
+    background: var(--bb-cream-deep);
+    border-radius: 24px;
+    padding: 2rem;
+    height: 100%;
+}
+
+.bb-info-item {
+    display: flex;
+    gap: 0.9rem;
+    align-items: flex-start;
+    margin-bottom: 1.4rem;
+}
+
+.bb-info-item:last-child {
+    margin-bottom: 0;
+}
+
+.bb-info-icon {
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--bb-sage);
+    color: var(--bb-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+}
+
+.bb-info-item:nth-of-type(2) .bb-info-icon { background: var(--bb-coral); }
+.bb-info-item:nth-of-type(3) .bb-info-icon { background: var(--bb-sun); }
+.bb-info-item:nth-of-type(4) .bb-info-icon { background: var(--bb-sky); }
+
+.bb-info-item h6 {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 0.2rem;
+    color: var(--bb-plum);
+}
+
+.bb-info-item p {
+    font-size: 0.88rem;
+    color: var(--bb-plum-soft);
+    margin: 0;
+}
+
+.bb-map-frame {
+    width: 100%;
+    height: 220px;
+    border: none;
+    border-radius: 16px;
+    margin-top: 1.5rem;
+}

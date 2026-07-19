@@ -1,0 +1,37 @@
+/* ==========================================================
+   All Products page — Mahalaxmi Baby World
+   Reuses --bb-* variables and .bb-product-card/.bb-price/etc
+   already loaded globally via home.css
+   ========================================================== */
+
+.bb-products-page {
+    padding-bottom: 3rem;
+}
+
+.bb-products-hero {
+    padding: 2.5rem 0 2rem;
+    text-align: center;
+}
+
+.bb-products-hero h1 {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    font-size: clamp(1.9rem, 3.4vw, 2.5rem);
+    color: var(--bb-plum);
+    margin-bottom: 0.4rem;
+}
+
+.bb-products-hero p {
+    color: var(--bb-plum-soft);
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 1rem;
+    margin: 0;
+}
+
+.bb-products-empty {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--bb-plum-soft);
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 1.05rem;
+}

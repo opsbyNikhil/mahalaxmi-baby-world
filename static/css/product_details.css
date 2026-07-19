@@ -1,0 +1,199 @@
+/* ==========================================================
+   Product detail page — Mahalaxmi Baby World
+   Reuses --bb-* variables already loaded globally by home.css
+   ========================================================== */
+
+.bb-detail-page {
+    padding-bottom: 3rem;
+}
+
+.bb-breadcrumb {
+    background: transparent;
+    padding: 1.25rem 0 0.5rem;
+    margin-bottom: 0;
+    font-family: 'Nunito Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.88rem;
+}
+
+.bb-breadcrumb a {
+    color: var(--bb-sage-dark);
+    text-decoration: none;
+}
+
+.bb-breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+.bb-breadcrumb .active {
+    color: var(--bb-plum-soft);
+}
+
+.bb-detail-image {
+    background: var(--bb-white);
+    border: none;
+    border-radius: 22px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 10px -4px rgba(58, 48, 66, 0.1);
+}
+
+.bb-detail-image img {
+    border-radius: 14px;
+}
+
+.bb-detail-info h1 {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.bb-detail-meta {
+    color: var(--bb-plum-soft);
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 0.95rem;
+}
+
+.bb-detail-price {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 2rem;
+    color: var(--bb-plum);
+    margin: 0.75rem 0;
+}
+
+.bb-stock-badge {
+    display: inline-block;
+    font-family: 'Nunito Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.82rem;
+    padding: 0.4rem 0.85rem;
+    border-radius: 999px;
+}
+
+.bb-stock-in {
+    background: rgba(124, 148, 115, 0.15);
+    color: var(--bb-sage-dark);
+}
+
+.bb-stock-out {
+    background: rgba(226, 127, 104, 0.15);
+    color: var(--bb-coral-dark);
+}
+
+.bb-detail-description {
+    color: var(--bb-plum-soft);
+    line-height: 1.7;
+    font-size: 1.02rem;
+}
+
+.bb-spec-card {
+    background: var(--bb-cream-deep);
+    border-radius: 18px;
+    padding: 1.35rem 1.5rem;
+    margin: 1.25rem 0;
+}
+
+.bb-spec-row {
+    padding: 0.4rem 0;
+    font-size: 0.92rem;
+}
+
+.bb-spec-row:not(:last-child) {
+    border-bottom: 1px solid rgba(58, 48, 66, 0.08);
+}
+
+.bb-spec-label {
+    font-family: 'Nunito Sans', sans-serif;
+    font-weight: 700;
+    color: var(--bb-plum);
+}
+
+.bb-spec-value {
+    color: var(--bb-plum-soft);
+}
+
+.bb-package-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    color: var(--bb-plum-soft);
+    font-size: 0.92rem;
+}
+
+.bb-package-list li {
+    padding: 0.15rem 0;
+}
+
+.bb-qty-input {
+    width: 80px;
+    border: 1.5px solid rgba(58, 48, 66, 0.12);
+    border-radius: 12px;
+    padding: 0.5rem 0.75rem;
+    font-family: 'Nunito Sans', sans-serif;
+}
+
+.bb-qty-input:focus {
+    border-color: var(--bb-sage);
+    box-shadow: 0 0 0 3px rgba(124, 148, 115, 0.15);
+    outline: none;
+}
+
+.bb-btn-add-lg {
+    border: none;
+    background: var(--bb-coral);
+    color: var(--bb-white);
+    border-radius: 999px;
+    padding: 0.75rem 1.75rem;
+    font-family: 'Nunito Sans', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.bb-btn-add-lg:hover {
+    background: var(--bb-coral-dark);
+    transform: translateY(-1px);
+    color: var(--bb-white);
+}
+
+.bb-btn-disabled {
+    border: none;
+    background: rgba(58, 48, 66, 0.12);
+    color: var(--bb-plum-soft);
+    border-radius: 999px;
+    padding: 0.75rem 1.75rem;
+    font-family: 'Nunito Sans', sans-serif;
+    font-weight: 700;
+}
+
+.bb-btn-continue {
+    display: inline-block;
+    border: 1.5px solid var(--bb-sage);
+    color: var(--bb-sage-dark);
+    background: transparent;
+    border-radius: 999px;
+    padding: 0.6rem 1.4rem;
+    font-family: 'Nunito Sans', sans-serif;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.bb-btn-continue:hover {
+    background: var(--bb-sage);
+    color: var(--bb-white);
+}
+
+.bb-related-divider {
+    border: none;
+    border-top: 1px solid rgba(58, 48, 66, 0.1);
+    margin: 3rem 0 2rem;
+}
+
+.bb-related-heading {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+}

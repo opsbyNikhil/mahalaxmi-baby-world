@@ -1,0 +1,275 @@
+/* ==========================================================
+   Cart page — Mahalaxmi Baby World
+   Reuses --bb-* variables already loaded globally by home.css
+   ========================================================== */
+
+.bb-cart-page {
+    padding-bottom: 3rem;
+}
+
+.bb-cart-hero {
+    padding: 2.5rem 0 2rem;
+}
+
+.bb-cart-hero h1 {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    font-size: clamp(1.9rem, 3.4vw, 2.5rem);
+    color: var(--bb-plum);
+    margin-bottom: 0;
+}
+
+.bb-cart-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.75rem;
+}
+
+.bb-cart-item {
+    background: var(--bb-white);
+    border-radius: 20px;
+    padding: 1.1rem 1.25rem;
+    box-shadow: 0 2px 10px -4px rgba(58, 48, 66, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 1.1rem;
+    flex-wrap: wrap;
+}
+
+.bb-cart-item-img {
+    width: 76px;
+    height: 76px;
+    border-radius: 14px;
+    object-fit: cover;
+    flex-shrink: 0;
+    background: var(--bb-sky);
+}
+
+.bb-cart-item-info {
+    flex: 1 1 200px;
+    min-width: 160px;
+}
+
+.bb-cart-item-info strong {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    font-size: 1.02rem;
+    color: var(--bb-plum);
+    display: block;
+}
+
+.bb-cart-item-info small {
+    color: var(--bb-plum-soft);
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 0.85rem;
+}
+
+.bb-cart-item-price {
+    font-family: 'DM Mono', 'Nunito Sans', sans-serif;
+    color: var(--bb-plum-soft);
+    font-size: 0.95rem;
+    width: 90px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.bb-cart-qty-form {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+.bb-cart-qty-input {
+    width: 60px;
+    border: 1.5px solid rgba(58, 48, 66, 0.12);
+    border-radius: 10px;
+    padding: 0.4rem 0.5rem;
+    font-family: 'Nunito Sans', sans-serif;
+    text-align: center;
+}
+
+.bb-cart-qty-input:focus {
+    border-color: var(--bb-sage);
+    box-shadow: 0 0 0 3px rgba(124, 148, 115, 0.15);
+    outline: none;
+}
+
+.bb-cart-update-btn {
+    border: 1.5px solid var(--bb-sage);
+    color: var(--bb-sage-dark);
+    background: transparent;
+    border-radius: 999px;
+    padding: 0.4rem 0.9rem;
+    font-family: 'Nunito Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.82rem;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.bb-cart-update-btn:hover {
+    background: var(--bb-sage);
+    color: var(--bb-white);
+}
+
+.bb-cart-item-subtotal {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    color: var(--bb-plum);
+    width: 90px;
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.bb-cart-remove-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(226, 127, 104, 0.12);
+    color: var(--bb-coral-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.05rem;
+    text-decoration: none;
+    flex-shrink: 0;
+    transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+
+.bb-cart-remove-btn:hover {
+    background: var(--bb-coral-dark);
+    color: var(--bb-white);
+    transform: scale(1.06);
+}
+
+/* ---------- Remove-item confirmation modal ---------- */
+.bb-remove-modal .modal-content {
+    border: none;
+    border-radius: 22px;
+    overflow: hidden;
+}
+
+.bb-remove-modal .modal-header {
+    background: var(--bb-cream-deep);
+    border-bottom: none;
+    padding: 1.25rem 1.5rem 1rem;
+}
+
+.bb-remove-modal .modal-title {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    color: var(--bb-plum);
+    font-size: 1.15rem;
+}
+
+.bb-remove-modal .modal-body {
+    padding: 1.5rem;
+    font-family: 'Nunito Sans', sans-serif;
+    color: var(--bb-plum-soft);
+}
+
+.bb-remove-modal .modal-footer {
+    border-top: none;
+    padding: 0 1.5rem 1.5rem;
+    gap: 0.6rem;
+}
+
+.bb-modal-btn-cancel {
+    border: 1.5px solid var(--bb-sage);
+    color: var(--bb-sage-dark);
+    background: transparent;
+    border-radius: 999px;
+    padding: 0.55rem 1.3rem;
+    font-family: 'Nunito Sans', sans-serif;
+    font-weight: 700;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.bb-modal-btn-cancel:hover {
+    background: var(--bb-sage);
+    color: var(--bb-white);
+}
+
+.bb-modal-btn-remove {
+    border: none;
+    background: var(--bb-coral-dark);
+    color: var(--bb-white);
+    border-radius: 999px;
+    padding: 0.55rem 1.3rem;
+    font-family: 'Nunito Sans', sans-serif;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.bb-modal-btn-remove:hover {
+    background: #c96851;
+    color: var(--bb-white);
+    transform: translateY(-1px);
+}
+
+.bb-cart-summary {
+    background: var(--bb-cream-deep);
+    border-radius: 20px;
+    padding: 1.5rem 1.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.bb-cart-total-label {
+    font-family: 'Nunito Sans', sans-serif;
+    font-weight: 700;
+    color: var(--bb-plum-soft);
+    font-size: 0.95rem;
+}
+
+.bb-cart-total-value {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 1.6rem;
+    color: var(--bb-plum);
+}
+
+.bb-cart-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.bb-cart-empty {
+    text-align: center;
+    padding: 4rem 1rem;
+}
+
+.bb-cart-empty h4 {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    color: var(--bb-plum);
+    margin-bottom: 0.5rem;
+}
+
+.bb-cart-empty p {
+    color: var(--bb-plum-soft);
+    font-family: 'Nunito Sans', sans-serif;
+    margin-bottom: 1.5rem;
+}
+
+@media (max-width: 576px) {
+    .bb-cart-item {
+        justify-content: space-between;
+    }
+
+    .bb-cart-item-price,
+    .bb-cart-item-subtotal {
+        width: auto;
+        text-align: left;
+    }
+}

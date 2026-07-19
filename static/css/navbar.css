@@ -1,0 +1,321 @@
+/* ==========================================================
+   Navbar — global, loads on every page via home.css
+   ========================================================== */
+
+.bb-navbar {
+    background: var(--bb-white);
+    box-shadow: 0 2px 12px -4px rgba(58, 48, 66, 0.12);
+    padding: 0.7rem 0;
+}
+
+/* --- CONTAINER: no wrapping, tight gaps --- */
+.bb-navbar-container {
+    flex-wrap: nowrap !important;
+    gap: 0.3rem 0.5rem;
+}
+
+/* --- BRAND: never shrink, keep readable --- */
+.bb-navbar-brand {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    color: var(--bb-plum) !important;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+/* --- OFFCANVAS (desktop): allows nav links to shrink --- */
+.offcanvas-lg {
+    flex: 1 1 auto !important;
+    min-width: 0;
+}
+
+/* --- NAV LINKS: shrinkable, nowrap, smaller defaults --- */
+.bb-nav-link {
+    font-family: 'Nunito Sans', sans-serif;
+    font-weight: 700;
+    color: var(--bb-plum-soft) !important;
+    padding: 0.4rem 0.7rem !important;
+    border-radius: 999px;
+    transition: background 0.15s ease, color 0.15s ease;
+    white-space: nowrap;
+    flex-shrink: 1;
+    font-size: 0.9rem;
+}
+
+.bb-nav-link:hover {
+    color: var(--bb-plum) !important;
+    background: var(--bb-cream);
+}
+
+.bb-nav-link.active {
+    color: var(--bb-white) !important;
+    background: var(--bb-sage);
+}
+
+/* --- DROPDOWN MENU --- */
+.bb-dropdown-menu {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 12px 28px -10px rgba(58, 48, 66, 0.25);
+    padding: 0.5rem;
+}
+
+.bb-dropdown-menu .dropdown-item {
+    font-family: 'Nunito Sans', sans-serif;
+    font-weight: 600;
+    color: var(--bb-plum-soft);
+    border-radius: 10px;
+    padding: 0.5rem 0.85rem;
+}
+
+.bb-dropdown-menu .dropdown-item:hover {
+    background: var(--bb-cream);
+    color: var(--bb-plum);
+}
+
+/* --- SEARCH FORM: enough width for full placeholder --- */
+.bb-search-form {
+    display: flex;
+}
+
+.bb-search-form-top {
+    flex-shrink: 1;
+    max-width: 220px;
+    min-width: 130px;           /* ← enough for "Search Products" */
+}
+
+.bb-search-input {
+    border: 1.5px solid rgba(58, 48, 66, 0.12);
+    border-radius: 999px 0 0 999px;
+    padding: 0.3rem 0.7rem;
+    font-family: 'Nunito Sans', sans-serif;
+    border-right: none;
+    width: 100%;
+    min-width: 100px;           /* fallback */
+    font-size: 0.8rem;
+}
+
+.bb-search-input:focus {
+    border-color: var(--bb-sage);
+    box-shadow: none;
+    outline: none;
+}
+
+.bb-search-btn {
+    border: 1.5px solid var(--bb-sage);
+    background: var(--bb-sage);
+    color: var(--bb-white);
+    border-radius: 0 999px 999px 0;
+    padding: 0.3rem 0.8rem;
+    font-family: 'Nunito Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.8rem;
+}
+
+.bb-search-btn:hover {
+    background: var(--bb-sage-dark);
+    border-color: var(--bb-sage-dark);
+    color: var(--bb-white);
+}
+
+/* --- CART: never shrink --- */
+.bb-cart-btn {
+    background: var(--bb-coral);
+    color: var(--bb-white);
+    border: none;
+    border-radius: 999px;
+    padding: 0.4rem 1rem;
+    font-family: 'Nunito Sans', sans-serif;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 0.15s ease, transform 0.15s ease;
+    flex-shrink: 0;
+    white-space: nowrap;
+    font-size: 0.85rem;
+}
+
+.bb-cart-btn:hover {
+    background: var(--bb-coral-dark);
+    color: var(--bb-white);
+    transform: translateY(-1px);
+}
+
+.bb-cart-badge {
+    background: var(--bb-plum) !important;
+    font-family: 'Nunito Sans', sans-serif;
+}
+
+/* ============================================
+   RESPONSIVE — force-fit at 100% zoom
+   ============================================ */
+
+/* For screens between 992px and 1400px (where 100% zoom hits hardest) */
+@media (max-width: 1399px) and (min-width: 992px) {
+    .bb-navbar-brand {
+        font-size: 1rem;
+    }
+    .bb-nav-link {
+        font-size: 0.75rem;
+        padding: 0.3rem 0.5rem !important;
+    }
+    .bb-search-form-top {
+        max-width: 180px;        /* allow a bit more width */
+        min-width: 130px;        /* keeps placeholder visible */
+    }
+    .bb-search-input {
+        font-size: 0.7rem;
+        padding: 0.2rem 0.5rem;
+    }
+    .bb-search-btn {
+        font-size: 0.7rem;
+        padding: 0.2rem 0.6rem;
+    }
+    .bb-cart-btn {
+        font-size: 0.75rem;
+        padding: 0.3rem 0.7rem;
+    }
+    .bb-navbar-container {
+        gap: 0.2rem 0.3rem;
+    }
+}
+
+/* Large desktops: give a bit more room */
+@media (min-width: 1400px) {
+    .bb-search-form-top {
+        max-width: 250px;
+    }
+    .bb-nav-link {
+        font-size: 1rem;
+        padding: 0.5rem 0.9rem !important;
+    }
+}
+
+/* Tablets and below: offcanvas drawer, search full width */
+@media (max-width: 991px) {
+    .bb-navbar-container {
+        flex-wrap: wrap !important;   /* was inheriting nowrap from base rule */
+        gap: 0.5rem 0.5rem;
+        overflow: visible;             /* stops the cart badge from clipping */
+    }
+
+    /* Top row: brand — toggler — cart */
+    .bb-navbar-brand {
+        font-size: 1.1rem;
+        order: 1;
+    }
+    .navbar-toggler {
+        order: 2;
+    }
+    .bb-cart-btn {
+        font-size: 1rem;
+        padding: 0.5rem 1.2rem;
+        order: 3;
+        margin-left: auto;   /* pins cart to the right edge of the top row */
+    }
+
+    /* Second row: search, full width */
+    .bb-search-form-top {
+        order: 4;
+        flex: 0 0 100%;
+        max-width: none;
+        min-width: auto;
+        width: 100%;
+        margin: 0.5rem 0 0;
+    }
+    .bb-search-input {
+        font-size: 1rem;
+        padding: 0.5rem 1rem;
+    }
+    .bb-search-btn {
+        font-size: 1rem;
+        padding: 0.5rem 1.1rem;
+    }
+
+    .bb-nav-link {
+        font-size: 1rem;
+        padding: 0.5rem 1rem !important;
+    }
+}
+
+/* Small phones: extra tiny brand */
+@media (max-width: 575px) {
+    .bb-navbar-brand {
+        font-size: 0.9rem;
+    }
+    .bb-cart-btn {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.6rem;
+    }
+}
+
+/* Hero – mobile first */
+.hero-section {
+  background: #faf7f5;          /* or your own colour */
+  text-align: center;
+}
+
+.hero-tagline {
+  font-size: 0.9rem;
+  letter-spacing: 2px;
+  color: var(--bb-plum-soft);
+  text-transform: uppercase;
+}
+
+.hero-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--bb-plum);
+  line-height: 1.2;
+}
+
+.hero-subtitle {
+  font-size: 1rem;
+  color: var(--bb-plum-soft);
+  max-width: 600px;
+  margin: 0.5rem auto 1.5rem;
+}
+
+.btn-hero {
+  background: var(--bb-coral);
+  color: #fff;
+  border: none;
+  padding: 0.8rem 2.5rem;
+  border-radius: 999px;
+  font-weight: 700;
+  transition: background 0.2s;
+}
+.btn-hero:hover {
+  background: var(--bb-coral-dark);
+  color: #fff;
+}
+
+.features-row > div {
+  font-size: 0.85rem;
+  padding: 0.3rem 0;
+  border-right: 1px solid #ddd;
+}
+.features-row > div:last-child {
+  border-right: none;
+}
+
+/* Very small phones (≤ 400px) */
+@media (max-width: 400px) {
+  .hero-title { font-size: 1.6rem; }
+  .hero-subtitle { font-size: 0.9rem; }
+  .features-row > div {
+    flex: 0 0 100%;           /* stack vertically */
+    border-right: none;
+    font-size: 0.75rem;
+  }
+  .btn-hero {
+    padding: 0.6rem 1.8rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* Tablets and up */
+@media (min-width: 768px) {
+  .hero-title { font-size: 3rem; }
+  .hero-subtitle { font-size: 1.2rem; }
+}

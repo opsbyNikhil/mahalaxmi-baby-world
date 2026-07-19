@@ -1,0 +1,373 @@
+/* ==========================================================
+   Home page — Mahalaxmi Baby World
+   Uses Fredoka (display) + Nunito Sans (body) already loaded
+   via base.html, so no extra font requests are added here.
+   ========================================================== */
+
+:root {
+    --bb-cream: #FDF6E9;
+    --bb-cream-deep: #F7ECD8;
+    --bb-sage: #7C9473;
+    --bb-sage-dark: #5C7355;
+    --bb-coral: #F2A08D;
+    --bb-coral-dark: #E27F68;
+    --bb-plum: #3A3042;
+    --bb-plum-soft: #6B6074;
+    --bb-sun: #F6C453;
+    --bb-sky: #AEDCE0;
+    --bb-white: #FFFEFB;
+}
+
+.bb-page {
+    background: var(--bb-cream);
+    color: var(--bb-plum);
+    font-family: 'Nunito Sans', sans-serif;
+}
+
+.bb-page h1, .bb-page h2, .bb-page h5 {
+    font-family: 'Fredoka', sans-serif;
+    color: var(--bb-plum);
+}
+
+/* ---------- Hero ---------- */
+.bb-hero {
+    position: relative;
+    padding: 3.5rem 0 2.5rem;
+    overflow: hidden;
+}
+
+.bb-hero-eyebrow {
+    display: inline-block;
+    font-family: 'Nunito Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--bb-sage-dark);
+    background: rgba(124, 148, 115, 0.12);
+    padding: 0.35rem 0.9rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+}
+
+.bb-hero h1 {
+    font-size: clamp(2.1rem, 4vw, 3.1rem);
+    font-weight: 600;
+    line-height: 1.12;
+    margin-bottom: 1rem;
+}
+
+.bb-hero .lead {
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 1.1rem;
+    color: var(--bb-plum-soft);
+    max-width: 30rem;
+}
+
+.bb-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--bb-coral);
+    color: var(--bb-white);
+    border: none;
+    padding: 0.85rem 1.9rem;
+    border-radius: 999px;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    font-size: 1.02rem;
+    text-decoration: none;
+    box-shadow: 0 8px 20px -8px rgba(226, 127, 104, 0.55);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.bb-btn-primary:hover, .bb-btn-primary:focus-visible {
+    background: var(--bb-coral-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px -8px rgba(226, 127, 104, 0.6);
+    color: var(--bb-white);
+}
+
+.bb-trust-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1.75rem;
+}
+
+.bb-trust-item {
+    font-family: 'Nunito Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.8rem;
+    background: var(--bb-white);
+    border: 1px solid rgba(58, 48, 66, 0.08);
+    padding: 0.45rem 0.85rem;
+    border-radius: 999px;
+    color: var(--bb-plum-soft);
+}
+
+/* ---------- Signature: hanging nursery mobile ---------- */
+.bb-mobile-wrap {
+    position: relative;
+    height: 340px;
+    display: flex;
+    justify-content: center;
+}
+
+.bb-mobile-rod {
+    position: absolute;
+    top: 30px;
+    width: 78%;
+    height: 6px;
+    background: var(--bb-sage);
+    border-radius: 999px;
+}
+
+.bb-mobile-rod::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: -46px;
+    width: 3px;
+    height: 46px;
+    background: var(--bb-sage);
+    transform: translateX(-50%);
+}
+
+.bb-mobile-strings {
+    position: absolute;
+    top: 36px;
+    width: 78%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.bb-string {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transform-origin: top center;
+    animation: bb-swing 4.5s ease-in-out infinite;
+}
+
+.bb-string.moon { animation-duration: 5.2s; }
+.bb-string.star { animation-duration: 4.4s; animation-delay: -1.2s; }
+.bb-string.cloud { animation-duration: 4.9s; animation-delay: -2.4s; }
+
+@keyframes bb-swing {
+    0%, 100% { transform: rotate(-6deg); }
+    50% { transform: rotate(6deg); }
+}
+
+.bb-thread {
+    width: 2px;
+    background: rgba(58, 48, 66, 0.25);
+}
+
+.bb-string.moon .bb-thread { height: 70px; }
+.bb-string.star .bb-thread { height: 130px; }
+.bb-string.cloud .bb-thread { height: 95px; }
+
+.bb-shape-moon {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: var(--bb-sky);
+    box-shadow: 14px -6px 0 2px var(--bb-cream);
+}
+
+.bb-shape-star {
+    width: 48px;
+    height: 48px;
+    background: var(--bb-sun);
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%,
+                        50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+
+.bb-shape-cloud {
+    position: relative;
+    width: 58px;
+    height: 26px;
+    background: var(--bb-white);
+    border: 2px solid var(--bb-sage);
+    border-radius: 999px;
+}
+
+.bb-shape-cloud::before, .bb-shape-cloud::after {
+    content: '';
+    position: absolute;
+    background: var(--bb-white);
+    border: 2px solid var(--bb-sage);
+    border-radius: 50%;
+}
+
+.bb-shape-cloud::before {
+    width: 24px; height: 24px;
+    top: -13px; left: 6px;
+}
+
+.bb-shape-cloud::after {
+    width: 20px; height: 20px;
+    top: -10px; right: 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .bb-string { animation: none; }
+}
+
+/* ---------- Section divider (scalloped, cloud-trim) ---------- */
+.bb-divider {
+    height: 22px;
+    margin-top: 3rem;
+    background-image: radial-gradient(circle at 12px 0, transparent 12px, var(--bb-cream-deep) 12.5px);
+    background-size: 24px 22px;
+    background-repeat: repeat-x;
+}
+
+/* ---------- Featured section ---------- */
+.bb-featured {
+    background: var(--bb-cream-deep);
+    padding: 3rem 0 4rem;
+}
+
+.bb-section-heading {
+    text-align: center;
+    margin-bottom: 2.25rem;
+}
+
+.bb-eyebrow {
+    display: block;
+    font-family: 'Nunito Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--bb-sage-dark);
+    margin-bottom: 0.35rem;
+}
+
+.bb-section-heading h2 {
+    font-size: 1.9rem;
+    font-weight: 600;
+}
+
+.bb-product-card {
+    background: var(--bb-white);
+    border: none;
+    border-radius: 22px;
+    overflow: hidden;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+    box-shadow: 0 2px 10px -4px rgba(58, 48, 66, 0.1);
+}
+
+.bb-product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 16px 30px -12px rgba(58, 48, 66, 0.22);
+}
+
+.bb-product-media {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.4rem;
+    background: var(--bb-sky);
+}
+
+.bb-product-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.col-lg-3:nth-of-type(4n+2) .bb-product-media { background: var(--bb-coral); }
+.col-lg-3:nth-of-type(4n+3) .bb-product-media { background: var(--bb-sun); }
+.col-lg-3:nth-of-type(4n+4) .bb-product-media { background: var(--bb-sage); }
+
+.bb-badge-category {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(255, 254, 251, 0.92);
+    color: var(--bb-plum);
+    font-family: 'Nunito Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.7rem;
+    padding: 0.3rem 0.65rem;
+    border-radius: 999px;
+}
+
+.bb-product-card .card-body {
+    padding: 1.15rem 1.25rem 1.35rem;
+}
+
+.bb-product-card h5 {
+    font-size: 1.08rem;
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+}
+
+.bb-product-card .text-muted {
+    font-size: 0.88rem;
+    color: var(--bb-plum-soft) !important;
+}
+
+.bb-price {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: var(--bb-plum);
+    margin: 0.4rem 0 0.9rem;
+}
+
+.bb-btn-outline {
+    flex: 1;
+    border: 1.5px solid var(--bb-sage);
+    color: var(--bb-sage-dark);
+    background: transparent;
+    border-radius: 999px;
+    padding: 0.55rem 0.5rem;
+    font-family: 'Nunito Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-align: center;
+    text-decoration: none;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.bb-btn-outline:hover, .bb-btn-outline:focus-visible {
+    background: var(--bb-sage);
+    color: var(--bb-white);
+}
+
+.bb-btn-add {
+    flex: 1;
+    border: none;
+    background: var(--bb-plum);
+    color: var(--bb-white);
+    border-radius: 999px;
+    padding: 0.55rem 0.5rem;
+    font-family: 'Nunito Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.bb-btn-add:hover, .bb-btn-add:focus-visible {
+    background: var(--bb-coral-dark);
+    transform: translateY(-1px);
+}
+
+.bb-page a:focus-visible,
+.bb-page button:focus-visible {
+    outline: 2px solid var(--bb-sage-dark);
+    outline-offset: 2px;
+}
+
+#cartToast.text-bg-success { background-color: var(--bb-sage) !important; }
+#cartToast.text-bg-danger { background-color: var(--bb-coral-dark) !important; }
+
+@media (max-width: 991px) {
+    .bb-mobile-wrap { height: 220px; margin-top: 2rem; }
+}
