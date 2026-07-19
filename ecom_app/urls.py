@@ -16,6 +16,9 @@ urlpatterns = [
     path('cart/remove/<int:product_id>/', views.remove_from_cart_view, name='remove_from_cart'),
     path('cart/update/<int:product_id>/', views.update_cart_view, name='update_cart'),
     
+    path('about/', views.about, name='about'),
+    path('contact/', views.contact, name='contact'),
+
     path("reset-admin-password/", views.reset_admin_password),
     path('dashboard/', views.dashboard_home, name='dashboard_home'),
     path('dashboard/product/add/', views.dashboard_product_add, name='dashboard_product_add'),

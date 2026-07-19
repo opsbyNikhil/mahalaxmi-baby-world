@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Contact Us{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/contact.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="bb-page">
+    <div class="container">
+
+        <!-- Intro -->
+        <div class="bb-contact-hero">
+            <span class="bb-hero-eyebrow">Get In Touch</span>
+            <h1>We're Here to Help</h1>
+            <p>
+                Questions about a product, an order, or just want advice on
+                what's right for your little one? Reach out — we usually
+                reply within a day.
+            </p>
+        </div>
+
+        <div class="bb-contact-wrap">
+            <div class="row g-4">
+
+                <!-- Contact form -->
+                <div class="col-lg-7">
+                    <form class="bb-contact-form" method="post" action="{% url 'contact' %}">
+                        {% csrf_token %}
+                        <label for="contactName">Your Name</label>
+                        <input type="text" class="form-control" id="contactName" name="name" required>
+
+                        <label for="contactEmail">Email Address</label>
+                        <input type="email" class="form-control" id="contactEmail" name="email" required>
+
+                        <label for="contactPhone">Phone Number</label>
+                        <input type="tel" class="form-control" id="contactPhone" name="phone">
+
+                        <label for="contactMessage">Message</label>
+                        <textarea class="form-control" id="contactMessage" name="message" rows="5" required></textarea>
+
+                        <button type="submit" class="bb-btn-primary">Send Message</button>
+                    </form>
+                </div>
+
+                <!-- Store info -->
+                <div class="col-lg-5">
+                    <div class="bb-contact-info">
+                        <div class="bb-info-item">
+                            <div class="bb-info-icon">📍</div>
+                            <div>
+                                <h6>Visit the Store</h6>
+                                <p>15-8-438 Om Sri Sai Complex, Feel khana Begum Bazar Rd, Hyderabad, Telangana 500012</p>
+                            </div>
+                        </div>
+                        <div class="bb-info-item">
+                            <div class="bb-info-icon">📞</div>
+                            <div>
+                                <h6>Call Us</h6>
+                                <p>+91 90000 12345</p>
+                            </div>
+                        </div>
+                        <div class="bb-info-item">
+                            <div class="bb-info-icon">✉️</div>
+                            <div>
+                                <h6>Email</h6>
+                                <p>hello@mahalaxmibabyworld.in</p>
+                            </div>
+                        </div>
+                        <div class="bb-info-item">
+                            <div class="bb-info-icon">🕒</div>
+                            <div>
+                                <h6>Store Hours</h6>
+                                <p>Mon–Sat, 10:00 AM – 8:30 PM</p>
+                            </div>
+                        </div>
+
+                        <!-- Replace src with your store's actual Google Maps embed link -->
+                        <iframe class="bb-map-frame" src="https://www.google.com/maps?q=Mahalaxmi+Enterprises+15-8-438+Om+Sri+Sai+Complex+Feelkhana+Begum+Bazar+Rd+Hyderabad+Telangana+500012&output=embed"
+                            loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

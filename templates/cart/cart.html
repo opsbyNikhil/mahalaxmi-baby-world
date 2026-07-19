@@ -3,81 +3,74 @@
 
 {% block title %}Shopping Cart{% endblock %}
 
-{% block content %}
-<div class="container mt-4">
-    <h1>Shopping Cart</h1>
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/cart.css' %}">
+{% endblock %}
 
-    {% if cart_items %}
-    <div class="table-responsive">
-        <table class="table align-middle">
-            <thead>
-                <tr>
-                    <th>Product</th>
-                    <th>Price</th>
-                    <th>Quantity</th>
-                    <th>Subtotal</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in cart_items %}
-                <tr>
-                    <td>
-                        <div class="d-flex align-items-center">
-                            {% if item.product.image %}
-                            <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}"
-                                style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px; margin-right: 12px;">
-                            {% endif %}
-                            <div>
-                                <strong>{{ item.product.name }}</strong>
-                                <br>
-                                <small class="text-muted">{{ item.product.category.name }}</small>
-                            </div>
-                        </div>
-                    </td>
-                    <td>₹{{ item.product.price }}</td>
-                    <td>
-                        <form method="post" action="{% url 'update_cart' item.product.id %}"
-                            class="d-flex align-items-center">
-                            {% csrf_token %}
-                            <input type="number" name="quantity" value="{{ item.quantity }}" min="1"
-                                max="{{ item.product.stock }}" style="width: 60px;"
-                                class="form-control form-control-sm me-2">
-                            <button type="submit" class="btn btn-sm btn-outline-primary">Update</button>
-                        </form>
-                    </td>
-                    <td>₹{{ item.subtotal }}</td>
-                    <td>
-                        <a href="#" class="btn btn-sm btn-danger remove-item-btn"
-                            data-remove-url="{% url 'remove_from_cart' item.product.id %}">✕</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="3" class="text-end"><strong>Total</strong></td>
-                    <td><strong>₹{{ total }}</strong></td>
-                    <td></td>
-                </tr>
-            </tfoot>
-        </table>
+{% block content %}
+<div class="bb-page bb-cart-page">
+    <div class="container">
+
+        <div class="bb-cart-hero">
+            <span class="bb-hero-eyebrow">Your Bag</span>
+            <h1>Shopping Cart</h1>
+        </div>
+
+        {% if cart_items %}
+        <div class="bb-cart-list">
+            {% for item in cart_items %}
+            <div class="bb-cart-item">
+                {% if item.product.image %}
+                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="bb-cart-item-img">
+                {% else %}
+                <div class="bb-cart-item-img d-flex align-items-center justify-content-center">🛏️</div>
+                {% endif %}
+
+                <div class="bb-cart-item-info">
+                    <strong>{{ item.product.name }}</strong>
+                    <small>{{ item.product.category.name }}</small>
+                </div>
+
+                <div class="bb-cart-item-price">₹{{ item.product.price }}</div>
+
+                <form method="post" action="{% url 'update_cart' item.product.id %}" class="bb-cart-qty-form">
+                    {% csrf_token %}
+                    <input type="number" name="quantity" value="{{ item.quantity }}" min="1"
+                        max="{{ item.product.stock }}" class="bb-cart-qty-input">
+                    <button type="submit" class="bb-cart-update-btn">Update</button>
+                </form>
+
+                <div class="bb-cart-item-subtotal">₹{{ item.subtotal }}</div>
+
+                <a href="#" class="bb-cart-remove-btn remove-item-btn"
+                    data-remove-url="{% url 'remove_from_cart' item.product.id %}" aria-label="Remove item">🗑️</a>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="bb-cart-summary">
+            <span class="bb-cart-total-label">Total</span>
+            <span class="bb-cart-total-value">₹{{ total }}</span>
+        </div>
+
+        <div class="bb-cart-actions">
+            <a href="{% url 'product_list' %}" class="bb-btn-outline">← Continue Shopping</a>
+            <a href="#" class="bb-btn-primary">Proceed to Checkout</a>
+        </div>
+
+        {% else %}
+        <div class="bb-cart-empty">
+            <h4>Your cart is empty.</h4>
+            <p>Start shopping for your little one!</p>
+            <a href="{% url 'product_list' %}" class="bb-btn-primary">Browse Products</a>
+        </div>
+        {% endif %}
+
     </div>
-    <div class="mt-3 d-flex justify-content-between">
-        <a href="{% url 'product_list' %}" class="btn btn-outline-secondary">← Continue Shopping</a>
-        <a href="#" class="btn btn-warning">Proceed to Checkout</a>
-    </div>
-    {% else %}
-    <div class="text-center py-5">
-        <h4>Your cart is empty.</h4>
-        <p class="text-muted">Start shopping for your little one!</p>
-        <a href="{% url 'product_list' %}" class="btn btn-primary">Browse Products</a>
-    </div>
-    {% endif %}
 </div>
 
 <!-- Remove Item Confirmation Modal -->
-<div class="modal fade" id="removeItemModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade bb-remove-modal" id="removeItemModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -88,8 +81,8 @@
                 Remove this item from your cart?
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <a href="#" id="confirmRemoveBtn" class="btn btn-danger">Remove</a>
+                <button type="button" class="bb-modal-btn-cancel" data-bs-dismiss="modal">Cancel</button>
+                <a href="#" id="confirmRemoveBtn" class="bb-modal-btn-remove">Remove</a>
             </div>
         </div>
     </div>

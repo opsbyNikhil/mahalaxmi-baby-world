@@ -4,100 +4,516 @@
 
 {% block content %}
 
-<div class="container mt-4">
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Nunito:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap');
 
-    <!-- Hero Section -->
-    <div class="hero">
-        <div class="row align-items-center g-4">
+    :root {
+        --bb-cream: #FDF6E9;
+        --bb-cream-deep: #F7ECD8;
+        --bb-sage: #7C9473;
+        --bb-sage-dark: #5C7355;
+        --bb-coral: #F2A08D;
+        --bb-coral-dark: #E27F68;
+        --bb-plum: #3A3042;
+        --bb-plum-soft: #6B6074;
+        --bb-sun: #F6C453;
+        --bb-sky: #AEDCE0;
+        --bb-white: #FFFEFB;
+    }
 
-            <div class="col-lg-7">
-                <span class="hero-eyebrow">Hyderabad's Baby Store</span>
-                <h1>Everything Your Little One Needs</h1>
-                <p class="lead">
-                    Strollers, carry cots, swings, walkers and more — chosen for
-                    comfort, safety and a whole lot of giggles.
-                </p>
-                <a href="#featured" class="btn btn-primary btn-lg mt-2">Shop Now</a>
+    .bb-page {
+        background: var(--bb-cream);
+        color: var(--bb-plum);
+        font-family: 'Nunito', sans-serif;
+    }
 
-                <div class="trust-strip">
-                    <span class="trust-item">🚚 Free delivery over ₹999</span>
-                    <span class="trust-item">↩️ 7-day easy returns</span>
-                    <span class="trust-item">📍 Hyderabad store</span>
-                    <span class="trust-item">💳 Cash on delivery</span>
+    .bb-page h1,
+    .bb-page h2,
+    .bb-page h5 {
+        font-family: 'Fraunces', serif;
+        color: var(--bb-plum);
+    }
+
+    /* ---------- Hero ---------- */
+    .bb-hero {
+        position: relative;
+        padding: 3.5rem 0 2.5rem;
+        overflow: hidden;
+    }
+
+    .bb-hero-eyebrow {
+        display: inline-block;
+        font-family: 'DM Mono', monospace;
+        font-size: 0.78rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--bb-sage-dark);
+        background: rgba(124, 148, 115, 0.12);
+        padding: 0.35rem 0.9rem;
+        border-radius: 999px;
+        margin-bottom: 1rem;
+    }
+
+    .bb-hero h1 {
+        font-size: clamp(2.1rem, 4vw, 3.1rem);
+        font-weight: 600;
+        line-height: 1.12;
+        margin-bottom: 1rem;
+    }
+
+    .bb-hero .lead {
+        font-family: 'Nunito', sans-serif;
+        font-size: 1.1rem;
+        color: var(--bb-plum-soft);
+        max-width: 30rem;
+    }
+
+    .bb-btn-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: var(--bb-coral);
+        color: var(--bb-white);
+        border: none;
+        padding: 0.85rem 1.9rem;
+        border-radius: 999px;
+        font-family: 'Nunito', sans-serif;
+        font-weight: 800;
+        font-size: 1.02rem;
+        text-decoration: none;
+        box-shadow: 0 8px 20px -8px rgba(226, 127, 104, 0.55);
+        transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    }
+
+    .bb-btn-primary:hover,
+    .bb-btn-primary:focus-visible {
+        background: var(--bb-coral-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 12px 24px -8px rgba(226, 127, 104, 0.6);
+        color: var(--bb-white);
+    }
+
+    .bb-trust-strip {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6rem;
+        margin-top: 1.75rem;
+    }
+
+    .bb-trust-item {
+        font-family: 'DM Mono', monospace;
+        font-size: 0.8rem;
+        background: var(--bb-white);
+        border: 1px solid rgba(58, 48, 66, 0.08);
+        padding: 0.45rem 0.85rem;
+        border-radius: 999px;
+        color: var(--bb-plum-soft);
+    }
+
+    /* ---------- Signature: hanging nursery mobile ---------- */
+    .bb-mobile-wrap {
+        position: relative;
+        height: 340px;
+        display: flex;
+        justify-content: center;
+    }
+
+    .bb-mobile-rod {
+        position: absolute;
+        top: 30px;
+        width: 78%;
+        height: 6px;
+        background: var(--bb-sage);
+        border-radius: 999px;
+    }
+
+    .bb-mobile-rod::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: -46px;
+        width: 3px;
+        height: 46px;
+        background: var(--bb-sage);
+        transform: translateX(-50%);
+    }
+
+    .bb-mobile-strings {
+        position: absolute;
+        top: 36px;
+        width: 78%;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .bb-string {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transform-origin: top center;
+        animation: bb-swing 4.5s ease-in-out infinite;
+    }
+
+    .bb-string.moon {
+        animation-duration: 5.2s;
+    }
+
+    .bb-string.star {
+        animation-duration: 4.4s;
+        animation-delay: -1.2s;
+    }
+
+    .bb-string.cloud {
+        animation-duration: 4.9s;
+        animation-delay: -2.4s;
+    }
+
+    @keyframes bb-swing {
+
+        0%,
+        100% {
+            transform: rotate(-6deg);
+        }
+
+        50% {
+            transform: rotate(6deg);
+        }
+    }
+
+    .bb-thread {
+        width: 2px;
+        background: rgba(58, 48, 66, 0.25);
+    }
+
+    .bb-string.moon .bb-thread {
+        height: 70px;
+    }
+
+    .bb-string.star .bb-thread {
+        height: 130px;
+    }
+
+    .bb-string.cloud .bb-thread {
+        height: 95px;
+    }
+
+    .bb-shape-moon {
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        background: var(--bb-sky);
+        box-shadow: 14px -6px 0 2px var(--bb-cream);
+    }
+
+    .bb-shape-star {
+        width: 48px;
+        height: 48px;
+        background: var(--bb-sun);
+        clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%,
+                50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+    }
+
+    .bb-shape-cloud {
+        position: relative;
+        width: 58px;
+        height: 26px;
+        background: var(--bb-white);
+        border: 2px solid var(--bb-sage);
+        border-radius: 999px;
+    }
+
+    .bb-shape-cloud::before,
+    .bb-shape-cloud::after {
+        content: '';
+        position: absolute;
+        background: var(--bb-white);
+        border: 2px solid var(--bb-sage);
+        border-radius: 50%;
+    }
+
+    .bb-shape-cloud::before {
+        width: 24px;
+        height: 24px;
+        top: -13px;
+        left: 6px;
+    }
+
+    .bb-shape-cloud::after {
+        width: 20px;
+        height: 20px;
+        top: -10px;
+        right: 6px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .bb-string {
+            animation: none;
+        }
+    }
+
+    /* ---------- Section divider (scalloped, cloud-trim) ---------- */
+    .bb-divider {
+        height: 22px;
+        margin-top: 3rem;
+        background-image: radial-gradient(circle at 12px 0, transparent 12px, var(--bb-cream-deep) 12.5px);
+        background-size: 24px 22px;
+        background-repeat: repeat-x;
+    }
+
+    /* ---------- Featured section ---------- */
+    .bb-featured {
+        background: var(--bb-cream-deep);
+        padding: 3rem 0 4rem;
+    }
+
+    .bb-section-heading {
+        text-align: center;
+        margin-bottom: 2.25rem;
+    }
+
+    .bb-eyebrow {
+        display: block;
+        font-family: 'DM Mono', monospace;
+        font-size: 0.78rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--bb-sage-dark);
+        margin-bottom: 0.35rem;
+    }
+
+    .bb-section-heading h2 {
+        font-size: 1.9rem;
+        font-weight: 600;
+    }
+
+    .bb-product-card {
+        background: var(--bb-white);
+        border: none;
+        border-radius: 22px;
+        overflow: hidden;
+        transition: transform 0.18s ease, box-shadow 0.18s ease;
+        box-shadow: 0 2px 10px -4px rgba(58, 48, 66, 0.1);
+    }
+
+    .bb-product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 16px 30px -12px rgba(58, 48, 66, 0.22);
+    }
+
+    .bb-product-media {
+        position: relative;
+        aspect-ratio: 4 / 3;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.4rem;
+        background: var(--bb-sky);
+    }
+
+    .bb-product-media img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .col-lg-3:nth-of-type(4n+2) .bb-product-media {
+        background: var(--bb-coral);
+    }
+
+    .col-lg-3:nth-of-type(4n+3) .bb-product-media {
+        background: var(--bb-sun);
+    }
+
+    .col-lg-3:nth-of-type(4n+4) .bb-product-media {
+        background: var(--bb-sage);
+    }
+
+    .bb-badge-category {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: rgba(255, 254, 251, 0.92);
+        color: var(--bb-plum);
+        font-family: 'DM Mono', monospace;
+        font-size: 0.7rem;
+        padding: 0.3rem 0.65rem;
+        border-radius: 999px;
+    }
+
+    .bb-product-card .card-body {
+        padding: 1.15rem 1.25rem 1.35rem;
+    }
+
+    .bb-product-card h5 {
+        font-size: 1.08rem;
+        font-weight: 600;
+        margin-bottom: 0.35rem;
+    }
+
+    .bb-product-card .text-muted {
+        font-size: 0.88rem;
+        color: var(--bb-plum-soft) !important;
+    }
+
+    .bb-price {
+        font-family: 'DM Mono', monospace;
+        font-weight: 500;
+        font-size: 1.05rem;
+        color: var(--bb-plum);
+        margin: 0.4rem 0 0.9rem;
+    }
+
+    .bb-btn-outline {
+        flex: 1;
+        border: 1.5px solid var(--bb-sage);
+        color: var(--bb-sage-dark);
+        background: transparent;
+        border-radius: 999px;
+        padding: 0.55rem 0.5rem;
+        font-weight: 700;
+        font-size: 0.9rem;
+        text-align: center;
+        text-decoration: none;
+        transition: background 0.15s ease, color 0.15s ease;
+    }
+
+    .bb-btn-outline:hover,
+    .bb-btn-outline:focus-visible {
+        background: var(--bb-sage);
+        color: var(--bb-white);
+    }
+
+    .bb-btn-add {
+        flex: 1;
+        border: none;
+        background: var(--bb-plum);
+        color: var(--bb-white);
+        border-radius: 999px;
+        padding: 0.55rem 0.5rem;
+        font-weight: 700;
+        font-size: 0.9rem;
+        transition: background 0.15s ease, transform 0.15s ease;
+    }
+
+    .bb-btn-add:hover,
+    .bb-btn-add:focus-visible {
+        background: var(--bb-coral-dark);
+        transform: translateY(-1px);
+    }
+
+    .bb-page a:focus-visible,
+    .bb-page button:focus-visible {
+        outline: 2px solid var(--bb-sage-dark);
+        outline-offset: 2px;
+    }
+
+    #cartToast.text-bg-success {
+        background-color: var(--bb-sage) !important;
+    }
+
+    #cartToast.text-bg-danger {
+        background-color: var(--bb-coral-dark) !important;
+    }
+
+    @media (max-width: 991px) {
+        .bb-mobile-wrap {
+            height: 220px;
+            margin-top: 2rem;
+        }
+    }
+</style>
+
+<div class="bb-page">
+    <div class="container mt-4">
+
+        <!-- Hero Section -->
+        <div class="bb-hero">
+            <div class="row align-items-center g-4">
+
+                <div class="col-lg-7">
+                    <span class="bb-hero-eyebrow">Hyderabad's Baby Store</span>
+                    <h1>Everything Your Little One Needs</h1>
+                    <p class="lead">
+                        Strollers, carry cots, swings, walkers and more — chosen for
+                        comfort, safety and a whole lot of giggles.
+                    </p>
+                    <a href="#featured" class="bb-btn-primary">Shop Now →</a>
+
+                    <div class="bb-trust-strip">
+                        <span class="bb-trust-item">🚚 Free delivery over ₹999</span>
+                        <span class="bb-trust-item">↩️ 7-day easy returns</span>
+                        <span class="bb-trust-item">📍 Hyderabad store</span>
+                        <span class="bb-trust-item">💳 Cash on delivery</span>
+                    </div>
                 </div>
-            </div>
 
-            <div class="col-lg-5">
-                <div class="hero-mobile" aria-hidden="true">
-                    <div class="mobile-rod"></div>
-                    <div class="mobile-strings">
-                        <div class="mobile-string moon">
-                            <div class="thread"></div>
-                            <div class="mobile-item">
-                                <div class="shape-moon"></div>
+                <div class="col-lg-5">
+                    <div class="bb-mobile-wrap" aria-hidden="true">
+                        <div class="bb-mobile-rod"></div>
+                        <div class="bb-mobile-strings">
+                            <div class="bb-string moon">
+                                <div class="bb-thread"></div>
+                                <div class="bb-shape-moon"></div>
                             </div>
-                        </div>
-                        <div class="mobile-string star">
-                            <div class="thread"></div>
-                            <div class="mobile-item">
-                                <div class="shape-star"></div>
+                            <div class="bb-string star">
+                                <div class="bb-thread"></div>
+                                <div class="bb-shape-star"></div>
                             </div>
-                        </div>
-                        <div class="mobile-string cloud">
-                            <div class="thread"></div>
-                            <div class="mobile-item">
-                                <div class="shape-cloud"></div>
+                            <div class="bb-string cloud">
+                                <div class="bb-thread"></div>
+                                <div class="bb-shape-cloud"></div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
+            </div>
         </div>
     </div>
+
+    <div class="bb-divider"></div>
 
     <!-- Featured Products -->
-    <div id="featured" class="mt-5 pt-3">
-        <div class="section-heading">
-            <span class="eyebrow">Handpicked</span>
-            <h2>Featured Baby Products</h2>
-        </div>
+    <div id="featured" class="bb-featured">
+        <div class="container">
+            <div class="bb-section-heading">
+                <span class="bb-eyebrow">Handpicked</span>
+                <h2>Featured Baby Products</h2>
+            </div>
 
-        <div class="row g-4">
-            {% for product in products %}
-            <div class="col-md-4 col-lg-3">
-                <div class="card product-card h-100">
-                    <div class="product-media">
-                        {% if product.image %}
-                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid">
-                        {% else %}
-                        <!-- fallback icon or placeholder -->
-                        <span>🪑</span>
-                        {% endif %}
-                        <span class="badge-category">{{ product.category.name }}</span>
-                    </div>
-                    <div class="card-body">
-                        <h5>{{ product.name }}</h5>
-                        <p class="text-muted">{{ product.description|truncatewords:10 }}</p>
-                        <p class="fw-bold">₹{{ product.price }}</p>
-                        <div class="d-flex gap-2">
-                            <a href="{% url 'product_detail' product.id %}"
-                                class="btn btn-outline-primary w-50">View</a>
-                            <button class="btn btn-warning w-50 add-to-cart-btn" data-product-id="{{ product.id }}">
-                                🛒 Add
-                            </button>
+            <div class="row g-4">
+                {% for product in products %}
+                <div class="col-md-4 col-lg-3">
+                    <div class="card bb-product-card h-100">
+                        <div class="bb-product-media">
+                            {% if product.image %}
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                            {% else %}
+                            <span>🪑</span>
+                            {% endif %}
+                            <span class="bb-badge-category">{{ product.category.name }}</span>
+                        </div>
+                        <div class="card-body">
+                            <h5>{{ product.name }}</h5>
+                            <p class="text-muted">{{ product.description|truncatewords:10 }}</p>
+                            <p class="bb-price">₹{{ product.price }}</p>
+                            <div class="d-flex gap-2">
+                                <a href="{% url 'product_detail' product.id %}" class="bb-btn-outline">View</a>
+                                <button class="bb-btn-add add-to-cart-btn" data-product-id="{{ product.id }}">
+                                    🛒 Add
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
+                {% empty %}
+                <div class="col-12 text-center">
+                    <p>No products available at the moment.</p>
+                </div>
+                {% endfor %}
             </div>
-            {% empty %}
-            <div class="col-12 text-center">
-                <p>No products available at the moment.</p>
-            </div>
-            {% endfor %}
         </div>
     </div>
-
 
 </div>
 

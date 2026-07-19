@@ -1,14 +1,11 @@
-<footer class="site-footer"
-    style="background: #3b3147; color: #ede8f2; margin-top: 4rem; border-top: 4px solid #ff8c7a;">
+<footer class="bb-footer">
     <div class="container py-5">
         <div class="row g-4">
 
             <!-- Company -->
             <div class="col-lg-4">
-                <h4 style="color: #fff; font-weight: 700; font-size: 1.4rem;">
-                    👶 Pushpak Baby World
-                </h4>
-                <p style="color: rgba(255,255,255,0.75); line-height: 1.7; font-size: 0.95rem;">
+                <h4 class="bb-footer-brand">👶 Mahalaxmi Baby World</h4>
+                <p class="bb-footer-desc">
                     Your trusted destination for premium baby products,
                     including strollers, carry cots, swings, walkers,
                     tricycles, feeding chairs, toys, and more.
@@ -17,33 +14,27 @@
 
             <!-- Categories (dynamic) -->
             <div class="col-lg-4">
-                <h5 style="color: #fff; font-weight: 600; margin-bottom: 1rem; letter-spacing: 0.5px;">
-                    Categories
-                </h5>
-                <div style="display: flex; flex-wrap: wrap; gap: 0.5rem 1.2rem;">
+                <h5 class="bb-footer-heading">Categories</h5>
+                <div class="bb-footer-links">
                     {% for cat in categories %}
-                    <a href="{% url 'category_products' cat.slug %}"
-                        style="color: rgba(255,255,255,0.75); text-decoration: none; font-size: 0.95rem; transition: color 0.2s, transform 0.2s; display: inline-block;"
-                        onmouseover="this.style.color='#ff8c7a'; this.style.transform='translateX(3px)';"
-                        onmouseout="this.style.color='rgba(255,255,255,0.75)'; this.style.transform='none';">
+                    <a href="{% url 'category_products' cat.slug %}" class="bb-footer-link">
                         {{ cat.name }}
                     </a>
                     {% empty %}
-                    <span style="color: rgba(255,255,255,0.5);">No categories yet.</span>
+                    <span class="bb-footer-empty">No categories yet.</span>
                     {% endfor %}
                 </div>
             </div>
 
             <!-- Contact -->
             <div class="col-lg-4">
-                <h5 style="color: #fff; font-weight: 600; margin-bottom: 1rem; letter-spacing: 0.5px;">
-                    Contact Us
-                </h5>
-                <ul style="list-style: none; padding: 0; margin: 0; color: rgba(255,255,255,0.75); line-height: 2;">
+                <h5 class="bb-footer-heading">Contact Us</h5>
+                <ul class="bb-footer-contact">
                     <li>📍 Hyderabad, Telangana</li>
                     <li>📞 +91 9876543210</li>
-                    <li>📧 support@pushpakbabyworld.com</li>
-                    <li>🕒 Mon–Sat : 10:00 AM – 8:00 PM</li>
+                    <li>📧 support@mahalaxmibabyworld.com</li>
+                    <li>🕒 Mon–Fri : 10:00 AM – 10:00 PM</li>
+                    <li>🕒 Sat–Sun : 11:00 AM – 9:00 PM</li>
                 </ul>
             </div>
 
@@ -51,8 +42,7 @@
     </div>
 
     <!-- Bottom Bar -->
-    <div
-        style="border-top: 1px solid rgba(255,255,255,0.08); padding: 1.2rem 0; text-align: center; color: rgba(255,255,255,0.5); font-size: 0.85rem;">
+    <div class="bb-footer-bottom">
         <div class="container">
             © 2026 Pushpak Baby World · All Rights Reserved.
         </div>

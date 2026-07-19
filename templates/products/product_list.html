@@ -1,31 +1,136 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}All Products{% endblock %}
 
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/products.css' %}">
+{% endblock %}
+
 {% block content %}
-<div class="container mt-4">
-    <h1>All Products</h1>
-    <div class="row g-4">
-        {% for product in products %}
-        <div class="col-md-4 col-lg-3">
-            <div class="card product-card h-100">
-                <div class="product-media">
-                    {% if product.image %}
-                    <img src="{{ product.image.url }}" class="img-fluid" alt="{{ product.name }}">
-                    {% else %}
-                    <span>🛏️</span>
-                    {% endif %}
-                </div>
-                <div class="card-body">
-                    <h5>{{ product.name }}</h5>
-                    <p class="text-muted">₹{{ product.price }}</p>
-                    <a href="{% url 'product_detail' product.id %}" class="btn btn-primary w-100">View</a>
+<div class="bb-page bb-products-page">
+    <div class="container">
+
+        <div class="bb-products-hero">
+            <span class="bb-hero-eyebrow">Shop All</span>
+            <h1>All Products</h1>
+            <p>Everything for your little one, in one place.</p>
+        </div>
+
+        <div class="row g-4">
+            {% for product in products %}
+            <div class="col-md-4 col-lg-3">
+                <div class="card bb-product-card h-100">
+                    <div class="bb-product-media">
+                        {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                        {% else %}
+                        <span>🛏️</span>
+                        {% endif %}
+                        {% if product.category %}
+                        <span class="bb-badge-category">{{ product.category.name }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="card-body">
+                        <h5>{{ product.name }}</h5>
+                        <p class="bb-price">₹{{ product.price }}</p>
+                        <div class="d-flex gap-2">
+                            <a href="{% url 'product_detail' product.id %}" class="bb-btn-outline">View</a>
+                            <button class="bb-btn-add add-to-cart-btn" data-product-id="{{ product.id }}">
+                                🛒 Add
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
+            {% empty %}
+            <div class="col-12">
+                <p class="bb-products-empty">No products available.</p>
+            </div>
+            {% endfor %}
         </div>
-        {% empty %}
-        <p>No products available.</p>
-        {% endfor %}
+
     </div>
 </div>
+
+<!-- Add to Cart Toast -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1080;">
+    <div id="cartToast" class="toast align-items-center border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body" id="cartToastBody">
+                Added to cart!
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function showCartToast(message, isError = false) {
+        const toastEl = document.getElementById('cartToast');
+        const toastBody = document.getElementById('cartToastBody');
+
+        toastBody.textContent = message;
+        toastEl.classList.remove('text-bg-success', 'text-bg-danger');
+        toastEl.classList.add(isError ? 'text-bg-danger' : 'text-bg-success');
+
+        const toast = new bootstrap.Toast(toastEl, { delay: 2500 });
+        toast.show();
+    }
+
+    document.querySelectorAll('.add-to-cart-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const productId = this.dataset.productId;
+            const csrftoken = getCookie('csrftoken');
+
+            fetch("{% url 'add_to_cart' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': csrftoken,
+                },
+                body: new URLSearchParams({
+                    'product_id': productId,
+                    'quantity': 1
+                })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        const cartBadge = document.getElementById('cart-badge');
+                        if (cartBadge) {
+                            cartBadge.textContent = data.cart_count;
+                        }
+                        showCartToast(data.message || 'Added to cart!');
+                    } else {
+                        showCartToast('Error: ' + data.message, true);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showCartToast('Something went wrong. Please try again.', true);
+                });
+        });
+    });
+</script>
 {% endblock %}

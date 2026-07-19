@@ -3,149 +3,164 @@
 
 {% block title %}{{ product.name }} - BabyShop{% endblock %}
 
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/product_details.css' %}">
+{% endblock %}
+
 {% block content %}
-<div class="container mt-4">
+<div class="bb-page bb-detail-page">
+    <div class="container">
 
-    <!-- Breadcrumb -->
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
-            <li class="breadcrumb-item">
-                <a href="{% url 'category_products' product.category.slug %}">
-                    {{ product.category.name }}
-                </a>
-            </li>
-            <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
-        </ol>
-    </nav>
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb bb-breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'category_products' product.category.slug %}">
+                        {{ product.category.name }}
+                    </a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+            </ol>
+        </nav>
 
-    <div class="row g-4">
+        <div class="row g-4">
 
-        <!-- Product Image -->
-        <div class="col-md-6">
-            <div class="card p-3">
-                {% if product.image %}
-                <img src="{{ product.image.url }}" class="img-fluid rounded" alt="{{ product.name }}">
-                {% else %}
-                <img src="{% static 'images/placeholder.png' %}" class="img-fluid rounded" alt="No image">
-                {% endif %}
-            </div>
-        </div>
-
-        <!-- Product Info -->
-        <div class="col-md-6">
-            <h1 class="mb-2">{{ product.name }}</h1>
-
-            <!-- Brand & Category -->
-            <p class="text-muted">
-                {% if product.brand %}<strong>Brand:</strong> {{ product.brand }}<br>{% endif %}
-                <strong>Category:</strong> {{ product.category.name }}
-            </p>
-
-            <!-- Price -->
-            <h3 class="text-primary mb-3">₹{{ product.price }}</h3>
-
-            <!-- Stock Status -->
-            <p>
-                {% if product.stock > 0 %}
-                <span class="badge bg-success">In Stock ({{ product.stock }} available)</span>
-                {% else %}
-                <span class="badge bg-danger">Out of Stock</span>
-                {% endif %}
-            </p>
-
-            <!-- Description -->
-            <p class="lead">{{ product.description|linebreaks }}</p>
-
-            <!-- Specifications (new fields) -->
-            <hr>
-            <div class="row spec-row">
-                <div class="col-sm-4"><strong>Product Type</strong></div>
-                <div class="col-sm-8">{{ product.product_type }}</div>
-
-                {% if product.theme %}
-                <div class="col-sm-4"><strong>Theme</strong></div>
-                <div class="col-sm-8">{{ product.theme }}</div>
-                {% endif %}
-
-                <div class="col-sm-4"><strong>Material</strong></div>
-                <div class="col-sm-8">{{ product.material }}</div>
-
-                <div class="col-sm-4"><strong>Recommended Age</strong></div>
-                <div class="col-sm-8">{{ product.recommended_age }}</div>
-
-                <div class="col-sm-4"><strong>Color</strong></div>
-                <div class="col-sm-8">{{ product.color }}</div>
-
-                <div class="col-sm-4"><strong>Care Instructions</strong></div>
-                <div class="col-sm-8">{{ product.care_instructions|linebreaks }}</div>
-            </div>
-            <hr>
-
-            {% if package_list %}
-            <div class="col-sm-4"><strong>Package Includes</strong></div>
-            <div class="col-sm-8">
-                <ul class="list-unstyled mb-0">
-                    {% for item in package_list %}
-                    <li>• {{ item }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-            {% endif %}
-
-            <!-- Add to Cart -->
-            {% if product.stock > 0 %}
-            <div class="row g-2 align-items-center mt-3">
-                <div class="col-auto">
-                    <label for="qty" class="col-form-label">Qty</label>
-                </div>
-                <div class="col-auto">
-                    <input type="number" id="qty" class="form-control" value="1" min="1" max="{{ product.stock }}"
-                        style="width: 80px;">
-                </div>
-                <div class="col-auto">
-                    <button class="btn btn-warning btn-lg" id="add-to-cart-btn" data-product-id="{{ product.id }}">
-                        🛒 Add to Cart
-                    </button>
-                </div>
-            </div>
-            {% else %}
-            <button class="btn btn-secondary btn-lg mt-3" disabled>Out of Stock</button>
-            {% endif %}
-
-            <!-- Back link -->
-            <div class="mt-4">
-                <a href="{% url 'home' %}" class="btn btn-outline-secondary">← Continue Shopping</a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Related Products -->
-    {% if related_products %}
-    <hr class="my-5">
-    <h3 class="mb-4">You might also like</h3>
-    <div class="row g-4">
-        {% for item in related_products %}
-        <div class="col-md-3">
-            <div class="card product-card h-100">
-                <div class="product-media">
-                    {% if item.image %}
-                    <img src="{{ item.image.url }}" class="img-fluid" alt="{{ item.name }}">
+            <!-- Product Image -->
+            <div class="col-md-6">
+                <div class="bb-detail-image">
+                    {% if product.image %}
+                    <img src="{{ product.image.url }}" class="img-fluid rounded" alt="{{ product.name }}">
                     {% else %}
-                    <span>🛏️</span>
+                    <img src="{% static 'images/placeholder.png' %}" class="img-fluid rounded" alt="No image">
                     {% endif %}
                 </div>
-                <div class="card-body">
-                    <h6>{{ item.name }}</h6>
-                    <p class="text-muted small">₹{{ item.price }}</p>
-                    <a href="{% url 'product_detail' item.id %}" class="btn btn-sm btn-outline-primary w-100">View</a>
+            </div>
+
+            <!-- Product Info -->
+            <div class="col-md-6 bb-detail-info">
+                <h1>{{ product.name }}</h1>
+
+                <!-- Brand & Category -->
+                <p class="bb-detail-meta">
+                    {% if product.brand %}<strong>Brand:</strong> {{ product.brand }}<br>{% endif %}
+                    <strong>Category:</strong> {{ product.category.name }}
+                </p>
+
+                <!-- Price -->
+                <h3 class="bb-detail-price">₹{{ product.price }}</h3>
+
+                <!-- Stock Status -->
+                <p>
+                    {% if product.stock > 0 %}
+                    <span class="bb-stock-badge bb-stock-in">In Stock ({{ product.stock }} available)</span>
+                    {% else %}
+                    <span class="bb-stock-badge bb-stock-out">Out of Stock</span>
+                    {% endif %}
+                </p>
+
+                <!-- Description -->
+                <div class="bb-detail-description">{{ product.description|linebreaks }}</div>
+
+                <!-- Specifications -->
+                <div class="bb-spec-card">
+                    <div class="row bb-spec-row">
+                        <div class="col-sm-4 bb-spec-label">Product Type</div>
+                        <div class="col-sm-8 bb-spec-value">{{ product.product_type }}</div>
+                    </div>
+
+                    {% if product.theme %}
+                    <div class="row bb-spec-row">
+                        <div class="col-sm-4 bb-spec-label">Theme</div>
+                        <div class="col-sm-8 bb-spec-value">{{ product.theme }}</div>
+                    </div>
+                    {% endif %}
+
+                    <div class="row bb-spec-row">
+                        <div class="col-sm-4 bb-spec-label">Material</div>
+                        <div class="col-sm-8 bb-spec-value">{{ product.material }}</div>
+                    </div>
+
+                    <div class="row bb-spec-row">
+                        <div class="col-sm-4 bb-spec-label">Recommended Age</div>
+                        <div class="col-sm-8 bb-spec-value">{{ product.recommended_age }}</div>
+                    </div>
+
+                    <div class="row bb-spec-row">
+                        <div class="col-sm-4 bb-spec-label">Color</div>
+                        <div class="col-sm-8 bb-spec-value">{{ product.color }}</div>
+                    </div>
+
+                    <div class="row bb-spec-row">
+                        <div class="col-sm-4 bb-spec-label">Care Instructions</div>
+                        <div class="col-sm-8 bb-spec-value">{{ product.care_instructions|linebreaks }}</div>
+                    </div>
+                </div>
+
+                {% if package_list %}
+                <div class="mb-3">
+                    <div class="bb-spec-label mb-1">Package Includes</div>
+                    <ul class="bb-package-list">
+                        {% for item in package_list %}
+                        <li>• {{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                <!-- Add to Cart -->
+                {% if product.stock > 0 %}
+                <div class="row g-2 align-items-center mt-3">
+                    <div class="col-auto">
+                        <label for="qty" class="col-form-label bb-spec-label">Qty</label>
+                    </div>
+                    <div class="col-auto">
+                        <input type="number" id="qty" class="bb-qty-input" value="1" min="1" max="{{ product.stock }}">
+                    </div>
+                    <div class="col-auto">
+                        <button class="bb-btn-add-lg" id="add-to-cart-btn" data-product-id="{{ product.id }}">
+                            🛒 Add to Cart
+                        </button>
+                    </div>
+                </div>
+                {% else %}
+                <button class="bb-btn-disabled mt-3" disabled>Out of Stock</button>
+                {% endif %}
+
+                <!-- Back link -->
+                <div class="mt-4">
+                    <a href="{% url 'home' %}" class="bb-btn-continue">← Continue Shopping</a>
                 </div>
             </div>
         </div>
-        {% endfor %}
-    </div>
-    {% endif %}
 
+        <!-- Related Products -->
+        {% if related_products %}
+        <hr class="bb-related-divider">
+        <h3 class="bb-related-heading">You might also like</h3>
+        <div class="row g-4">
+            {% for item in related_products %}
+            <div class="col-md-3">
+                <div class="card bb-product-card h-100">
+                    <div class="bb-product-media">
+                        {% if item.image %}
+                        <img src="{{ item.image.url }}" alt="{{ item.name }}">
+                        {% else %}
+                        <span>🛏️</span>
+                        {% endif %}
+                    </div>
+                    <div class="card-body">
+                        <h5>{{ item.name }}</h5>
+                        <p class="bb-price">₹{{ item.price }}</p>
+                        <a href="{% url 'product_detail' item.id %}" class="bb-btn-outline w-100">View</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+    </div>
 </div>
 
 <!-- Add to Cart Toast -->

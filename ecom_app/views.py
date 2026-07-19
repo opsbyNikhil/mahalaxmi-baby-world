@@ -153,6 +153,30 @@ def products(request):
 def cart(request):
     return render(request, "cart/cart.html")
 
+# Add these to your existing views.py
+# (adjust the import path for `messages` / `render` if you already import them elsewhere)
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+
+
+def about(request):
+    return render(request, 'about.html')
+
+
+def contact(request):
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        email = request.POST.get('email', '').strip()
+        phone = request.POST.get('phone', '').strip()
+        message_text = request.POST.get('message', '').strip()
+        if not name or not email or not message_text:
+            messages.error(request, "Please fill in your name, email, and message.")
+            return redirect('contact')
+        messages.success(request, "Thanks! We've received your message and will get back to you soon.")
+        return redirect('contact')
+
+    return render(request, 'contact.html')
 
 
 @staff_member_required
@@ -213,8 +237,6 @@ def dashboard_product_delete(request, pk):
         messages.success(request, 'Product deleted.')
         return redirect('dashboard_home')
     return render(request, 'dashboard/dashboard_product_confirm_delete.html', {'product': product})
-
-
 
 def dashboard_login(request):
     if request.user.is_authenticated and request.user.is_staff:

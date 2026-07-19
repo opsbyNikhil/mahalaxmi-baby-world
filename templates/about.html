@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}About Us{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/about.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="bb-page">
+    <div class="container">
+
+        <!-- Intro -->
+        <div class="bb-about-hero">
+            <span class="bb-hero-eyebrow">Our Story</span>
+            <h1>Little Products, Big Care</h1>
+            <p>
+                Mahalaxmi Baby World has been helping Hyderabad families find
+                strollers, cots, swings and everyday essentials that are safe,
+                comfortable and built to last through every stage of your
+                little one's growth.
+            </p>
+        </div>
+
+        <!-- Story -->
+        <div class="bb-story">
+            <p>
+                We started as a small neighbourhood shop with one simple idea:
+                every parent deserves honest advice and products they can
+                trust, without the guesswork of shopping online for something
+                as important as baby gear.
+            </p>
+            <p>
+                Today we handpick every stroller, walker and nursery item on
+                our shelves, testing for safety and comfort before it ever
+                reaches your home. Our team is made up of parents too, so we
+                know exactly what questions matter most when you're choosing
+                for your child.
+            </p>
+        </div>
+
+        <!-- Values -->
+        <div class="bb-values">
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-3 bb-value-card">
+                    <div class="bb-value-icon">🛡️</div>
+                    <h5>Safety First</h5>
+                    <p>Every product is checked for build quality and safety standards before it's listed.</p>
+                </div>
+                <div class="col-md-6 col-lg-3 bb-value-card">
+                    <div class="bb-value-icon">🧸</div>
+                    <h5>Handpicked Quality</h5>
+                    <p>We personally select each item — no random drop-shipped stock.</p>
+                </div>
+                <div class="col-md-6 col-lg-3 bb-value-card">
+                    <div class="bb-value-icon">📍</div>
+                    <h5>Local & Trusted</h5>
+                    <p>A real Hyderabad store you can visit, call, or drop into anytime.</p>
+                </div>
+                <div class="col-md-6 col-lg-3 bb-value-card">
+                    <div class="bb-value-icon">💬</div>
+                    <h5>After-Sale Support</h5>
+                    <p>Questions after you buy? We're just a call away, always.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="bb-stats-strip">
+            <div class="row g-4">
+                <div class="col-6 col-md-3 bb-stat">
+                    <span class="bb-stat-number">10+</span>
+                    <span class="bb-stat-label">Years Serving Families</span>
+                </div>
+                <div class="col-6 col-md-3 bb-stat">
+                    <span class="bb-stat-number">5,000+</span>
+                    <span class="bb-stat-label">Happy Parents</span>
+                </div>
+                <div class="col-6 col-md-3 bb-stat">
+                    <span class="bb-stat-number">200+</span>
+                    <span class="bb-stat-label">Products Curated</span>
+                </div>
+                <div class="col-6 col-md-3 bb-stat">
+                    <span class="bb-stat-number">4.8★</span>
+                    <span class="bb-stat-label">Average Rating</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="bb-about-cta">
+            <a href="{% url 'home' %}" class="bb-btn-primary">Explore Our Products →</a>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

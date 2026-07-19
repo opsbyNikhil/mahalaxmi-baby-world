@@ -1,61 +1,85 @@
-<nav class="navbar navbar-expand-lg sticky-top">
-    <div class="container">
+<nav class="navbar navbar-expand-lg sticky-top bb-navbar">
+    <div class="container bb-navbar-container">
 
-        <a class="navbar-brand fw-bold fs-3" href="{% url 'home' %}">
+        <a class="navbar-brand bb-navbar-brand" href="{% url 'home' %}">
             👶 Mahalaxmi Baby World
         </a>
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-label="Open menu">
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav mx-auto">
+        <!-- Nav links: normal row on desktop, slide-in drawer on mobile -->
+        <div class="offcanvas offcanvas-start offcanvas-lg bb-offcanvas" tabindex="-1" id="navbarNav"
+            aria-labelledby="navbarNavLabel">
 
-                <li class="nav-item">
-                    <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="{% url 'home' %}">Home</a>
-                </li>
+            <div class="offcanvas-header d-lg-none">
+                <h5 class="offcanvas-title bb-navbar-brand" id="navbarNavLabel">Menu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
 
-                <li class="nav-item">
-                    <a class="nav-link {% if '/products/' in request.path %}active{% endif %}"
-                        href="{% url 'product_list' %}">All Products</a>
-                </li>
+            <div class="offcanvas-body">
+                <ul class="navbar-nav mx-lg-auto">
 
-                <!-- Categories Dropdown -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                        aria-expanded="false">
-                        Categories
-                    </a>
-                    <ul class="dropdown-menu">
-                        {% for cat in categories %}
-                        <li>
-                            <a class="dropdown-item" href="{% url 'category_products' cat.slug %}">
-                                {{ cat.name }}
-                            </a>
-                        </li>
-                        {% empty %}
-                        <li><span class="dropdown-item disabled">No categories</span></li>
-                        {% endfor %}
-                    </ul>
-                </li>
+                    <li class="nav-item">
+                        <a class="nav-link bb-nav-link {% if request.path == '/' %}active{% endif %}"
+                            href="{% url 'home' %}">Home</a>
+                    </li>
 
-            </ul>
+                    <li class="nav-item">
+                        <a class="nav-link bb-nav-link {% if '/products/' in request.path %}active{% endif %}"
+                            href="{% url 'product_list' %}">All Products</a>
+                    </li>
 
-            <!-- Search Form -->
-            <form class="d-flex me-3" action="{% url 'search' %}" method="get">
-                <input class="form-control me-0" type="search" name="q" placeholder="Search Products">
-                <button class="btn btn-outline-primary" type="submit">Search</button>
-            </form>
+                    <!-- Categories Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link bb-nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Categories
+                        </a>
+                        <ul class="dropdown-menu bb-dropdown-menu">
+                            {% for cat in categories %}
+                            <li>
+                                <a class="dropdown-item" href="{% url 'category_products' cat.slug %}">
+                                    {{ cat.name }}
+                                </a>
+                            </li>
+                            {% empty %}
+                            <li><span class="dropdown-item disabled">No categories</span></li>
+                            {% endfor %}
+                        </ul>
+                    </li>
 
-            <!-- Cart Button -->
-            <a href="{% url 'cart' %}" class="btn btn-warning position-relative">
-                🛒 Cart
-                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark" id="cart-badge">
-                    {{ cart_count|default:0 }}
-                </span>
-            </a>
+                    <li class="nav-item">
+                        <a class="nav-link bb-nav-link {% if request.path == '/about/' %}active{% endif %}"
+                            href="{% url 'about' %}">About</a>
+                    </li>
 
+                    <li class="nav-item">
+                        <a class="nav-link bb-nav-link {% if request.path == '/contact/' %}active{% endif %}"
+                            href="{% url 'contact' %}">Contact</a>
+                    </li>
+
+                </ul>
+            </div>
         </div>
+
+        <!-- Search: always visible -->
+        <form class="bb-search-form bb-search-form-top me-3" action="{% url 'search' %}" method="get">
+            <input class="form-control bb-search-input" type="search" name="q" placeholder="Search Products">
+            <button class="btn bb-search-btn" type="submit">Search</button>
+        </form>
+        
+
+        <!-- Cart: after search, pinned top-right on desktop -->
+        <a href="{% url 'cart' %}" class="bb-cart-btn position-relative">
+            🛒 <span class="bb-cart-label">Cart</span>
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bb-cart-badge"
+                id="cart-badge">
+                {{ cart_count|default:0 }}
+            </span>
+        </a>
+
     </div>
 </nav>
