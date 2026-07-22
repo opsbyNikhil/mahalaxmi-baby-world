@@ -7,53 +7,109 @@
 
 {% block extra_head %}
 <style>
-    /* ----- Light theme overrides for product form ----- */
+    /* ─── Product Form Animations & Professional Styling ─── */
     .product-form-wrapper .card {
         background: #ffffff;
-        border: 1px solid #e9edf2;
-        border-radius: 16px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        border: 1px solid var(--border-default, #e2e8f0);
+        border-radius: var(--radius-xl, 20px);
+        box-shadow: var(--shadow-sm, 0 1px 3px rgba(15, 23, 42, 0.06));
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        animation: formCardIn 0.5s ease both;
+    }
+
+    .product-form-wrapper .card:nth-child(1) {
+        animation-delay: 0.1s;
+    }
+
+    .product-form-wrapper .card:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+
+    .product-form-wrapper .card:nth-child(3) {
+        animation-delay: 0.25s;
+    }
+
+    @keyframes formCardIn {
+        from {
+            opacity: 0;
+            transform: translateY(18px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .product-form-wrapper .card:hover {
+        box-shadow: var(--shadow-md, 0 4px 6px rgba(15, 23, 42, 0.07));
     }
 
     .product-form-wrapper .card-body {
         background: #ffffff;
+        border-radius: inherit;
     }
 
     .product-form-wrapper .card-title {
-        color: #1e293b;
-        font-weight: 600;
+        color: var(--text-primary, #0f172a);
+        font-weight: 700;
+        letter-spacing: -0.01em;
+        display: flex;
+        align-items: center;
+    }
+
+    .product-form-wrapper .card-title i {
+        font-size: 1.1rem;
+        color: var(--accent, #f97316);
+        transition: transform 0.3s ease;
+    }
+
+    .product-form-wrapper .card:hover .card-title i {
+        transform: rotate(-3deg) scale(1.1);
     }
 
     .product-form-wrapper .form-label {
-        color: #1e293b;
+        color: var(--text-primary, #0f172a);
         font-weight: 600;
-        font-size: 0.85rem;
-        margin-bottom: 0.3rem;
+        font-size: 0.82rem;
+        margin-bottom: 0.25rem;
+        letter-spacing: -0.01em;
+        transition: color 0.2s;
     }
 
     .product-form-wrapper .form-control,
     .product-form-wrapper .form-select {
         background: #ffffff;
         border: 1.5px solid #e2e8f0;
-        border-radius: 10px;
+        border-radius: 12px;
         padding: 10px 14px;
         font-size: 0.9rem;
-        color: #1e293b;
-        transition: border-color 0.2s, box-shadow 0.2s;
+        color: #0f172a;
+        transition: all 0.25s ease;
+        font-weight: 500;
+    }
+
+    .product-form-wrapper .form-control:hover,
+    .product-form-wrapper .form-select:hover {
+        border-color: #cbd5e1;
+        background: #fafbfc;
     }
 
     .product-form-wrapper .form-control:focus,
     .product-form-wrapper .form-select:focus {
-        border-color: #fb8500;
-        box-shadow: 0 0 0 3px rgba(251, 133, 0, 0.12);
+        border-color: var(--accent, #f97316);
+        box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.12);
         background: #ffffff;
-        color: #1e293b;
+        color: #0f172a;
+        transform: translateY(-1px);
     }
 
     .product-form-wrapper .form-control::placeholder {
         color: #94a3b8;
+        font-weight: 400;
     }
 
+    /* Switch Toggle Animation */
     .product-form-wrapper .form-switch .form-check-input {
         width: 3rem;
         height: 1.5rem;
@@ -61,118 +117,210 @@
         border: 2px solid #d1d9e6;
         background-color: #f1f4f9;
         cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: none;
     }
 
     .product-form-wrapper .form-switch .form-check-input:checked {
-        background-color: #fb8500;
-        border-color: #fb8500;
+        background-color: var(--accent, #f97316);
+        border-color: var(--accent, #f97316);
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23ffffff'/%3e%3c/svg%3e");
+        animation: toggleBounce 0.4s ease;
+    }
+
+    @keyframes toggleBounce {
+        0% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.08);
+        }
+
+        100% {
+            transform: scale(1);
+        }
+    }
+
+    .product-form-wrapper .form-switch .form-check-input:focus {
+        box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.15);
+        border-color: var(--accent, #f97316);
     }
 
     .product-form-wrapper .form-switch .form-check-label {
         margin-left: 8px;
         font-weight: 500;
-        color: #1e293b;
+        color: #0f172a;
     }
 
-    /* Image preview area */
+    /* Image Upload Area */
     .image-preview-wrapper {
-        min-height: 140px;
+        min-height: 150px;
         display: flex;
         align-items: center;
         justify-content: center;
         background: #fafbfc;
-        border-radius: 12px;
+        border-radius: 16px;
         overflow: hidden;
         border: 1px solid #e9edf2;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .image-preview-wrapper:hover {
+        border-color: #cbd5e1;
+        background: #f8fafc;
     }
 
     .image-preview-wrapper img {
         max-height: 200px;
         width: auto;
-        border-radius: 8px;
+        border-radius: 12px;
         border: 1px solid #e9edf2;
+        transition: transform 0.3s ease, opacity 0.4s ease;
+    }
+
+    .image-preview-wrapper img:hover {
+        transform: scale(1.02);
     }
 
     .placeholder-image {
         width: 100%;
-        height: 160px;
+        height: 150px;
         background: #f8fafc;
         border: 2px dashed #d1d9e6;
-        border-radius: 12px;
+        border-radius: 16px;
         display: flex;
         align-items: center;
         justify-content: center;
         color: #94a3b8;
+        transition: all 0.3s ease;
     }
 
     .placeholder-image i {
         font-size: 2.5rem;
+        transition: transform 0.3s ease;
     }
 
-    /* File input hidden */
-    #id_image {
-        display: none;
+    .image-preview-wrapper:hover .placeholder-image i {
+        transform: translateY(-3px);
     }
 
+    .placeholder-image.hidden {
+        opacity: 0;
+        pointer-events: none;
+        position: absolute;
+        inset: 0;
+    }
+
+    /* Upload Button */
     .btn-outline-primary {
         color: #475569;
         border-color: #d1d9e6;
         background: #ffffff;
-        transition: all 0.2s;
+        transition: all 0.25s ease;
+        font-weight: 500;
+        border-radius: 12px;
     }
 
     .btn-outline-primary:hover {
         background: #f1f4f9;
         border-color: #b0c0d0;
-        color: #1e293b;
+        color: #0f172a;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
     }
 
-    /* Action buttons */
+    .btn-outline-primary:active {
+        transform: scale(0.97);
+    }
+
+    /* Primary Action Buttons */
     .btn-warning {
-        background: #fb8500 !important;
+        background: var(--accent, #f97316) !important;
         border: none;
         color: #fff !important;
-        border-radius: 10px;
-        padding: 0.7rem 1.5rem;
-        font-weight: 600;
-        transition: background 0.2s;
+        border-radius: 14px;
+        padding: 0.8rem 1.5rem;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+        position: relative;
+        overflow: hidden;
     }
 
     .btn-warning:hover {
-        background: #e67600 !important;
+        background: #ea580c !important;
+        box-shadow: 0 6px 18px rgba(249, 115, 22, 0.4);
+        transform: translateY(-2px);
+    }
+
+    .btn-warning:active {
+        transform: scale(0.96);
+        box-shadow: 0 2px 6px rgba(249, 115, 22, 0.3);
+    }
+
+    .btn-warning i {
+        transition: transform 0.3s ease;
+    }
+
+    .btn-warning:hover i {
+        transform: rotate(10deg) scale(1.2);
     }
 
     .btn-outline-secondary {
         border-color: #d1d9e6;
         color: #475569;
         background: #ffffff;
+        border-radius: 14px;
+        padding: 0.8rem 1.5rem;
+        font-weight: 600;
+        transition: all 0.25s ease;
     }
 
     .btn-outline-secondary:hover {
         background: #f1f4f9;
         border-color: #b0c0d0;
-        color: #1e293b;
+        color: #0f172a;
+        transform: translateY(-1px);
+    }
+
+    .btn-outline-secondary:active {
+        transform: scale(0.97);
     }
 
     .invalid-feedback {
         font-size: 0.8rem;
         color: #ef4444;
         margin-top: 4px;
+        animation: shakeError 0.4s ease;
     }
 
-    /* Override any dark styles from base */
-    .product-form-wrapper {
-        background: transparent;
+    @keyframes shakeError {
+
+        0%,
+        100% {
+            transform: translateX(0);
+        }
+
+        20% {
+            transform: translateX(-5px);
+        }
+
+        40% {
+            transform: translateX(5px);
+        }
+
+        60% {
+            transform: translateX(-3px);
+        }
+
+        80% {
+            transform: translateX(3px);
+        }
     }
 
-    .product-form-wrapper .card,
-    .product-form-wrapper .card-body,
-    .product-form-wrapper .form-control,
-    .product-form-wrapper .form-select {
-        color: #1e293b;
-    }
-
-    /* Responsive tweaks */
     @media (max-width: 768px) {
         .product-form-wrapper .card-body {
             padding: 1.25rem !important;
@@ -189,11 +337,10 @@
         <div class="row g-4">
             <!-- Left column: main fields -->
             <div class="col-lg-8">
-                <div class="card shadow-sm border-0 mb-4">
+                <div class="card mb-4">
                     <div class="card-body p-4">
                         <h6 class="card-title fw-semibold mb-3">
-                            <i class="bi bi-pencil-square me-2">
-                            </i>
+                            <i class="bi bi-pencil-square me-2"></i>
                             Product Details
                         </h6>
 
@@ -251,7 +398,7 @@
                                 {% endif %}
                             </div>
 
-                            <!-- Description (full width) -->
+                            <!-- Description -->
                             <div class="col-12">
                                 <label for="{{ form.description.id_for_label }}" class="form-label fw-semibold">{{ form.description.label }}</label>
                                 {{ form.description }}
@@ -264,7 +411,7 @@
                 </div>
 
                 <!-- Additional attributes card -->
-                <div class="card shadow-sm border-0 mb-4">
+                <div class="card mb-4">
                     <div class="card-body p-4">
                         <h6 class="card-title fw-semibold mb-3"><i class="bi bi-tags me-2"></i>Additional Attributes
                         </h6>
@@ -311,7 +458,7 @@
                                 {% endif %}
                             </div>
 
-                            <!-- Care Instructions (full width) -->
+                            <!-- Care Instructions -->
                             <div class="col-12">
                                 <label for="{{ form.care_instructions.id_for_label }}" class="form-label fw-semibold">{{ form.care_instructions.label }}</label>
                                 {{ form.care_instructions }}
@@ -326,19 +473,21 @@
 
             <!-- Right column: image & actions -->
             <div class="col-lg-4">
-                <div class="card shadow-sm border-0 mb-4">
+                <div class="card mb-4">
                     <div class="card-body p-4">
                         <h6 class="card-title fw-semibold mb-3"><i class="bi bi-image me-2"></i>Product Image</h6>
 
                         <div class="text-center">
                             <div class="image-preview-wrapper mb-3" id="imagePreviewWrapper">
                                 {% if product and product.image %}
-                                <img src="{{ product.image.url }}" alt="Current image" class="img-fluid rounded border"
-                                    style="max-height: 200px; width: auto;" id="imagePreview">
-                                {% else %}
-                                <img src="#" alt="Image preview" class="img-fluid rounded border d-none"
+                                <img src="{{ product.image.url }}" alt="Current image" class="img-fluid"
                                     id="imagePreview">
-                                <div class="placeholder-image">
+                                <div class="placeholder-image hidden">
+                                    <i class="bi bi-camera"></i>
+                                </div>
+                                {% else %}
+                                <img src="#" alt="Image preview" class="img-fluid d-none" id="imagePreview">
+                                <div class="placeholder-image" id="placeholderContainer">
                                     <i class="bi bi-camera"></i>
                                 </div>
                                 {% endif %}
@@ -374,29 +523,61 @@
 
 <script>
     (function () {
-        // Image preview
         const imageInput = document.getElementById('id_image');
         const preview = document.getElementById('imagePreview');
-        const placeholder = document.querySelector('.placeholder-image');
+        const placeholder = document.getElementById('placeholderContainer');
 
-        if (imageInput) {
-            imageInput.addEventListener('change', function (e) {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function (ev) {
-                        if (placeholder) placeholder.style.display = 'none';
-                        preview.src = ev.target.result;
-                        preview.classList.remove('d-none');
-                    };
-                    reader.readAsDataURL(file);
-                } else {
-                    // Reset to current image or placeholder
-                    if (placeholder) placeholder.style.display = 'flex';
-                    preview.classList.add('d-none');
-                }
-            });
+        // Use Django variable to determine initial image existence
+        const hasExistingImage = {% if product and product.image %}true{% else %} false{% endif %};
+
+    function showPlaceholder(show) {
+        if (placeholder) {
+            placeholder.classList.toggle('hidden', !show);
+            placeholder.style.display = show ? 'flex' : 'none';
         }
-    })();
+    }
+
+    function hidePreview() {
+        preview.classList.add('d-none');
+        preview.src = '#';
+        showPlaceholder(true);
+    }
+
+    function showPreview(src) {
+        preview.src = src;
+        preview.classList.remove('d-none');
+        showPlaceholder(false);
+        // Subtle fade-in
+        preview.style.opacity = '0';
+        setTimeout(() => { preview.style.opacity = '1'; }, 10);
+    }
+
+    if (imageInput) {
+        imageInput.addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (ev) {
+                    showPreview(ev.target.result);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                // No new file selected – revert to existing image if available
+                if (hasExistingImage) {
+                    showPreview("{{ product.image.url|default:'' }}");
+                } else {
+                    hidePreview();
+                }
+            }
+        });
+    }
+
+    // Initial placeholder visibility
+    if (hasExistingImage) {
+        showPlaceholder(false);
+    } else {
+        showPlaceholder(true);
+    }
+    }) ();
 </script>
 {% endblock %}
