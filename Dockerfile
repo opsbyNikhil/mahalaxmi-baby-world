@@ -4,6 +4,7 @@ WORKDIR /baby-world-home-page
 RUN pip install --prefix=/install -r /baby-world-home-page/requirements.txt
 
 FROM python:3.14.6-alpine3.23 AS runtime
+WORKDIR /baby-world-home-page
 COPY --from=build /install /usr/local
 COPY --from=build /baby-world-home-page /baby-world-home-page
 EXPOSE 8000
