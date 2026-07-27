@@ -1,142 +1,190 @@
 {% extends 'dashboard/dashboard_base.html' %}
+{% load static %}
 
 {% block page_title %}Products Overview{% endblock %}
 
 {% block extra_head %}
 <style>
-    /* ----- Light theme overrides ----- */
+    /* ------------------------------------------------------------
+       Candy Shop overrides – blends with the base dashboard theme
+       ------------------------------------------------------------ */
     :root {
-        --bg-body: #f8f9fc;
-        --text-primary: #1e293b;
-        --text-secondary: #475569;
-        --text-muted: #94a3b8;
-        --border-light: #e9edf2;
-        --accent: #fb8500;
-        --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-        --input-bg: #ffffff;
+        /* reuse the same palette for consistency */
+        --pink: #FF6FA0;
+        --pink-soft: #FFD3E4;
+        --sky: #5FC9E8;
+        --sky-soft: #CDEFFA;
+        --butter: #FFCB47;
+        --butter-soft: #FFF3CC;
+        --mint: #7EE0B8;
+        --mint-soft: #D4F7E8;
+        --plum: #362A4D;
+        --plum-light: #5B4A72;
+        --cream: #FFF8F0;
     }
 
-    body {
-        background-color: var(--bg-body);
-        color: var(--text-primary);
-    }
-
-    /* ---------- Stat cards ---------- */
+    /* ---------- Stat cards (playful twist) ---------- */
     .stat-card {
         background: #ffffff;
-        border-radius: 12px;
+        border-radius: var(--radius-xl, 22px);
         padding: 1.2rem 1.5rem;
-        box-shadow: var(--card-shadow);
-        border: 1px solid var(--border-light);
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        box-shadow: 0 4px 12px rgba(54, 42, 77, 0.06);
+        border: 2px solid #F0E4D8;
+        transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
+        position: relative;
+        overflow: hidden;
     }
 
     .stat-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.07);
+        transform: translateY(-4px);
+        box-shadow: 0 10px 24px rgba(255, 111, 160, 0.12), 0 0 0 2px var(--pink-soft);
+    }
+
+    .stat-card::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 111, 160, 0.06) 0%, transparent 65%);
+        opacity: 0;
+        transition: opacity 0.3s;
+        pointer-events: none;
+        border-radius: inherit;
+    }
+
+    .stat-card:hover::after {
+        opacity: 1;
     }
 
     .stat-label {
-        font-size: 0.85rem;
-        font-weight: 500;
-        color: var(--text-secondary);
-        letter-spacing: 0.3px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        color: var(--plum-light);
         text-transform: uppercase;
+        font-family: 'Quicksand', sans-serif;
     }
 
     .stat-number {
-        font-size: 1.8rem;
-        font-weight: 700;
-        color: var(--text-primary);
+        font-size: 1.9rem;
+        font-weight: 800;
+        color: var(--plum);
         line-height: 1.2;
-        margin-top: 4px;
+        margin-top: 2px;
+        font-family: 'Fredoka', sans-serif;
+        animation: countPulse 0.5s ease-out;
+    }
+
+    @keyframes countPulse {
+        0% {
+            transform: scale(1.15);
+            color: var(--pink);
+        }
+
+        100% {
+            transform: scale(1);
+            color: var(--plum);
+        }
     }
 
     .stat-icon {
-        font-size: 1.6rem;
-        opacity: 0.7;
+        font-size: 1.7rem;
+        opacity: 0.85;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.08));
     }
 
     /* ---------- Table wrapper ---------- */
     .glass-table-wrap {
         background: #ffffff;
-        border-radius: 12px;
-        border: 1px solid var(--border-light);
-        box-shadow: var(--card-shadow);
+        border-radius: var(--radius-xl, 22px);
+        border: 2px solid #F0E4D8;
+        box-shadow: 0 4px 12px rgba(54, 42, 77, 0.04);
         overflow: hidden;
     }
 
-    /* ---------- Table header ---------- */
+    /* ---------- Table header / filters ---------- */
     .table-header {
         padding: 1rem 1.5rem;
-        border-bottom: 1px solid var(--border-light);
+        border-bottom: 1px solid #FDF3E9;
         display: flex;
         flex-wrap: wrap;
         align-items: center;
         justify-content: space-between;
         gap: 1rem;
-        background: #fafbfc;
+        background: #FFFBF7;
     }
 
     .table-header h6 {
-        font-weight: 600;
-        color: var(--text-primary);
+        font-weight: 700;
+        color: var(--plum);
         margin: 0;
+        font-family: 'Fredoka', sans-serif;
     }
 
-    /* ---------- Filters & inputs ---------- */
     .search-box-input,
     .category-filter {
-        background: var(--input-bg);
-        border: 1px solid var(--border-light);
-        color: var(--text-primary);
-        border-radius: 6px;
-        padding: 0.4rem 0.75rem;
-        font-size: 0.875rem;
+        background: #FFF8F0;
+        border: 2px solid #F0E4D8;
+        color: var(--plum);
+        border-radius: 999px;
+        padding: 0.45rem 1rem;
+        font-size: 0.85rem;
+        font-family: 'Quicksand', sans-serif;
+        font-weight: 500;
+        transition: all 0.25s;
     }
 
     .search-box-input::placeholder {
-        color: var(--text-muted);
+        color: #B0A3BF;
+        font-weight: 400;
     }
 
     .search-box-input:focus,
     .category-filter:focus {
-        border-color: var(--accent);
-        box-shadow: 0 0 0 3px rgba(251, 133, 0, 0.15);
-        background: #ffffff;
-        color: var(--text-primary);
+        border-color: var(--pink);
+        box-shadow: 0 0 0 4px var(--pink-soft);
+        background: #fff;
+        color: var(--plum);
     }
 
     .category-filter {
-        max-width: 180px;
+        max-width: 200px;
     }
 
     .category-filter option {
-        background: #ffffff;
-        color: var(--text-primary);
+        background: #fff;
+        color: var(--plum);
     }
 
     .search-box-input {
         max-width: 280px;
     }
 
-    /* ---------- Refresh button ---------- */
+    /* ---------- Refresh & auto toggle ---------- */
     .refresh-btn {
-        background: #ffffff;
-        border: 1px solid var(--border-light);
-        color: var(--text-secondary);
-        transition: transform 0.3s ease, background 0.2s ease, color 0.2s ease;
-        border-radius: 6px;
-        padding: 0.35rem 0.7rem;
+        background: #FFF8F0;
+        border: 2px solid #F0E4D8;
+        color: var(--plum-light);
+        transition: transform 0.3s ease, background 0.2s, color 0.2s;
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
     }
 
     .refresh-btn:hover {
-        background: #f1f4f9;
-        color: var(--text-primary);
+        background: var(--pink-soft);
+        color: var(--pink);
+        border-color: var(--pink-soft);
     }
 
     .refresh-btn.spinning {
-        animation: spin 0.6s linear;
+        animation: spin 0.7s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     @keyframes spin {
@@ -149,157 +197,170 @@
         }
     }
 
-    /* ---------- Toggle switch (light) ---------- */
     .form-switch .form-check-input {
-        background-color: #d1d5db;
-        border-color: #d1d5db;
+        background-color: #E0D4C8;
+        border-color: #E0D4C8;
     }
 
     .form-switch .form-check-input:checked {
-        background-color: var(--accent);
-        border-color: var(--accent);
+        background-color: var(--mint);
+        border-color: var(--mint);
     }
 
     .form-switch .form-check-label {
-        color: var(--text-secondary);
+        color: var(--plum-light);
+        font-weight: 500;
     }
 
     /* ---------- Table ---------- */
     #productTable {
-        color: var(--text-primary) !important;
-        /* override Bootstrap */
+        color: var(--plum) !important;
     }
 
     #productTable thead th {
-        color: var(--text-secondary) !important;
-        font-weight: 600;
-        font-size: 0.8rem;
+        color: var(--plum-light) !important;
+        font-weight: 700;
+        font-size: 0.72rem;
         text-transform: uppercase;
-        letter-spacing: 0.3px;
-        border-bottom: 2px solid var(--border-light);
-        background: #fafbfc;
-        padding: 0.75rem 1rem;
+        letter-spacing: 0.06em;
+        border-bottom: 2px solid #FDF3E9;
+        background: #FFFBF7;
+        padding: 0.8rem 1rem;
+        font-family: 'Quicksand', sans-serif;
     }
 
     #productTable tbody td {
-        color: var(--text-primary);
+        color: var(--plum);
         padding: 0.75rem 1rem;
-        border-bottom: 1px solid var(--border-light);
+        border-bottom: 1px solid #FDF3E9;
         vertical-align: middle;
+        font-weight: 500;
+        background: #FFFDFA;
+        transition: background 0.2s, transform 0.2s;
     }
 
     #productTable tbody tr:hover td {
-        background-color: #f8fafc;
+        background: #FFF0F5;
+        transform: scale(1.003);
     }
 
     #productTable tbody tr.highlight td {
-        background-color: rgba(251, 133, 0, 0.07) !important;
+        background: rgba(255, 203, 71, 0.08) !important;
     }
 
-    /* ----- Badges ----- */
+    /* ----- Badges (candy colored) ----- */
     .badge {
-        font-weight: 500;
-        padding: 0.35rem 0.65rem;
+        font-weight: 600;
+        padding: 0.35rem 0.7rem;
         border-radius: 20px;
+        font-family: 'Fredoka', sans-serif;
+        letter-spacing: 0.02em;
     }
 
     .badge.bg-danger {
-        background-color: #ef4444 !important;
+        background-color: #FF6FA0 !important;
+        /* pink for critical */
         color: #fff;
     }
 
     .badge.bg-warning {
-        background-color: #f59e0b !important;
-        color: #1e293b;
+        background-color: #FFCB47 !important;
+        color: #362A4D;
     }
 
     .badge.bg-success {
-        background-color: #22c55e !important;
+        background-color: #7EE0B8 !important;
         color: #fff;
     }
 
     .badge.bg-secondary {
-        background-color: #94a3b8 !important;
+        background-color: #B0A3BF !important;
         color: #fff;
     }
 
-    /* Category badge (filter indicator) */
     .category-badge {
-        background: rgba(251, 133, 0, 0.12);
-        color: var(--accent);
-        font-weight: 500;
+        background: rgba(255, 111, 160, 0.1);
+        color: var(--pink);
+        font-weight: 600;
         padding: 0.3rem 0.8rem;
         border-radius: 20px;
+        font-family: 'Quicksand', sans-serif;
     }
 
     a[style*="color: var(--accent);"] {
-        color: var(--accent) !important;
+        color: var(--pink) !important;
         text-decoration: none;
+        font-weight: 600;
     }
 
     a[style*="color: var(--accent);"]:hover {
         text-decoration: underline;
+        color: var(--pink);
     }
 
     /* ---------- "Add product" button ---------- */
-    .btn[style*="background: var(--accent);"] {
-        background: var(--accent) !important;
-        color: #fff !important;
+    .btn-add {
+        background: linear-gradient(135deg, var(--pink), var(--butter));
+        color: #fff;
         border: none;
-        border-radius: 6px;
-        padding: 0.35rem 1rem;
-        font-weight: 500;
-        transition: background 0.2s ease;
+        border-radius: 999px;
+        padding: 0.4rem 1.2rem;
+        font-weight: 700;
+        font-family: 'Quicksand', sans-serif;
+        box-shadow: 0 4px 14px rgba(255, 111, 160, 0.25);
+        transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
-    .btn[style*="background: var(--accent);"]:hover {
-        background: #e67600 !important;
+    .btn-add:hover {
+        background: linear-gradient(135deg, #e85d8b, #e5b840);
+        box-shadow: 0 6px 18px rgba(255, 111, 160, 0.4);
+        transform: translateY(-2px) scale(1.02);
+        color: #fff;
     }
 
-    /* ---------- Actions ---------- */
+    /* ---------- Action buttons ---------- */
     .table-action-btn {
-        color: var(--text-secondary);
+        color: var(--plum-light);
         margin: 0 0.2rem;
-        transition: color 0.15s ease;
+        transition: color 0.15s, transform 0.2s;
         font-size: 1.1rem;
+        display: inline-flex;
     }
 
     .table-action-btn.edit:hover {
-        color: var(--accent);
+        color: var(--sky);
+        transform: scale(1.2);
     }
 
     .table-action-btn.delete:hover {
-        color: #ef4444;
+        color: var(--pink);
+        transform: scale(1.2);
     }
 
     /* ---------- Footer ---------- */
     .table-footer {
-        padding: 0.75rem 1.5rem;
-        border-top: 1px solid var(--border-light);
+        padding: 0.8rem 1.5rem;
+        border-top: 1px solid #FDF3E9;
         display: flex;
         justify-content: space-between;
         align-items: center;
         flex-wrap: wrap;
         gap: 0.5rem;
-        background: #fafbfc;
-        color: var(--text-secondary);
+        background: #FFFBF7;
+        color: var(--plum-light);
         font-size: 0.85rem;
+        font-weight: 500;
     }
 
     .last-updated {
-        color: var(--text-muted);
+        color: #B0A3BF;
     }
 
-    /* ---------- No results / empty ---------- */
     .no-results {
         display: none;
     }
 
-    .text-muted {
-        color: var(--text-muted) !important;
-    }
-
-    /* ---------- Responsive tweaks ---------- */
+    /* ---------- Responsive ---------- */
     @media (max-width: 576px) {
 
         .search-box-input,
@@ -312,15 +373,6 @@
             flex-direction: column;
             align-items: stretch;
         }
-
-        .table-header .d-flex {
-            flex-wrap: wrap;
-        }
-    }
-
-    /* Override Bootstrap's default table dark text on light bg */
-    .table> :not(caption)>*>* {
-        color: var(--text-primary) !important;
     }
 </style>
 {% endblock %}
@@ -336,7 +388,7 @@
                     <div class="stat-label">Total Products</div>
                     <div class="stat-number" id="stat-total">{{ total_products }}</div>
                 </div>
-                <i class="bi bi-box-seam stat-icon" style="color: #4f8cf7;"></i>
+                <i class="bi bi-box-seam stat-icon" style="color: #5FC9E8;"></i>
             </div>
         </div>
     </div>
@@ -347,7 +399,7 @@
                     <div class="stat-label">Low Stock (≤5)</div>
                     <div class="stat-number" id="stat-low">{{ low_stock_count }}</div>
                 </div>
-                <i class="bi bi-exclamation-triangle stat-icon" style="color: #f59e0b;"></i>
+                <i class="bi bi-exclamation-triangle stat-icon" style="color: #FFCB47;"></i>
             </div>
         </div>
     </div>
@@ -358,7 +410,7 @@
                     <div class="stat-label">Out of Stock</div>
                     <div class="stat-number" id="stat-out">{{ out_of_stock_count }}</div>
                 </div>
-                <i class="bi bi-x-circle stat-icon" style="color: #ef4444;"></i>
+                <i class="bi bi-x-circle stat-icon" style="color: #FF6FA0;"></i>
             </div>
         </div>
     </div>
@@ -369,13 +421,13 @@
                     <div class="stat-label">Inventory Value</div>
                     <div class="stat-number" id="stat-value">${{ total_inventory_value|floatformat:2 }}</div>
                 </div>
-                <i class="bi bi-currency-dollar stat-icon" style="color: #22c55e;"></i>
+                <i class="bi bi-currency-dollar stat-icon" style="color: #7EE0B8;"></i>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Product table with search, category filter & refresh controls -->
+<!-- Product table -->
 <div class="glass-table-wrap">
     <div class="table-header">
         <div>
@@ -384,34 +436,26 @@
             <div class="mt-2">
                 <span class="text-muted small">Filtered by category:</span>
                 <span class="badge category-badge">
-                    {% for cat in sidebar_categories %}{% if cat.slug == selected_category %}{{ cat.name }}{% endif %}{%endfor %}
+                    {% for cat in sidebar_categories %}{% if cat.slug == selected_category %}{{ cat.name }}{% endif %}{% endfor %}
                 </span>
                 <a href="{% url 'dashboard_home' %}" class="small ms-2" style="color: var(--accent);">Clear</a>
             </div>
             {% endif %}
         </div>
         <div class="d-flex flex-wrap gap-2 align-items-center">
-            <!-- Category filter -->
             <select id="categoryFilter" class="form-select form-select-sm category-filter">
                 <option value="">All categories</option>
             </select>
-            <!-- Search input -->
             <input type="text" id="productSearch" class="form-control form-control-sm search-box-input"
                 placeholder="Search by name, category, brand…">
-            <!-- Refresh button -->
             <button class="btn btn-sm refresh-btn" id="refreshBtn" title="Refresh data">
                 <i class="bi bi-arrow-clockwise"></i>
             </button>
-            <!-- Auto-refresh toggle -->
             <div class="form-check form-switch mb-0">
                 <input class="form-check-input" type="checkbox" id="autoRefreshToggle" checked>
-                <label class="form-check-label small text-muted" for="autoRefreshToggle">
-                    Auto
-                </label>
+                <label class="form-check-label small" for="autoRefreshToggle">Auto</label>
             </div>
-            <!-- Add product button -->
-            <a href="{% url 'dashboard_product_add' %}" class="btn btn-sm"
-                style="background: var(--accent); color: #fff;">
+            <a href="{% url 'dashboard_product_add' %}" class="btn btn-sm btn-add">
                 <i class="bi bi-plus-lg"></i> Add
             </a>
         </div>
@@ -438,13 +482,13 @@
                         <div class="d-flex align-items-center gap-2">
                             {% if product.image %}
                             <img src="{{ product.image.url }}" alt="{{ product.name }}"
-                                style="width: 40px; height: 40px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border-light);">
+                                style="width: 40px; height: 40px; object-fit: cover; border-radius: 10px; border: 2px solid #F0E4D8;">
                             {% else %}
                             <div
-                                style="width: 40px; height: 40px; background: #f1f4f9; border-radius: 6px; border: 1px solid var(--border-light);">
+                                style="width: 40px; height: 40px; background: #FFF8F0; border-radius: 10px; border: 2px solid #F0E4D8;">
                             </div>
                             {% endif %}
-                            <span>{{ product.name }}</span>
+                            <span style="font-weight: 600;">{{ product.name }}</span>
                         </div>
                     </td>
                     <td>{{ product.category|default:"—" }}</td>
@@ -478,18 +522,17 @@
                 {% empty %}
                 <tr id="noProductsRow">
                     <td colspan="7" class="text-center py-4 text-muted">
-                        <i class="bi bi-inbox fs-2 d-block mb-2"></i>
-                        No products yet. <a href="{% url 'dashboard_product_add' %}" style="color: var(--accent);">Add
-                            one</a>.
+                        <i class="bi bi-inbox fs-2 d-block mb-2" style="color: var(--plum-light);"></i>
+                        No products yet. <a href="{% url 'dashboard_product_add' %}"
+                            style="color: var(--pink); font-weight:600;">Add one</a>.
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
-    <!-- No results message (hidden by default) -->
     <div id="noResultsMessage" class="text-center py-4 text-muted d-none">
-        <i class="bi bi-search fs-2 d-block mb-2"></i>
+        <i class="bi bi-search fs-2 d-block mb-2" style="color: var(--plum-light);"></i>
         No products match your search.
     </div>
     <div class="table-footer">
@@ -507,11 +550,10 @@
     (function () {
         'use strict';
 
-        // ─── DOM refs ────────────────────────────────────────────────
         const searchInput = document.getElementById('productSearch');
         const categoryFilter = document.getElementById('categoryFilter');
         const tableBody = document.getElementById('productTableBody');
-        const rows = tableBody.querySelectorAll('tr:not(#noProductsRow)'); // only product rows
+        const rows = tableBody.querySelectorAll('tr:not(#noProductsRow)');
         const noResultsMsg = document.getElementById('noResultsMessage');
         const noProductsRow = document.getElementById('noProductsRow');
         const refreshBtn = document.getElementById('refreshBtn');
@@ -519,14 +561,23 @@
         const lastUpdateSpan = document.getElementById('lastUpdateTime');
         const rowCountDisplay = document.getElementById('rowCountDisplay');
 
-        // ─── Populate category filter from table data ────────────────
+        // Mouse position for stat card gradient
+        document.querySelectorAll('.stat-card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = ((e.clientX - rect.left) / rect.width) * 100;
+                const y = ((e.clientY - rect.top) / rect.height) * 100;
+                card.style.setProperty('--mouse-x', x + '%');
+                card.style.setProperty('--mouse-y', y + '%');
+            });
+        });
+
         function populateCategoryFilter() {
             const categories = new Set();
             rows.forEach(row => {
                 const cat = row.dataset.category;
                 if (cat) categories.add(cat);
             });
-
             const sorted = Array.from(categories).sort();
             sorted.forEach(cat => {
                 const option = document.createElement('option');
@@ -534,7 +585,6 @@
                 option.textContent = cat.charAt(0).toUpperCase() + cat.slice(1);
                 categoryFilter.appendChild(option);
             });
-
             if (sorted.length === 0) {
                 categoryFilter.disabled = true;
             }
@@ -542,7 +592,6 @@
 
         populateCategoryFilter();
 
-        // ─── Search / category filter ─────────────────────────────────
         function filterTable() {
             const query = searchInput.value.toLowerCase().trim();
             const selectedCategory = categoryFilter.value.toLowerCase();
@@ -565,11 +614,7 @@
             if (rows.length === 0) {
                 noResultsMsg.classList.add('d-none');
             } else {
-                if (visibleCount === 0) {
-                    noResultsMsg.classList.remove('d-none');
-                } else {
-                    noResultsMsg.classList.add('d-none');
-                }
+                noResultsMsg.classList.toggle('d-none', visibleCount !== 0);
             }
 
             rowCountDisplay.textContent = visibleCount + ' products';
@@ -578,7 +623,6 @@
         searchInput.addEventListener('input', filterTable);
         categoryFilter.addEventListener('change', filterTable);
 
-        // ─── Refresh (manual + auto) ────────────────────────────────
         function refreshPage() {
             refreshBtn.classList.add('spinning');
             window.location.reload();
@@ -589,7 +633,6 @@
             refreshPage();
         });
 
-        // ─── Auto-refresh ─────────────────────────────────────────────
         let autoRefreshInterval = null;
 
         function startAutoRefresh(intervalMs) {

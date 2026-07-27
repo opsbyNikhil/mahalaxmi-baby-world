@@ -37,7 +37,7 @@
                         <div class="d-flex gap-2">
                             <a href="{% url 'product_detail' product.id %}" class="bb-btn-outline">View</a>
                             <button class="bb-btn-add add-to-cart-btn" data-product-id="{{ product.id }}">
-                                🛒 Add
+                                <i class="bi bi-bag-heart-fill"></i> Add
                             </button>
                         </div>
                     </div>
@@ -45,7 +45,7 @@
             </div>
             {% empty %}
             <div class="col-12">
-                <p class="bb-products-empty">No products available.</p>
+                <p class="bb-products-empty"><i class="bi bi-emoji-frown"></i> No products available.</p>
             </div>
             {% endfor %}
         </div>

@@ -1,112 +1,228 @@
-/* ==========================================================
-   About page — Mahalaxmi Baby World
-   Reuses --bb-* variables already loaded globally by home.css
-   ========================================================== */
+.bb-page {
+    background: var(--cream);
+    color: var(--plum);
+    font-family: 'Quicksand', 'Nunito Sans', sans-serif;
+    padding: 3rem 0 4rem;
+}
 
+/* ---------- Hero ---------- */
 .bb-about-hero {
-    padding: 3rem 0 2rem;
     text-align: center;
+    max-width: 42rem;
+    margin: 0 auto 3rem;
+}
+
+.bb-hero-eyebrow {
+    display: inline-block;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--sky-strong);
+    background: var(--sky-subtle);
+    padding: 0.35rem 0.9rem;
+    border-radius: var(--radius-pill);
+    margin-bottom: 1rem;
 }
 
 .bb-about-hero h1 {
-    font-size: clamp(2rem, 3.6vw, 2.7rem);
+    font-family: 'Fredoka', sans-serif;
     font-weight: 600;
-    margin-bottom: 0.75rem;
+    font-size: clamp(1.9rem, 3.5vw, 2.6rem);
+    color: var(--plum);
+    margin-bottom: 0.85rem;
 }
 
 .bb-about-hero p {
-    max-width: 38rem;
-    margin: 0 auto;
-    color: var(--bb-plum-soft);
-    font-size: 1.05rem;
+    font-size: 1.02rem;
+    color: var(--text-secondary);
+    line-height: 1.65;
 }
 
+/* ---------- Story ---------- */
 .bb-story {
-    background: var(--bb-white);
-    border-radius: 24px;
-    padding: 2.25rem;
-    box-shadow: 0 2px 10px -4px rgba(58, 48, 66, 0.1);
-    margin-bottom: 3rem;
+    max-width: 44rem;
+    margin: 0 auto 3.5rem;
+    background: #fff;
+    border: 2px solid var(--border-default);
+    border-radius: var(--radius-xl);
+    padding: 2rem 2.2rem;
+    box-shadow: var(--shadow-sm);
 }
 
 .bb-story p {
-    color: var(--bb-plum-soft);
-    line-height: 1.7;
-    margin-bottom: 1rem;
+    font-size: 0.98rem;
+    line-height: 1.75;
+    color: var(--text-secondary);
+    margin-bottom: 1.1rem;
 }
 
 .bb-story p:last-child {
     margin-bottom: 0;
 }
 
+/* ---------- Values ---------- */
 .bb-values {
-    padding: 1rem 0 3.5rem;
+    margin-bottom: 3.5rem;
 }
 
 .bb-value-card {
-    background: var(--bb-cream-deep);
-    border-radius: 20px;
-    padding: 1.75rem 1.5rem;
-    height: 100%;
+    background: #fff;
+    border: 2px solid var(--border-default);
+    border-radius: var(--radius-xl);
+    padding: 1.6rem 1.4rem;
     text-align: center;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.bb-value-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-lg), var(--shadow-glow-pink);
+    border-color: var(--pink-soft);
 }
 
 .bb-value-icon {
     width: 56px;
     height: 56px;
-    margin: 0 auto 1rem;
-    border-radius: 50%;
+    border-radius: var(--radius-lg);
+    background: var(--pink-subtle);
+    color: var(--pink);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.6rem;
-    background: var(--bb-sage);
-    color: var(--bb-white);
+    font-size: 1.5rem;
+    margin: 0 auto 1rem;
+    transition: all 0.3s ease;
 }
 
-.bb-value-card:nth-of-type(4n+2) .bb-value-icon { background: var(--bb-coral); }
-.bb-value-card:nth-of-type(4n+3) .bb-value-icon { background: var(--bb-sun); }
-.bb-value-card:nth-of-type(4n+4) .bb-value-icon { background: var(--bb-sky); }
+.bb-value-card:nth-child(2) .bb-value-icon { background: var(--sky-subtle); color: var(--sky-strong); }
+.bb-value-card:nth-child(3) .bb-value-icon { background: var(--butter-soft); color: #d4a020; }
+.bb-value-card:nth-child(4) .bb-value-icon { background: var(--mint-soft); color: #5cb88a; }
+
+.bb-value-card:hover .bb-value-icon {
+    transform: rotate(-8deg) scale(1.1);
+    box-shadow: var(--shadow-glow-pink);
+}
 
 .bb-value-card h5 {
     font-family: 'Fredoka', sans-serif;
     font-weight: 600;
     font-size: 1.05rem;
+    color: var(--plum);
     margin-bottom: 0.5rem;
 }
 
 .bb-value-card p {
-    font-size: 0.9rem;
-    color: var(--bb-plum-soft);
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.55;
     margin: 0;
 }
 
+/* ---------- Stats strip ---------- */
 .bb-stats-strip {
-    background: var(--bb-sage);
-    border-radius: 24px;
-    padding: 2rem 1rem;
+    background: var(--plum);
+    border-radius: var(--radius-2xl, var(--radius-xl));
+    padding: 2.4rem 1.5rem;
     margin-bottom: 3.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.bb-stats-strip::before {
+    content: '';
+    position: absolute;
+    top: -60px;
+    right: -40px;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(255, 111, 160, 0.18) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.bb-stats-strip::after {
+    content: '';
+    position: absolute;
+    bottom: -70px;
+    left: -30px;
+    width: 220px;
+    height: 220px;
+    background: radial-gradient(circle, rgba(95, 201, 232, 0.14) 0%, transparent 70%);
+    pointer-events: none;
 }
 
 .bb-stat {
     text-align: center;
-    color: var(--bb-white);
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    position: relative;
 }
 
-.bb-stat .bb-stat-number {
-    display: block;
+.bb-stat-number {
     font-family: 'Fredoka', sans-serif;
     font-weight: 700;
-    font-size: 2rem;
-    line-height: 1.1;
+    font-size: clamp(1.6rem, 3vw, 2.1rem);
+    background: linear-gradient(135deg, var(--pink), var(--butter));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
-.bb-stat .bb-stat-label {
-    font-size: 0.85rem;
-    opacity: 0.9;
+.bb-stat-label {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 600;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: rgba(255, 255, 255, 0.65);
 }
 
+/* ---------- CTA ---------- */
 .bb-about-cta {
     text-align: center;
-    padding-bottom: 3.5rem;
+    padding-bottom: 1rem;
+}
+
+.bb-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, var(--pink), var(--butter));
+    color: #fff;
+    border: none;
+    padding: 0.85rem 1.9rem;
+    border-radius: var(--radius-pill);
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 800;
+    font-size: 1.02rem;
+    text-decoration: none;
+    box-shadow: 0 8px 20px -8px rgba(255, 111, 160, 0.45);
+    transition: transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 300ms cubic-bezier(0.34, 1.56, 0.64, 1),
+                background 0.15s ease;
+}
+
+.bb-btn-primary:hover,
+.bb-btn-primary:focus-visible {
+    background: linear-gradient(135deg, var(--pink-strong), var(--butter));
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: var(--shadow-glow-pink);
+    color: #fff;
+}
+
+.bb-btn-primary:active {
+    transform: scale(0.97);
+}
+
+@media (max-width: 767.98px) {
+    .bb-story {
+        padding: 1.5rem 1.4rem;
+    }
+
+    .bb-stats-strip {
+        padding: 1.8rem 1rem;
+    }
 }

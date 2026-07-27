@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Sign In{% endblock %}
+
+{% block css %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="bb-page bb-auth-page">
+    <div class="bb-auth-wrap">
+        <div class="bb-auth-card">
+            <div class="bb-auth-icon"><i class="bi bi-heart-fill"></i></div>
+            <span class="bb-hero-eyebrow">Welcome Back</span>
+            <h1>Sign In</h1>
+            <p>Sign in to add items to your cart and track your orders.</p>
+
+            {% if messages %}
+            <div class="bb-auth-errors">
+                {% for message in messages %}
+                <p><i class="bi bi-exclamation-circle-fill"></i> {{ message }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <form method="post" action="{% url 'login' %}">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ next }}">
+
+                <label for="username">Username</label>
+                <input type="text" class="form-control" id="username" name="username" required autofocus>
+
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+
+                <button type="submit" class="bb-btn-primary">
+                    <i class="bi bi-box-arrow-in-right"></i> Sign In
+                </button>
+            </form>
+
+            <p class="bb-auth-switch">
+                Don't have an account? <a href="{% url 'signup' %}?next={{ next }}">Create one</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

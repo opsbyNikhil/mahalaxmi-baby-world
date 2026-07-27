@@ -1,6 +1,8 @@
 from django import forms
 from .models import Product
 from .models import Category
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 
 class ProductForm(forms.ModelForm):
     class Meta:
@@ -33,3 +35,11 @@ class CategoryForm(forms.ModelForm):
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
         }
+
+class SignUpForm(UserCreationForm):
+    first_name = forms.CharField(max_length=30, required=True)
+    email = forms.EmailField(required=True)
+
+    class Meta:
+        model = User
+        fields = ('first_name', 'email', 'username', 'password1', 'password2')

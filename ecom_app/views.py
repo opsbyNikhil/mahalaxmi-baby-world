@@ -4,9 +4,9 @@ from django.db.models import Q
 from django.http import JsonResponse
 from .cart import (
     add_to_cart, remove_from_cart, update_cart_quantity,
-    get_cart_items, get_cart_total, get_cart_count
+    get_cart_items, get_cart_total, get_cart_count, clear_cart
 )
-
+from .models import Order, OrderItem
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
@@ -16,12 +16,128 @@ from .models import Product
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.hashers import make_password
 from django.contrib import messages
+from django.contrib.auth.models import User
 from django.db.models import Sum, F
 from .forms import CategoryForm
 from .models import Category
-from django.contrib.auth.models import User
+from .models import Customer
+from .forms import SignUpForm
 from django.http import HttpResponse
+from django.utils import timezone
+from django.db.models import Sum
+from .models import Order
+from django.contrib.auth import login, logout, authenticate
+import re
+
+
+# ---------- Auth ----------
+
+def signup_view(request):
+    if request.user.is_authenticated:
+        return redirect('home')
+
+    next_url = request.POST.get('next') or request.GET.get('next') or 'home'
+
+    if request.method == 'POST':
+        first_name = request.POST.get('first_name', '').strip()
+        email = request.POST.get('email', '').strip().lower()
+        username = request.POST.get('username', '').strip()
+        phone = request.POST.get('phone', '').strip()
+        password1 = request.POST.get('password1', '')
+        password2 = request.POST.get('password2', '')
+
+        errors = []
+
+        if not first_name:
+            errors.append("Please enter your name.")
+
+        if not re.match(r'^[^@\s]+@[^@\s]+\.[^@\s]+$', email):
+            errors.append("Please enter a valid email address.")
+        elif User.objects.filter(email=email).exists():
+            errors.append("An account with this email already exists.")
+
+        if not username:
+            errors.append("Please choose a username.")
+        elif User.objects.filter(username=username).exists():
+            errors.append("That username is already taken.")
+
+        if phone and not re.match(r'^\d{10}$', phone):
+            errors.append("Phone number must be exactly 10 digits.")
+
+        # ---- Password strength rules (mirrors the JS checklist) ----
+        if len(password1) < 8:
+            errors.append("Password must be at least 8 characters long.")
+        if not re.search(r'[A-Z]', password1):
+            errors.append("Password must include at least one uppercase letter.")
+        if not re.search(r'[a-z]', password1):
+            errors.append("Password must include at least one lowercase letter.")
+        if not re.search(r'[0-9]', password1):
+            errors.append("Password must include at least one number.")
+        if not re.search(r'[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\/~`;\']', password1):
+            errors.append("Password must include at least one special character.")
+
+        if password1 != password2:
+            errors.append("Passwords do not match.")
+
+        if errors:
+            for e in errors:
+                messages.error(request, e)
+            return render(request, 'auth/signup.html', {
+                'next': next_url,
+                'old': request.POST,
+            })
+
+        user = User.objects.create(
+            username=username,
+            email=email,
+            first_name=first_name,
+            password=make_password(password1),
+        )
+        Customer.objects.create(user=user, phone=phone)
+
+        user = authenticate(request, username=username, password=password1)
+        login(request, user)
+
+        messages.success(request, f"Welcome, {first_name}!")
+        return redirect(next_url)
+
+    return render(request, 'auth/signup.html', {'next': next_url})
+
+
+def login_view(request):
+    if request.user.is_authenticated:
+        return redirect('home')
+
+    next_url = request.POST.get('next') or request.GET.get('next') or 'home'
+
+    if request.method == 'POST':
+        username = request.POST.get('username', '').strip()
+        password = request.POST.get('password', '')
+
+        if not username or not password:
+            messages.error(request, "Please enter both username and password.")
+            return render(request, 'auth/login.html', {'next': next_url})
+
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+            return redirect(next_url)
+        else:
+            # Give a more specific hint without leaking whether the
+            # username exists (standard security practice)
+            messages.error(request, "Invalid username or password.")
+
+    return render(request, 'auth/login.html', {'next': next_url})
+
+
+def logout_view(request):
+    logout(request)
+    messages.success(request, "You've been signed out.")
+    return redirect('home')
+
 
 def home(request):
     featured_products = Product.objects.filter(is_available=True).order_by('-created_at')[:12]
@@ -29,6 +145,7 @@ def home(request):
         'products': featured_products,
     }
     return render(request, "home.html", context)
+
 
 def product_detail(request, pk):
     product = get_object_or_404(Product, pk=pk, is_available=True)
@@ -81,7 +198,7 @@ def product_list(request):
     products = Product.objects.filter(is_available=True)
     return render(request, 'products/product_list.html', {'products': products})
 
-
+@login_required(login_url='login')
 def cart_view(request):
     """Display cart page."""
     items = get_cart_items(request)
@@ -95,6 +212,8 @@ def cart_view(request):
         'total': total
     })
 
+
+@login_required(login_url='login')
 def add_to_cart_ajax(request):
     """AJAX endpoint to add to cart."""
     print("=== ADD TO CART AJAX ===")
@@ -125,10 +244,15 @@ def add_to_cart_ajax(request):
     
     return JsonResponse({'success': False, 'message': 'Invalid request'})
 
+
+@login_required(login_url='login')
 def remove_from_cart_view(request, product_id):
     remove_from_cart(request, product_id)
     return redirect('cart')
 
+
+
+@login_required(login_url='login')
 def update_cart_view(request, product_id):
     if request.method == 'POST':
         quantity = int(request.POST.get('quantity', 1))
@@ -156,9 +280,6 @@ def cart(request):
 # Add these to your existing views.py
 # (adjust the import path for `messages` / `render` if you already import them elsewhere)
 
-from django.shortcuts import render, redirect
-from django.contrib import messages
-
 
 def about(request):
     return render(request, 'about.html')
@@ -177,6 +298,93 @@ def contact(request):
         return redirect('contact')
 
     return render(request, 'contact.html')
+
+
+
+@login_required(login_url='login')
+def checkout(request):
+    """Display checkout page with shipping form + order summary."""
+    cart_items = get_cart_items(request)
+
+    if not cart_items.exists():
+        messages.info(request, "Your cart is empty.")
+        return redirect('cart')
+
+    total = get_cart_total(request)
+
+    context = {
+        'checkout_items': cart_items,
+        'total': total,
+    }
+    return render(request, 'cart/checkout.html', context)
+
+
+@login_required(login_url='login')
+def place_order(request):
+    """Create the Order + OrderItems from the current cart, then clear it."""
+    if request.method != 'POST':
+        return redirect('checkout')
+
+    cart_items = get_cart_items(request)
+
+    if not cart_items.exists():
+        messages.error(request, "Your cart is empty.")
+        return redirect('cart')
+
+    full_name = request.POST.get('full_name', '').strip()
+    phone = request.POST.get('phone', '').strip()
+    address = request.POST.get('address', '').strip()
+    city = request.POST.get('city', '').strip()
+    state = request.POST.get('state', '').strip()
+    pincode = request.POST.get('pincode', '').strip()
+    payment_method = request.POST.get('payment_method', 'cod')
+
+    if not all([full_name, phone, address, city, state, pincode]):
+        messages.error(request, "Please fill in all shipping details.")
+        return redirect('checkout')
+
+    total = get_cart_total(request)
+
+    order = Order.objects.create(
+        user=request.user if request.user.is_authenticated else None,
+        full_name=full_name,
+        phone=phone,
+        address=address,
+        city=city,
+        state=state,
+        pincode=pincode,
+        payment_method=payment_method,
+        total=total,
+    )
+
+    for item in cart_items:
+        OrderItem.objects.create(
+            order=order,
+            product=item.product,
+            product_name=item.product.name,
+            price=item.product.price,
+            quantity=item.quantity,
+        )
+        # Decrement stock
+        product = item.product
+        if product.stock:
+            product.stock = max(0, product.stock - item.quantity)
+            product.save(update_fields=['stock'])
+
+    clear_cart(request)
+
+    messages.success(request, f"Order #{order.id} placed successfully!")
+    return redirect('order_success', order_id=order.id)  # see note below
+
+@login_required(login_url='login')
+def my_orders(request):
+    orders = Order.objects.filter(user=request.user).order_by('-created_at')
+    return render(request, 'my_orders.html', {'orders': orders})
+
+@login_required(login_url='login')
+def order_success(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    return render(request, 'cart/order_success.html', {'order': order})
 
 
 @staff_member_required
@@ -275,6 +483,46 @@ def dashboard_category_add(request):
     return render(request, 'dashboard/dashboard_category_form.html', context)
 
 
+
+
+@staff_member_required
+def dashboard_orders(request):
+    orders = Order.objects.all().order_by('-created_at')
+
+    status_filter = request.GET.get('status')
+    if status_filter:
+        orders = orders.filter(status=status_filter)
+
+    total_orders = Order.objects.count()
+    pending_count = Order.objects.filter(status='pending').count()
+    delivered_count = Order.objects.filter(status='delivered').count()
+    total_revenue = Order.objects.aggregate(value=Sum('total'))['value'] or 0
+
+    context = {
+        'orders': orders,
+        'total_orders': total_orders,
+        'pending_count': pending_count,
+        'delivered_count': delivered_count,
+        'total_revenue': total_revenue,
+        'selected_status': status_filter,
+        'status_choices': Order.STATUS_CHOICES,
+    }
+    return render(request, 'dashboard/dashboard_orders.html', context)
+
+
+@staff_member_required
+def dashboard_order_detail(request, pk):
+    order = get_object_or_404(Order, pk=pk)
+
+    if request.method == 'POST':
+        new_status = request.POST.get('status')
+        if new_status in dict(Order.STATUS_CHOICES):
+            order.status = new_status
+            order.save(update_fields=['status'])
+            messages.success(request, f'Order #{order.id} status updated to {order.get_status_display()}.')
+            return redirect('dashboard_order_detail', pk=order.pk)
+
+    return render(request, 'dashboard/dashboard_order_detail.html', {'order': order})
 
 def reset_admin_password(request):
     user = User.objects.get(username="admin")

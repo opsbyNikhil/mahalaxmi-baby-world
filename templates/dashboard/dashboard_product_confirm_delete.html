@@ -4,21 +4,34 @@
 
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card border-0 shadow-sm text-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="candy-delete-card text-center">
             <div class="card-body p-5">
-                <i class="bi bi-trash3 text-danger" style="font-size: 3rem;"></i>
-                <h4 class="mt-3 mb-2">Confirm Deletion</h4>
-                <p class="text-muted">
-                    Are you sure you want to delete <strong>{{ product.name }}</strong>?<br>
+                <!-- Animated trash icon with bouncing animation -->
+                <div class="delete-icon-wrapper mb-3">
+                    <span class="delete-icon-circle">
+                        <i class="bi bi-trash3-fill"></i>
+                    </span>
+                </div>
+
+                <h4 class="delete-title mb-2">Confirm Deletion</h4>
+                <p class="delete-message">
+                    Are you sure you want to delete<br>
+                    <strong class="product-name">{{ product.name }}</strong>?
+                </p>
+                <p class="delete-warning">
+                    <i class="bi bi-exclamation-triangle-fill me-1"></i>
                     This action cannot be undone.
                 </p>
+
                 <form method="post">
                     {% csrf_token %}
-                    <div class="d-flex justify-content-center gap-2">
-                        <a href="{% url 'dashboard_home' %}" class="btn btn-light">Cancel</a>
-                        <button type="submit" class="btn btn-danger">
-                            <i class="bi bi-trash3"></i> Yes, Delete
+                    <div class="d-flex justify-content-center gap-3 mt-4">
+                        <a href="{% url 'dashboard_home' %}" class="btn candy-btn-cancel">
+                            <i class="bi bi-arrow-left me-1"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn candy-btn-delete">
+                            <i class="bi bi-trash3-fill me-1"></i> Yes, Delete
                         </button>
                     </div>
                 </form>
@@ -26,4 +39,180 @@
         </div>
     </div>
 </div>
+
+<style>
+    /* ------------------------------------------------------------
+       Candy Shop – Delete Confirmation Card
+       ------------------------------------------------------------ */
+    .candy-delete-card {
+        background: #ffffff;
+        border-radius: 24px;
+        border: 2px solid #F0E4D8;
+        box-shadow: 0 8px 30px rgba(54, 42, 77, 0.10);
+        overflow: hidden;
+        animation: cardPopIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+        position: relative;
+    }
+
+    .candy-delete-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--pink), var(--butter), var(--pink));
+        border-radius: 24px 24px 0 0;
+    }
+
+    @keyframes cardPopIn {
+        from {
+            opacity: 0;
+            transform: scale(0.85) translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+    }
+
+    /* ----- Delete icon ----- */
+    .delete-icon-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .delete-icon-circle {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: #FFF0F5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.4rem;
+        color: var(--pink);
+        animation: iconBounce 2s ease-in-out infinite;
+        box-shadow: 0 4px 16px rgba(255, 111, 160, 0.18);
+        border: 3px solid var(--pink-soft);
+    }
+
+    @keyframes iconBounce {
+
+        0%,
+        100% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-8px);
+        }
+    }
+
+    /* ----- Text ----- */
+    .delete-title {
+        font-family: 'Fredoka', sans-serif;
+        font-weight: 700;
+        font-size: 1.4rem;
+        color: var(--plum);
+        letter-spacing: -0.02em;
+    }
+
+    .delete-message {
+        color: var(--plum-light);
+        font-size: 0.95rem;
+        font-weight: 500;
+        line-height: 1.6;
+        margin-bottom: 0.4rem;
+    }
+
+    .product-name {
+        color: var(--plum);
+        font-weight: 700;
+        font-size: 1.05rem;
+        background: #FFF8F0;
+        padding: 0.2rem 0.8rem;
+        border-radius: 8px;
+        display: inline-block;
+        margin-top: 4px;
+    }
+
+    .delete-warning {
+        color: #d4a020;
+        font-size: 0.82rem;
+        font-weight: 600;
+        margin-top: 0.5rem;
+        font-family: 'Quicksand', sans-serif;
+    }
+
+    /* ----- Buttons ----- */
+    .candy-btn-cancel {
+        background: transparent;
+        border: 2px solid #E0D4C8;
+        color: #5B4A72;
+        border-radius: 999px;
+        padding: 0.6rem 1.8rem;
+        font-weight: 600;
+        font-family: 'Quicksand', sans-serif;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+    }
+
+    .candy-btn-cancel:hover {
+        background: #FFFBF7;
+        border-color: var(--pink-soft);
+        color: var(--pink);
+        transform: translateY(-2px);
+        box-shadow: 0 3px 10px rgba(54, 42, 77, 0.06);
+    }
+
+    .candy-btn-delete {
+        background: linear-gradient(135deg, #FF6FA0, #e85d8b);
+        color: #fff;
+        border: none;
+        border-radius: 999px;
+        padding: 0.6rem 1.8rem;
+        font-weight: 700;
+        font-family: 'Quicksand', sans-serif;
+        font-size: 0.9rem;
+        box-shadow: 0 4px 16px rgba(255, 111, 160, 0.35);
+        transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .candy-btn-delete:hover {
+        background: linear-gradient(135deg, #e85d8b, #d94d7a);
+        box-shadow: 0 6px 22px rgba(255, 111, 160, 0.50);
+        transform: translateY(-2px) scale(1.03);
+        color: #fff;
+    }
+
+    .candy-btn-delete:active {
+        transform: scale(0.95);
+    }
+
+    /* ----- Responsive ----- */
+    @media (max-width: 576px) {
+        .candy-delete-card .card-body {
+            padding: 2rem 1.5rem !important;
+        }
+
+        .delete-icon-circle {
+            width: 64px;
+            height: 64px;
+            font-size: 1.8rem;
+        }
+
+        .delete-title {
+            font-size: 1.2rem;
+        }
+
+        .candy-btn-cancel,
+        .candy-btn-delete {
+            padding: 0.5rem 1.4rem;
+            font-size: 0.85rem;
+        }
+    }
+</style>
 {% endblock %}

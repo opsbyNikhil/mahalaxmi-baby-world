@@ -58,3 +58,8 @@ def get_cart_count(request):
     """Return total number of items (sum of quantities) in current cart."""
     cart = get_or_create_cart(request)
     return cart.item_count
+
+def clear_cart(request):
+    """Remove all items from the current cart after a successful order."""
+    cart = get_or_create_cart(request)
+    cart.items.all().delete()

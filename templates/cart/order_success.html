@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Order Confirmed{% endblock %}
+
+{% block css %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'css/order_success.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="bb-page bb-order-success-page">
+    <div class="container">
+
+        <!-- Success banner -->
+        <div class="bb-success-banner">
+            <div class="bb-success-icon">
+                <i class="bi bi-check-lg"></i>
+            </div>
+            <span class="bb-hero-eyebrow">Order Placed</span>
+            <h1>Thank You, {{ order.full_name }}!</h1>
+            <p>Your order has been confirmed and will be on its way soon.</p>
+            <div class="bb-order-number">
+                Order <strong>#{{ order.id }}</strong> &middot; {{ order.created_at|date:"d M Y, h:i A" }}
+            </div>
+        </div>
+
+        <div class="row g-4">
+
+            <!-- Order items -->
+            <div class="col-lg-7">
+                <div class="bb-success-card">
+                    <h5 class="bb-card-heading"><i class="bi bi-bag-heart-fill"></i> Items Ordered</h5>
+
+                    <div class="bb-success-items">
+                        {% for item in order.items.all %}
+                        <div class="bb-success-item">
+                            {% if item.product and item.product.image %}
+                            <img src="{{ item.product.image.url }}" alt="{{ item.product_name }}">
+                            {% else %}
+                            <div class="bb-success-item-placeholder"><i class="bi bi-box-seam-fill"></i></div>
+                            {% endif %}
+                            <div class="bb-success-item-info">
+                                <strong>{{ item.product_name }}</strong>
+                                <small>Qty: {{ item.quantity }} &times; ₹{{ item.price }}</small>
+                            </div>
+                            <span class="bb-success-item-price">₹{{ item.subtotal }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="bb-success-total">
+                        <span>Total Paid</span>
+                        <span>₹{{ order.total }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shipping + payment details -->
+            <div class="col-lg-5">
+                <div class="bb-success-card">
+                    <h5 class="bb-card-heading"><i class="bi bi-geo-alt-fill"></i> Shipping To</h5>
+                    <div class="bb-success-detail-row">
+                        <i class="bi bi-person-fill"></i>
+                        <span>{{ order.full_name }}</span>
+                    </div>
+                    <div class="bb-success-detail-row">
+                        <i class="bi bi-telephone-fill"></i>
+                        <span>{{ order.phone }}</span>
+                    </div>
+                    <div class="bb-success-detail-row">
+                        <i class="bi bi-house-fill"></i>
+                        <span>{{ order.address }}, {{ order.city }}, {{ order.state }} - {{ order.pincode }}</span>
+                    </div>
+                </div>
+
+                <div class="bb-success-card">
+                    <h5 class="bb-card-heading"><i class="bi bi-wallet2"></i> Payment</h5>
+                    <div class="bb-success-detail-row">
+                        <i
+                            class="bi bi-{% if order.payment_method == 'cod' %}cash-coin{% else %}credit-card-fill{% endif %}"></i>
+                        <span>{{ order.get_payment_method_display }}</span>
+                    </div>
+                    <div class="bb-success-detail-row">
+                        <i class="bi bi-hourglass-split"></i>
+                        <span class="bb-status-badge bb-status-{{ order.status }}">{{ order.get_status_display }}</span>
+                    </div>
+                </div>
+
+                <a href="{% url 'product_list' %}" class="bb-btn-continue-shopping">
+                    <i class="bi bi-arrow-left"></i> Continue Shopping
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+{% endblock %}

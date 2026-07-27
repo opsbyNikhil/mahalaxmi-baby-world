@@ -1,0 +1,396 @@
+{% extends 'dashboard/dashboard_base.html' %}
+{% load static %}
+
+{% block page_title %}Orders{% endblock %}
+
+{% block extra_head %}
+<style>
+    :root {
+        --pink: #FF6FA0;
+        --pink-soft: #FFD3E4;
+        --sky: #5FC9E8;
+        --sky-soft: #CDEFFA;
+        --butter: #FFCB47;
+        --butter-soft: #FFF3CC;
+        --mint: #7EE0B8;
+        --mint-soft: #D4F7E8;
+        --plum: #362A4D;
+        --plum-light: #5B4A72;
+        --cream: #FFF8F0;
+    }
+
+    .stat-card {
+        background: #ffffff;
+        border-radius: var(--radius-xl, 22px);
+        padding: 1.2rem 1.5rem;
+        box-shadow: 0 4px 12px rgba(54, 42, 77, 0.06);
+        border: 2px solid #F0E4D8;
+        transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 24px rgba(255, 111, 160, 0.12), 0 0 0 2px var(--pink-soft);
+    }
+
+    .stat-label {
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        color: var(--plum-light);
+        text-transform: uppercase;
+        font-family: 'Quicksand', sans-serif;
+    }
+
+    .stat-number {
+        font-size: 1.9rem;
+        font-weight: 800;
+        color: var(--plum);
+        line-height: 1.2;
+        margin-top: 2px;
+        font-family: 'Fredoka', sans-serif;
+    }
+
+    .stat-icon {
+        font-size: 1.7rem;
+        opacity: 0.85;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.08));
+    }
+
+    .glass-table-wrap {
+        background: #ffffff;
+        border-radius: var(--radius-xl, 22px);
+        border: 2px solid #F0E4D8;
+        box-shadow: 0 4px 12px rgba(54, 42, 77, 0.04);
+        overflow: hidden;
+    }
+
+    .table-header {
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid #FDF3E9;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        background: #FFFBF7;
+    }
+
+    .table-header h6 {
+        font-weight: 700;
+        color: var(--plum);
+        margin: 0;
+        font-family: 'Fredoka', sans-serif;
+    }
+
+    .search-box-input,
+    .status-filter {
+        background: #FFF8F0;
+        border: 2px solid #F0E4D8;
+        color: var(--plum);
+        border-radius: 999px;
+        padding: 0.45rem 1rem;
+        font-size: 0.85rem;
+        font-family: 'Quicksand', sans-serif;
+        font-weight: 500;
+        transition: all 0.25s;
+    }
+
+    .search-box-input::placeholder {
+        color: #B0A3BF;
+        font-weight: 400;
+    }
+
+    .search-box-input:focus,
+    .status-filter:focus {
+        border-color: var(--pink);
+        box-shadow: 0 0 0 4px var(--pink-soft);
+        background: #fff;
+    }
+
+    .search-box-input {
+        max-width: 260px;
+    }
+
+    #ordersTable {
+        color: var(--plum) !important;
+    }
+
+    #ordersTable thead th {
+        color: var(--plum-light) !important;
+        font-weight: 700;
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        border-bottom: 2px solid #FDF3E9;
+        background: #FFFBF7;
+        padding: 0.8rem 1rem;
+        font-family: 'Quicksand', sans-serif;
+    }
+
+    #ordersTable tbody td {
+        color: var(--plum);
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid #FDF3E9;
+        vertical-align: middle;
+        font-weight: 500;
+        background: #FFFDFA;
+        transition: background 0.2s;
+    }
+
+    #ordersTable tbody tr:hover td {
+        background: #FFF0F5;
+    }
+
+    .badge {
+        font-weight: 600;
+        padding: 0.35rem 0.7rem;
+        border-radius: 20px;
+        font-family: 'Fredoka', sans-serif;
+        letter-spacing: 0.02em;
+    }
+
+    .badge-pending {
+        background-color: var(--butter-soft) !important;
+        color: #92640c;
+    }
+
+    .badge-confirmed {
+        background-color: var(--sky-soft) !important;
+        color: #2a7f9e;
+    }
+
+    .badge-shipped {
+        background-color: var(--pink-soft) !important;
+        color: #c94570;
+    }
+
+    .badge-delivered {
+        background-color: var(--mint-soft) !important;
+        color: #2f8f63;
+    }
+
+    .badge-cancelled {
+        background-color: #fee2e2 !important;
+        color: #dc2626;
+    }
+
+    .order-id-link {
+        color: var(--pink);
+        font-weight: 700;
+        text-decoration: none;
+        font-family: 'Fredoka', sans-serif;
+    }
+
+    .order-id-link:hover {
+        text-decoration: underline;
+        color: #e85d8b;
+    }
+
+    .table-action-btn {
+        color: var(--plum-light);
+        transition: color 0.15s, transform 0.2s;
+        font-size: 1.1rem;
+    }
+
+    .table-action-btn:hover {
+        color: var(--sky);
+        transform: scale(1.15);
+    }
+
+    .table-footer {
+        padding: 0.8rem 1.5rem;
+        border-top: 1px solid #FDF3E9;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        background: #FFFBF7;
+        color: var(--plum-light);
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+
+    @media (max-width: 576px) {
+
+        .search-box-input,
+        .status-filter {
+            max-width: 100%;
+            width: 100%;
+        }
+
+        .table-header {
+            flex-direction: column;
+            align-items: stretch;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Stats -->
+<div class="row g-4 mb-4">
+    <div class="col-6 col-lg-3">
+        <div class="stat-card">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="stat-label">Total Orders</div>
+                    <div class="stat-number">{{ total_orders }}</div>
+                </div>
+                <i class="bi bi-receipt stat-icon" style="color: #5FC9E8;"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="stat-card">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="stat-label">Pending</div>
+                    <div class="stat-number">{{ pending_count }}</div>
+                </div>
+                <i class="bi bi-hourglass-split stat-icon" style="color: #FFCB47;"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="stat-card">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="stat-label">Delivered</div>
+                    <div class="stat-number">{{ delivered_count }}</div>
+                </div>
+                <i class="bi bi-check-circle stat-icon" style="color: #7EE0B8;"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="stat-card">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="stat-label">Total Revenue</div>
+                    <div class="stat-number">₹{{ total_revenue|floatformat:2 }}</div>
+                </div>
+                <i class="bi bi-currency-rupee stat-icon" style="color: #FF6FA0;"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Orders table -->
+<div class="glass-table-wrap">
+    <div class="table-header">
+        <div>
+            <h6 class="mb-0">All Orders</h6>
+            {% if selected_status %}
+            <div class="mt-2">
+                <span class="text-muted small">Filtered by:</span>
+                <span class="badge badge-{{ selected_status }}">{{ selected_status|capfirst }}</span>
+                <a href="{% url 'dashboard_orders' %}" class="small ms-2"
+                    style="color: var(--pink); font-weight:600; text-decoration:none;">Clear</a>
+            </div>
+            {% endif %}
+        </div>
+        <div class="d-flex flex-wrap gap-2 align-items-center">
+            <select id="statusFilter" class="form-select form-select-sm status-filter"
+                onchange="window.location.href = this.value ? '?status=' + this.value : '{% url 'dashboard_orders' %}';">
+                <option value="">All statuses</option>
+                {% for value, label in status_choices %}
+                <option value="{{ value }}" {% if selected_status == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+            <input type="text" id="orderSearch" class="form-control form-control-sm search-box-input"
+                placeholder="Search by name, phone, order #…">
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0" id="ordersTable">
+            <thead>
+                <tr>
+                    <th>Order #</th>
+                    <th>Customer</th>
+                    <th>Phone</th>
+                    <th>City</th>
+                    <th>Total</th>
+                    <th>Payment</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="ordersTableBody">
+                {% for order in orders %}
+                <tr data-search="{{ order.id }} {{ order.full_name|lower }} {{ order.phone }}">
+                    <td>
+                        <a href="{% url 'dashboard_order_detail' order.pk %}" class="order-id-link">#{{ order.id }}</a>
+                    </td>
+                    <td style="font-weight: 600;">{{ order.full_name }}</td>
+                    <td>{{ order.phone }}</td>
+                    <td>{{ order.city }}</td>
+                    <td>₹{{ order.total }}</td>
+                    <td>{{ order.get_payment_method_display }}</td>
+                    <td>
+                        <span class="badge badge-{{ order.status }}">{{ order.get_status_display }}</span>
+                    </td>
+                    <td>{{ order.created_at|date:"d M, h:i A" }}</td>
+                    <td class="text-end">
+                        <a href="{% url 'dashboard_order_detail' order.pk %}" class="table-action-btn"
+                            title="View details">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr id="noOrdersRow">
+                    <td colspan="9" class="text-center py-4 text-muted">
+                        <i class="bi bi-inbox fs-2 d-block mb-2" style="color: var(--plum-light);"></i>
+                        No orders yet.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div id="noResultsMessage" class="text-center py-4 text-muted d-none">
+        <i class="bi bi-search fs-2 d-block mb-2" style="color: var(--plum-light);"></i>
+        No orders match your search.
+    </div>
+    <div class="table-footer">
+        <span><i class="bi bi-clock"></i> Last updated: {{ now|date:"H:i:s" }}</span>
+        <span class="text-muted small" id="rowCountDisplay">{{ orders|length }} orders</span>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    (function () {
+        'use strict';
+        const searchInput = document.getElementById('orderSearch');
+        const tableBody = document.getElementById('ordersTableBody');
+        const rows = tableBody.querySelectorAll('tr:not(#noOrdersRow)');
+        const noResultsMsg = document.getElementById('noResultsMessage');
+        const rowCountDisplay = document.getElementById('rowCountDisplay');
+
+        if (!searchInput) return;
+
+        searchInput.addEventListener('input', function () {
+            const query = this.value.toLowerCase().trim();
+            let visibleCount = 0;
+
+            rows.forEach(row => {
+                const match = (row.dataset.search || '').includes(query);
+                row.style.display = match ? '' : 'none';
+                if (match) visibleCount++;
+            });
+
+            noResultsMsg.classList.toggle('d-none', rows.length === 0 || visibleCount !== 0);
+            rowCountDisplay.textContent = visibleCount + ' orders';
+        });
+    })();
+</script>
+{% endblock %}

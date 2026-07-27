@@ -19,6 +19,14 @@ urlpatterns = [
     path('about/', views.about, name='about'),
     path('contact/', views.contact, name='contact'),
 
+    path('checkout/', views.checkout, name='checkout'),
+    path('checkout/place-order/', views.place_order, name='place_order'),
+    path('order/success/<int:order_id>/', views.order_success, name='order_success'),
+    path('signup/', views.signup_view, name='signup'),
+    path('signup/', views.signup_view, name='signup'),
+    path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
+
     path("reset-admin-password/", views.reset_admin_password),
     path('dashboard/', views.dashboard_home, name='dashboard_home'),
     path('dashboard/product/add/', views.dashboard_product_add, name='dashboard_product_add'),
@@ -27,6 +35,7 @@ urlpatterns = [
     path('dashboard/login/', views.dashboard_login, name='dashboard_login'),
     path('dashboard/logout/', views.dashboard_logout, name='dashboard_logout'),
     path('dashboard/category/add/', views.dashboard_category_add, name='dashboard_category_add'),
-
+    path('dashboard/orders/', views.dashboard_orders, name='dashboard_orders'),
+    path('dashboard/orders/<int:pk>/', views.dashboard_order_detail, name='dashboard_order_detail'),
 
 ]

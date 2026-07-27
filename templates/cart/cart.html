@@ -4,6 +4,7 @@
 {% block title %}Shopping Cart{% endblock %}
 
 {% block css %}
+{{ block.super }}
 <link rel="stylesheet" href="{% static 'css/cart.css' %}">
 {% endblock %}
 
@@ -17,13 +18,13 @@
         </div>
 
         {% if cart_items %}
-        <div class="bb-cart-list">
+        <div class="bb-cart-list" id="cart-list">
             {% for item in cart_items %}
-            <div class="bb-cart-item">
+            <div class="bb-cart-item" data-product-id="{{ item.product.id }}">
                 {% if item.product.image %}
                 <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="bb-cart-item-img">
                 {% else %}
-                <div class="bb-cart-item-img d-flex align-items-center justify-content-center">🛏️</div>
+                <div class="bb-cart-item-img-placeholder">🛏️</div>
                 {% endif %}
 
                 <div class="bb-cart-item-info">
@@ -42,20 +43,21 @@
 
                 <div class="bb-cart-item-subtotal">₹{{ item.subtotal }}</div>
 
-                <a href="#" class="bb-cart-remove-btn remove-item-btn"
-                    data-remove-url="{% url 'remove_from_cart' item.product.id %}" aria-label="Remove item">🗑️</a>
+                <!-- Remove button triggers modal -->
+                <button type="button" class="bb-cart-remove-btn remove-trigger" data-product-id="{{ item.product.id }}"
+                    data-remove-url="{% url 'remove_from_cart' item.product.id %}" aria-label="Remove item">🗑️</button>
             </div>
             {% endfor %}
         </div>
 
         <div class="bb-cart-summary">
             <span class="bb-cart-total-label">Total</span>
-            <span class="bb-cart-total-value">₹{{ total }}</span>
+            <span class="bb-cart-total-value" id="cart-total">₹{{ total }}</span>
         </div>
 
         <div class="bb-cart-actions">
             <a href="{% url 'product_list' %}" class="bb-btn-outline">← Continue Shopping</a>
-            <a href="#" class="bb-btn-primary">Proceed to Checkout</a>
+            <a href="{% url 'checkout' %}" class="bb-btn-primary">Proceed to Checkout</a>
         </div>
 
         {% else %}
@@ -69,36 +71,80 @@
     </div>
 </div>
 
-<!-- Remove Item Confirmation Modal -->
+<!-- Remove Item Confirmation Modal (with POST form) -->
 <div class="modal fade bb-remove-modal" id="removeItemModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Remove item</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                Remove this item from your cart?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="bb-modal-btn-cancel" data-bs-dismiss="modal">Cancel</button>
-                <a href="#" id="confirmRemoveBtn" class="bb-modal-btn-remove">Remove</a>
-            </div>
+            <form id="removeForm" method="post" action="">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title">Remove item</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    Remove this item from your cart?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="bb-modal-btn-cancel" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="bb-modal-btn-remove">Remove</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
-<script>
-    document.querySelectorAll('.remove-item-btn').forEach(function (btn) {
-        btn.addEventListener('click', function (e) {
-            e.preventDefault();
-            const url = this.dataset.removeUrl;
-            const confirmBtn = document.getElementById('confirmRemoveBtn');
-            confirmBtn.href = url;
+{% endblock %}
 
-            const modal = new bootstrap.Modal(document.getElementById('removeItemModal'));
-            modal.show();
+{% block js %}
+{{ block.super }}
+<script>
+    (function () {
+        'use strict';
+
+        const triggers = document.querySelectorAll('.remove-trigger');
+        const removeForm = document.getElementById('removeForm');
+        const modalElement = document.getElementById('removeItemModal');
+
+        if (!modalElement || typeof bootstrap === 'undefined') {
+            // Bootstrap JS didn't load — bail out loudly in the console
+            // instead of silently failing.
+            console.error('Bootstrap JS or #removeItemModal not found.');
+            return;
+        }
+
+        const modal = new bootstrap.Modal(modalElement);
+
+        triggers.forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                const removeUrl = this.dataset.removeUrl;
+                removeForm.action = removeUrl;
+                modal.show();
+            });
         });
-    });
+
+        // Explicitly wire every dismiss-capable element (X button, Cancel
+        // button) instead of relying solely on Bootstrap's delegated
+        // data-bs-dismiss listener, which can be intercepted by other
+        // document-level click handlers on the page (e.g. navbar scripts).
+        modalElement.querySelectorAll('[data-bs-dismiss="modal"]').forEach(function (el) {
+            el.addEventListener('click', function (e) {
+                e.preventDefault();
+                modal.hide();
+            });
+        });
+
+        // Safety net: if a backdrop or body lock ever gets orphaned
+        // (e.g. from a stray duplicate modal instance or an interrupted
+        // hide), force cleanup so the page never gets stuck greyed out.
+        modalElement.addEventListener('hidden.bs.modal', function () {
+            document.querySelectorAll('.modal-backdrop').forEach(function (el) {
+                el.remove();
+            });
+            document.body.classList.remove('modal-open');
+            document.body.style.removeProperty('overflow');
+            document.body.style.removeProperty('padding-right');
+        });
+    })();
 </script>
 {% endblock %}

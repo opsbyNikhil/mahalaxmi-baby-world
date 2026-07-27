@@ -1,0 +1,399 @@
+.bb-checkout-page {
+    padding-bottom: 3rem;
+    font-family: 'Quicksand', 'Nunito Sans', sans-serif;
+}
+
+.bb-checkout-hero {
+    padding: 2.5rem 0 1.5rem;
+}
+
+.bb-hero-eyebrow {
+    display: inline-block;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--sky-strong);
+    background: var(--sky-subtle);
+    padding: 0.35rem 0.9rem;
+    border-radius: var(--radius-pill);
+    margin-bottom: 0.85rem;
+}
+
+.bb-checkout-hero h1 {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    font-size: clamp(1.9rem, 3.4vw, 2.5rem);
+    color: var(--plum);
+    margin-bottom: 0;
+}
+
+/* ---------- Steps ---------- */
+.bb-checkout-steps {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 2.5rem;
+}
+
+.bb-step {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0.45;
+}
+
+.bb-step.done,
+.bb-step.active {
+    opacity: 1;
+}
+
+.bb-step-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--border-default);
+    color: var(--text-tertiary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+}
+
+.bb-step.done .bb-step-icon {
+    background: var(--mint-soft);
+    color: #2f8f63;
+}
+
+.bb-step.active .bb-step-icon {
+    background: linear-gradient(135deg, #FF6FA0, #FF9A56);
+    color: #fff;
+    box-shadow: var(--shadow-glow-pink);
+}
+
+.bb-step-label {
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--plum);
+    white-space: nowrap;
+}
+
+.bb-step-line {
+    flex: 1;
+    height: 2px;
+    background: var(--border-default);
+    max-width: 80px;
+}
+
+/* ---------- Cards ---------- */
+.bb-checkout-card {
+    background: #fff;
+    border: 2px solid var(--border-default);
+    border-radius: var(--radius-xl);
+    padding: 1.6rem 1.7rem;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 1.5rem;
+}
+
+.bb-card-heading {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: var(--plum);
+    margin-bottom: 1.3rem;
+}
+
+.bb-card-heading i {
+    color: var(--pink);
+    font-size: 0.95rem;
+}
+
+.bb-checkout-card label:not(.bb-payment-option) {
+    display: block;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    font-size: 0.82rem;
+    color: var(--plum);
+    margin-bottom: 0.4rem;
+}
+
+.bb-checkout-card .form-control {
+    background: var(--cream);
+    border: 2px solid var(--border-default);
+    border-radius: var(--radius-md);
+    padding: 0.6rem 0.9rem;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: var(--plum);
+    transition: all 0.25s ease;
+}
+
+.bb-checkout-card .form-control:focus {
+    outline: none;
+    border-color: var(--sky);
+    box-shadow: 0 0 0 5px var(--sky-soft);
+    background: #fff;
+}
+
+/* ---------- Payment options ---------- */
+.bb-payment-option {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    border: 2px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    padding: 0.9rem 1.1rem;
+    cursor: pointer;
+    margin-bottom: 0.8rem;
+    transition: all 0.2s ease;
+}
+
+.bb-payment-option:last-child {
+    margin-bottom: 0;
+}
+
+.bb-payment-option:hover {
+    border-color: var(--pink-soft);
+    background: var(--pink-subtle);
+}
+
+.bb-payment-option input[type="radio"] {
+    display: none;
+}
+
+.bb-payment-radio {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid var(--border-default);
+    flex-shrink: 0;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.bb-payment-option input:checked ~ .bb-payment-radio {
+    border-color: var(--pink);
+}
+
+.bb-payment-option input:checked ~ .bb-payment-radio::after {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #FF6FA0, #FF9A56);
+}
+
+.bb-payment-option input:checked ~ .bb-payment-icon {
+    background: linear-gradient(135deg, #FF6FA0, #FF9A56);
+    color: #fff;
+}
+
+.bb-payment-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    background: var(--sky-subtle);
+    color: var(--sky-strong);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+}
+
+.bb-payment-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.bb-payment-text strong {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    font-size: 0.92rem;
+    color: var(--plum);
+}
+
+.bb-payment-text small {
+    font-size: 0.78rem;
+    color: var(--text-tertiary);
+    font-weight: 600;
+}
+
+/* ---------- Order summary ---------- */
+.bb-order-summary {
+    background: #fff;
+    border: 2px solid var(--border-default);
+    border-radius: var(--radius-xl);
+    padding: 1.6rem 1.7rem;
+    box-shadow: var(--shadow-sm);
+    position: sticky;
+    top: 90px;
+}
+
+.bb-order-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    max-height: 280px;
+    overflow-y: auto;
+    margin-bottom: 1.2rem;
+    padding-right: 0.3rem;
+}
+
+.bb-order-item {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+}
+
+.bb-order-item img,
+.bb-order-item-placeholder {
+    width: 46px;
+    height: 46px;
+    border-radius: var(--radius-sm);
+    object-fit: cover;
+    background: var(--sky-soft);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--sky-strong);
+}
+
+.bb-order-item-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.bb-order-item-info strong {
+    display: block;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--plum);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.bb-order-item-info small {
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+    font-weight: 600;
+}
+
+.bb-order-item-price {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--plum);
+    flex-shrink: 0;
+}
+
+.bb-order-empty {
+    font-size: 0.85rem;
+    color: var(--text-tertiary);
+    text-align: center;
+    padding: 1rem 0;
+}
+
+.bb-order-line {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    padding: 0.5rem 0;
+    border-top: 1px dashed var(--border-light);
+}
+
+.bb-order-free {
+    color: #2f8f63;
+    font-weight: 700;
+}
+
+.bb-order-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    font-size: 1.2rem;
+    color: var(--pink-strong);
+    padding: 0.9rem 0;
+    border-top: 2px solid var(--border-default);
+    margin-top: 0.3rem;
+    margin-bottom: 1.3rem;
+}
+
+.bb-btn-place-order {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, #FF6FA0, #FF9A56);
+    color: #fff;
+    border: none;
+    padding: 0.85rem 1.5rem;
+    border-radius: var(--radius-pill);
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 800;
+    font-size: 1rem;
+    box-shadow: 0 8px 20px -8px rgba(255, 111, 160, 0.45);
+    transition: transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    margin-bottom: 0.9rem;
+}
+
+.bb-btn-place-order:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: var(--shadow-glow-pink);
+}
+
+.bb-btn-place-order:active {
+    transform: scale(0.97);
+}
+
+.bb-btn-back-cart {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    color: var(--sky-strong);
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-decoration: none;
+    transition: gap 0.2s ease, color 0.2s ease;
+}
+
+.bb-btn-back-cart:hover {
+    color: var(--pink-strong);
+    gap: 0.6rem;
+}
+
+@media (max-width: 991.98px) {
+    .bb-order-summary {
+        position: static;
+        margin-top: 1.5rem;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .bb-checkout-card {
+        padding: 1.3rem 1.4rem;
+    }
+
+    .bb-step-label {
+        display: none;
+    }
+}

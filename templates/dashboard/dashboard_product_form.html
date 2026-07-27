@@ -1,333 +1,9 @@
 {% extends 'dashboard/dashboard_base.html' %}
 {% load static %}
 
-{% block title %}{% if is_edit %}Edit{% else %}Add{% endif %} Product · BabyShop{% endblock %}
+{% block title %}{% if is_edit %}Edit{% else %}Add{% endif %} Product · BabyShop Admin{% endblock %}
 
 {% block page_title %}{% if is_edit %}Edit Product{% else %}Add New Product{% endif %}{% endblock %}
-
-{% block extra_head %}
-<style>
-    /* ─── Product Form Animations & Professional Styling ─── */
-    .product-form-wrapper .card {
-        background: #ffffff;
-        border: 1px solid var(--border-default, #e2e8f0);
-        border-radius: var(--radius-xl, 20px);
-        box-shadow: var(--shadow-sm, 0 1px 3px rgba(15, 23, 42, 0.06));
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        animation: formCardIn 0.5s ease both;
-    }
-
-    .product-form-wrapper .card:nth-child(1) {
-        animation-delay: 0.1s;
-    }
-
-    .product-form-wrapper .card:nth-child(2) {
-        animation-delay: 0.2s;
-    }
-
-    .product-form-wrapper .card:nth-child(3) {
-        animation-delay: 0.25s;
-    }
-
-    @keyframes formCardIn {
-        from {
-            opacity: 0;
-            transform: translateY(18px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .product-form-wrapper .card:hover {
-        box-shadow: var(--shadow-md, 0 4px 6px rgba(15, 23, 42, 0.07));
-    }
-
-    .product-form-wrapper .card-body {
-        background: #ffffff;
-        border-radius: inherit;
-    }
-
-    .product-form-wrapper .card-title {
-        color: var(--text-primary, #0f172a);
-        font-weight: 700;
-        letter-spacing: -0.01em;
-        display: flex;
-        align-items: center;
-    }
-
-    .product-form-wrapper .card-title i {
-        font-size: 1.1rem;
-        color: var(--accent, #f97316);
-        transition: transform 0.3s ease;
-    }
-
-    .product-form-wrapper .card:hover .card-title i {
-        transform: rotate(-3deg) scale(1.1);
-    }
-
-    .product-form-wrapper .form-label {
-        color: var(--text-primary, #0f172a);
-        font-weight: 600;
-        font-size: 0.82rem;
-        margin-bottom: 0.25rem;
-        letter-spacing: -0.01em;
-        transition: color 0.2s;
-    }
-
-    .product-form-wrapper .form-control,
-    .product-form-wrapper .form-select {
-        background: #ffffff;
-        border: 1.5px solid #e2e8f0;
-        border-radius: 12px;
-        padding: 10px 14px;
-        font-size: 0.9rem;
-        color: #0f172a;
-        transition: all 0.25s ease;
-        font-weight: 500;
-    }
-
-    .product-form-wrapper .form-control:hover,
-    .product-form-wrapper .form-select:hover {
-        border-color: #cbd5e1;
-        background: #fafbfc;
-    }
-
-    .product-form-wrapper .form-control:focus,
-    .product-form-wrapper .form-select:focus {
-        border-color: var(--accent, #f97316);
-        box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.12);
-        background: #ffffff;
-        color: #0f172a;
-        transform: translateY(-1px);
-    }
-
-    .product-form-wrapper .form-control::placeholder {
-        color: #94a3b8;
-        font-weight: 400;
-    }
-
-    /* Switch Toggle Animation */
-    .product-form-wrapper .form-switch .form-check-input {
-        width: 3rem;
-        height: 1.5rem;
-        border-radius: 30px;
-        border: 2px solid #d1d9e6;
-        background-color: #f1f4f9;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        box-shadow: none;
-    }
-
-    .product-form-wrapper .form-switch .form-check-input:checked {
-        background-color: var(--accent, #f97316);
-        border-color: var(--accent, #f97316);
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23ffffff'/%3e%3c/svg%3e");
-        animation: toggleBounce 0.4s ease;
-    }
-
-    @keyframes toggleBounce {
-        0% {
-            transform: scale(1);
-        }
-
-        50% {
-            transform: scale(1.08);
-        }
-
-        100% {
-            transform: scale(1);
-        }
-    }
-
-    .product-form-wrapper .form-switch .form-check-input:focus {
-        box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.15);
-        border-color: var(--accent, #f97316);
-    }
-
-    .product-form-wrapper .form-switch .form-check-label {
-        margin-left: 8px;
-        font-weight: 500;
-        color: #0f172a;
-    }
-
-    /* Image Upload Area */
-    .image-preview-wrapper {
-        min-height: 150px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: #fafbfc;
-        border-radius: 16px;
-        overflow: hidden;
-        border: 1px solid #e9edf2;
-        transition: all 0.3s ease;
-        position: relative;
-    }
-
-    .image-preview-wrapper:hover {
-        border-color: #cbd5e1;
-        background: #f8fafc;
-    }
-
-    .image-preview-wrapper img {
-        max-height: 200px;
-        width: auto;
-        border-radius: 12px;
-        border: 1px solid #e9edf2;
-        transition: transform 0.3s ease, opacity 0.4s ease;
-    }
-
-    .image-preview-wrapper img:hover {
-        transform: scale(1.02);
-    }
-
-    .placeholder-image {
-        width: 100%;
-        height: 150px;
-        background: #f8fafc;
-        border: 2px dashed #d1d9e6;
-        border-radius: 16px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #94a3b8;
-        transition: all 0.3s ease;
-    }
-
-    .placeholder-image i {
-        font-size: 2.5rem;
-        transition: transform 0.3s ease;
-    }
-
-    .image-preview-wrapper:hover .placeholder-image i {
-        transform: translateY(-3px);
-    }
-
-    .placeholder-image.hidden {
-        opacity: 0;
-        pointer-events: none;
-        position: absolute;
-        inset: 0;
-    }
-
-    /* Upload Button */
-    .btn-outline-primary {
-        color: #475569;
-        border-color: #d1d9e6;
-        background: #ffffff;
-        transition: all 0.25s ease;
-        font-weight: 500;
-        border-radius: 12px;
-    }
-
-    .btn-outline-primary:hover {
-        background: #f1f4f9;
-        border-color: #b0c0d0;
-        color: #0f172a;
-        transform: translateY(-1px);
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-    }
-
-    .btn-outline-primary:active {
-        transform: scale(0.97);
-    }
-
-    /* Primary Action Buttons */
-    .btn-warning {
-        background: var(--accent, #f97316) !important;
-        border: none;
-        color: #fff !important;
-        border-radius: 14px;
-        padding: 0.8rem 1.5rem;
-        font-weight: 700;
-        letter-spacing: -0.01em;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
-        position: relative;
-        overflow: hidden;
-    }
-
-    .btn-warning:hover {
-        background: #ea580c !important;
-        box-shadow: 0 6px 18px rgba(249, 115, 22, 0.4);
-        transform: translateY(-2px);
-    }
-
-    .btn-warning:active {
-        transform: scale(0.96);
-        box-shadow: 0 2px 6px rgba(249, 115, 22, 0.3);
-    }
-
-    .btn-warning i {
-        transition: transform 0.3s ease;
-    }
-
-    .btn-warning:hover i {
-        transform: rotate(10deg) scale(1.2);
-    }
-
-    .btn-outline-secondary {
-        border-color: #d1d9e6;
-        color: #475569;
-        background: #ffffff;
-        border-radius: 14px;
-        padding: 0.8rem 1.5rem;
-        font-weight: 600;
-        transition: all 0.25s ease;
-    }
-
-    .btn-outline-secondary:hover {
-        background: #f1f4f9;
-        border-color: #b0c0d0;
-        color: #0f172a;
-        transform: translateY(-1px);
-    }
-
-    .btn-outline-secondary:active {
-        transform: scale(0.97);
-    }
-
-    .invalid-feedback {
-        font-size: 0.8rem;
-        color: #ef4444;
-        margin-top: 4px;
-        animation: shakeError 0.4s ease;
-    }
-
-    @keyframes shakeError {
-
-        0%,
-        100% {
-            transform: translateX(0);
-        }
-
-        20% {
-            transform: translateX(-5px);
-        }
-
-        40% {
-            transform: translateX(5px);
-        }
-
-        60% {
-            transform: translateX(-3px);
-        }
-
-        80% {
-            transform: translateX(3px);
-        }
-    }
-
-    @media (max-width: 768px) {
-        .product-form-wrapper .card-body {
-            padding: 1.25rem !important;
-        }
-    }
-</style>
-{% endblock %}
 
 {% block content %}
 <div class="product-form-wrapper">
@@ -337,134 +13,163 @@
         <div class="row g-4">
             <!-- Left column: main fields -->
             <div class="col-lg-8">
-                <div class="card mb-4">
+
+                <!-- Product Details Card -->
+                <div class="candy-card mb-4">
                     <div class="card-body p-4">
-                        <h6 class="card-title fw-semibold mb-3">
-                            <i class="bi bi-pencil-square me-2"></i>
-                            Product Details
-                        </h6>
+                        <h6 class="card-title"><i class="bi bi-pencil-square me-2"></i>Product Details</h6>
 
                         <div class="row g-3">
-                            <!-- Name & Brand -->
+                            <!-- Name -->
                             <div class="col-md-8">
                                 <label for="{{ form.name.id_for_label }}" class="form-label fw-semibold">{{ form.name.label }}</label>
-                                {{ form.name }}
-                                {% if form.name.errors %}
-                                <div class="invalid-feedback d-block">{{ form.name.errors }}</div>
-                                {% endif %}
+                                <div class="input-pill">
+                                    <span class="input-chip chip-pink"><i class="bi bi-tag-fill"></i></span>
+                                    {{ form.name }}
+                                </div>
+                                {% if form.name.errors %}<div class="invalid-feedback d-block">{{ form.name.errors }}
+                                </div>{% endif %}
                             </div>
+
+                            <!-- Brand -->
                             <div class="col-md-4">
                                 <label for="{{ form.brand.id_for_label }}" class="form-label fw-semibold">{{ form.brand.label }}</label>
-                                {{ form.brand }}
-                                {% if form.brand.errors %}
-                                <div class="invalid-feedback d-block">{{ form.brand.errors }}</div>
-                                {% endif %}
+                                <div class="input-pill">
+                                    <span class="input-chip chip-sky"><i class="bi bi-bookmark-star-fill"></i></span>
+                                    {{ form.brand }}
+                                </div>
+                                {% if form.brand.errors %}<div class="invalid-feedback d-block">{{ form.brand.errors }}
+                                </div>{% endif %}
                             </div>
 
-                            <!-- Category & Price -->
+                            <!-- Category -->
                             <div class="col-md-6">
                                 <label for="{{ form.category.id_for_label }}" class="form-label fw-semibold">{{ form.category.label }}</label>
-                                {{ form.category }}
-                                {% if form.category.errors %}
-                                <div class="invalid-feedback d-block">{{ form.category.errors }}</div>
-                                {% endif %}
-                            </div>
-                            <div class="col-md-6">
-                                <label for="{{ form.price.id_for_label }}" class="form-label fw-semibold">{{ form.price.label }}</label>
-                                {{ form.price }}
-                                {% if form.price.errors %}
-                                <div class="invalid-feedback d-block">{{ form.price.errors }}</div>
-                                {% endif %}
+                                <div class="input-pill">
+                                    <span class="input-chip chip-butter"><i class="bi bi-grid-fill"></i></span>
+                                    {{ form.category }}
+                                </div>
+                                {% if form.category.errors %}<div class="invalid-feedback d-block">{{
+                                    form.category.errors }}</div>{% endif %}
                             </div>
 
-                            <!-- Stock & Available -->
+                            <!-- Price -->
+                            <div class="col-md-6">
+                                <label for="{{ form.price.id_for_label }}" class="form-label fw-semibold">{{ form.price.label }}</label>
+                                <div class="input-pill">
+                                    <span class="input-chip chip-mint"><i class="bi bi-currency-dollar"></i></span>
+                                    {{ form.price }}
+                                </div>
+                                {% if form.price.errors %}<div class="invalid-feedback d-block">{{ form.price.errors }}
+                                </div>{% endif %}
+                            </div>
+
+                            <!-- Stock -->
                             <div class="col-md-6">
                                 <label for="{{ form.stock.id_for_label }}" class="form-label fw-semibold">{{ form.stock.label }}</label>
-                                {{ form.stock }}
-                                {% if form.stock.errors %}
-                                <div class="invalid-feedback d-block">{{ form.stock.errors }}</div>
-                                {% endif %}
+                                <div class="input-pill">
+                                    <span class="input-chip chip-butter"><i class="bi bi-box-seam-fill"></i></span>
+                                    {{ form.stock }}
+                                </div>
+                                {% if form.stock.errors %}<div class="invalid-feedback d-block">{{ form.stock.errors }}
+                                </div>{% endif %}
                             </div>
+
+                            <!-- Available switch -->
                             <div class="col-md-6 d-flex align-items-center">
-                                <div class="form-check form-switch mt-3">
+                                <div class="form-check form-switch candy-switch mt-3">
                                     {{ form.is_available }}
                                     <label class="form-check-label fw-semibold"
                                         for="{{ form.is_available.id_for_label }}">
                                         {{ form.is_available.label }}
                                     </label>
                                 </div>
-                                {% if form.is_available.errors %}
-                                <div class="invalid-feedback d-block">{{ form.is_available.errors }}</div>
-                                {% endif %}
+                                {% if form.is_available.errors %}<div class="invalid-feedback d-block">{{ form.is_available.errors }}</div>{% endif %}
                             </div>
 
                             <!-- Description -->
                             <div class="col-12">
                                 <label for="{{ form.description.id_for_label }}" class="form-label fw-semibold">{{ form.description.label }}</label>
-                                {{ form.description }}
-                                {% if form.description.errors %}
-                                <div class="invalid-feedback d-block">{{ form.description.errors }}</div>
-                                {% endif %}
+                                <div class="input-pill textarea-pill">
+                                    <span class="input-chip chip-sky"><i class="bi bi-text-paragraph"></i></span>
+                                    {{ form.description }}
+                                </div>
+                                {% if form.description.errors %}<div class="invalid-feedback d-block">{{
+                                    form.description.errors }}</div>{% endif %}
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Additional attributes card -->
-                <div class="card mb-4">
+                <!-- Additional Attributes Card -->
+                <div class="candy-card mb-4">
                     <div class="card-body p-4">
-                        <h6 class="card-title fw-semibold mb-3"><i class="bi bi-tags me-2"></i>Additional Attributes
-                        </h6>
+                        <h6 class="card-title"><i class="bi bi-tags me-2"></i>Additional Attributes</h6>
 
                         <div class="row g-3">
-                            <!-- Product Type & Theme -->
+                            <!-- Product Type -->
                             <div class="col-md-6">
                                 <label for="{{ form.product_type.id_for_label }}" class="form-label fw-semibold">{{ form.product_type.label }}</label>
-                                {{ form.product_type }}
-                                {% if form.product_type.errors %}
-                                <div class="invalid-feedback d-block">{{ form.product_type.errors }}</div>
-                                {% endif %}
-                            </div>
-                            <div class="col-md-6">
-                                <label for="{{ form.theme.id_for_label }}" class="form-label fw-semibold">{{ form.theme.label }}</label>
-                                {{ form.theme }}
-                                {% if form.theme.errors %}
-                                <div class="invalid-feedback d-block">{{ form.theme.errors }}</div>
-                                {% endif %}
+                                <div class="input-pill">
+                                    <span class="input-chip chip-mint"><i class="bi bi-puzzle-fill"></i></span>
+                                    {{ form.product_type }}
+                                </div>
+                                {% if form.product_type.errors %}<div class="invalid-feedback d-block">{{ form.product_type.errors }}</div>{% endif %}
                             </div>
 
-                            <!-- Material & Color -->
+                            <!-- Theme -->
+                            <div class="col-md-6">
+                                <label for="{{ form.theme.id_for_label }}" class="form-label fw-semibold">{{ form.theme.label }}</label>
+                                <div class="input-pill">
+                                    <span class="input-chip chip-butter"><i class="bi bi-palette-fill"></i></span>
+                                    {{ form.theme }}
+                                </div>
+                                {% if form.theme.errors %}<div class="invalid-feedback d-block">{{ form.theme.errors }}
+                                </div>{% endif %}
+                            </div>
+
+                            <!-- Material -->
                             <div class="col-md-6">
                                 <label for="{{ form.material.id_for_label }}" class="form-label fw-semibold">{{ form.material.label }}</label>
-                                {{ form.material }}
-                                {% if form.material.errors %}
-                                <div class="invalid-feedback d-block">{{ form.material.errors }}</div>
-                                {% endif %}
+                                <div class="input-pill">
+                                    <span class="input-chip chip-pink"><i class="bi bi-droplet-fill"></i></span>
+                                    {{ form.material }}
+                                </div>
+                                {% if form.material.errors %}<div class="invalid-feedback d-block">{{ form.material.errors }}</div>{% endif %}
                             </div>
+
+                            <!-- Color -->
                             <div class="col-md-6">
                                 <label for="{{ form.color.id_for_label }}" class="form-label fw-semibold">{{ form.color.label }}</label>
-                                {{ form.color }}
-                                {% if form.color.errors %}
-                                <div class="invalid-feedback d-block">{{ form.color.errors }}</div>
-                                {% endif %}
+                                <div class="input-pill">
+                                    <span class="input-chip chip-sky"><i class="bi bi-eyedropper"></i></span>
+                                    {{ form.color }}
+                                </div>
+                                {% if form.color.errors %}<div class="invalid-feedback d-block">{{ form.color.errors }}
+                                </div>{% endif %}
                             </div>
 
                             <!-- Recommended Age -->
                             <div class="col-md-6">
                                 <label for="{{ form.recommended_age.id_for_label }}" class="form-label fw-semibold">{{ form.recommended_age.label }}</label>
-                                {{ form.recommended_age }}
-                                {% if form.recommended_age.errors %}
-                                <div class="invalid-feedback d-block">{{ form.recommended_age.errors }}</div>
-                                {% endif %}
+                                <div class="input-pill">
+                                    <span class="input-chip chip-mint"><i class="bi bi-calendar-heart-fill"></i></span>
+                                    {{ form.recommended_age }}
+                                </div>
+                                {% if form.recommended_age.errors %}<div class="invalid-feedback d-block">{{
+                                    form.recommended_age.errors }}</div>{% endif %}
                             </div>
 
                             <!-- Care Instructions -->
                             <div class="col-12">
                                 <label for="{{ form.care_instructions.id_for_label }}" class="form-label fw-semibold">{{ form.care_instructions.label }}</label>
-                                {{ form.care_instructions }}
-                                {% if form.care_instructions.errors %}
-                                <div class="invalid-feedback d-block">{{ form.care_instructions.errors }}</div>
-                                {% endif %}
+                                <div class="input-pill textarea-pill">
+                                    <span class="input-chip chip-butter"><i
+                                            class="bi bi-chat-left-text-fill"></i></span>
+                                    {{ form.care_instructions }}
+                                </div>
+                                {% if form.care_instructions.errors %}<div class="invalid-feedback d-block">{{
+                                    form.care_instructions.errors }}</div>{% endif %}
                             </div>
                         </div>
                     </div>
@@ -473,46 +178,49 @@
 
             <!-- Right column: image & actions -->
             <div class="col-lg-4">
-                <div class="card mb-4">
+                <!-- Image card -->
+                <div class="candy-card mb-4">
                     <div class="card-body p-4">
-                        <h6 class="card-title fw-semibold mb-3"><i class="bi bi-image me-2"></i>Product Image</h6>
+                        <h6 class="card-title"><i class="bi bi-image-fill me-2"></i>Product Image</h6>
 
                         <div class="text-center">
                             <div class="image-preview-wrapper mb-3" id="imagePreviewWrapper">
                                 {% if product and product.image %}
-                                <img src="{{ product.image.url }}" alt="Current image" class="img-fluid"
-                                    id="imagePreview">
-                                <div class="placeholder-image hidden">
-                                    <i class="bi bi-camera"></i>
+                                <img src="{{ product.image.url }}" alt="Current image"
+                                    class="img-fluid rounded-4 border" id="imagePreview">
+                                <div class="placeholder-image rounded-4 d-flex align-items-center justify-content-center d-none"
+                                    id="placeholderContainer" style="height:160px;">
+                                    <i class="bi bi-camera" style="font-size:2.5rem;"></i>
                                 </div>
                                 {% else %}
-                                <img src="#" alt="Image preview" class="img-fluid d-none" id="imagePreview">
-                                <div class="placeholder-image" id="placeholderContainer">
-                                    <i class="bi bi-camera"></i>
+                                <img src="#" alt="Image preview" class="img-fluid rounded-4 border d-none"
+                                    id="imagePreview">
+                                <div class="placeholder-image rounded-4 d-flex align-items-center justify-content-center"
+                                    id="placeholderContainer" style="height:160px; color:#B0A3BF;">
+                                    <i class="bi bi-camera" style="font-size:2.5rem;"></i>
                                 </div>
                                 {% endif %}
                             </div>
 
                             <div class="mb-2">
-                                <label for="{{ form.image.id_for_label }}" class="btn btn-outline-primary btn-sm w-100">
+                                <label for="{{ form.image.id_for_label }}" class="btn candy-btn-outline btn-sm w-100">
                                     <i class="bi bi-upload me-1"></i> Choose Image
                                 </label>
                                 {{ form.image }}
                             </div>
-                            <small class="text-muted d-block">Recommended: 800x800px, max 5MB</small>
-                            {% if form.image.errors %}
-                            <div class="invalid-feedback d-block">{{ form.image.errors }}</div>
-                            {% endif %}
+                            <small class="text-muted d-block">Recommended: 800×800px, max 5MB</small>
+                            {% if form.image.errors %}<div class="invalid-feedback d-block">{{ form.image.errors }}
+                            </div>{% endif %}
                         </div>
                     </div>
                 </div>
 
                 <!-- Action buttons -->
                 <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-warning btn-lg fw-semibold">
-                        <i class="bi bi-check-circle me-2"></i>{% if is_edit %}Save Changes{% else %}Add Product{% endif %}
+                    <button type="submit" class="btn candy-btn-primary btn-lg">
+                        <i class="bi bi-check-circle-fill me-2"></i>{% if is_edit %}Update Product{% else %}AddProduct{% endif %}
                     </button>
-                    <a href="{% url 'dashboard_home' %}" class="btn btn-outline-secondary btn-lg">
+                    <a href="{% url 'dashboard_home' %}" class="btn candy-btn-outline-secondary btn-lg">
                         <i class="bi bi-arrow-left me-2"></i>Cancel
                     </a>
                 </div>
@@ -521,35 +229,260 @@
     </form>
 </div>
 
+<style>
+    /* ------------------------------------------------------------
+       Candy Shop – Product Form with Icon Chips
+       ------------------------------------------------------------ */
+    .product-form-wrapper .candy-card {
+        background: #ffffff;
+        border-radius: 22px;
+        border: 2px solid #F0E4D8;
+        box-shadow: 0 4px 14px rgba(54, 42, 77, 0.06);
+        transition: box-shadow 0.2s;
+        overflow: hidden;
+    }
+
+    .product-form-wrapper .candy-card:hover {
+        box-shadow: 0 6px 20px rgba(255, 111, 160, 0.08);
+    }
+
+    .product-form-wrapper .card-title {
+        font-family: 'Fredoka', sans-serif;
+        font-weight: 600;
+        color: #362A4D;
+        font-size: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    /* Input pill */
+    .input-pill {
+        display: flex;
+        align-items: center;
+        background: #FFF8F0;
+        border-radius: 999px;
+        border: 2px solid transparent;
+        padding: 4px 6px;
+        transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+    }
+
+    .input-pill:focus-within {
+        background: #fff;
+        border-color: var(--pink);
+        box-shadow: 0 0 0 5px var(--pink-soft);
+    }
+
+    .input-pill.textarea-pill {
+        border-radius: 20px;
+    }
+
+    .input-pill input,
+    .input-pill select,
+    .input-pill textarea {
+        flex: 1;
+        border: none;
+        background: transparent;
+        padding: 11px 14px 11px 4px;
+        font-family: 'Quicksand', sans-serif;
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: var(--plum);
+        outline: none;
+        min-width: 0;
+    }
+
+    .input-pill input::placeholder,
+    .input-pill textarea::placeholder {
+        color: #B0A3BF;
+        font-weight: 400;
+    }
+
+    .input-pill select {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%235B4A72' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 16px center;
+        padding-right: 36px;
+    }
+
+    /* Chip */
+    .input-chip {
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 6px;
+        font-size: 0.95rem;
+    }
+
+    .chip-pink {
+        background: var(--pink-soft);
+        color: var(--pink);
+    }
+
+    .chip-sky {
+        background: var(--sky-soft);
+        color: var(--sky);
+    }
+
+    .chip-mint {
+        background: var(--mint-soft);
+        color: #5cb88a;
+    }
+
+    .chip-butter {
+        background: var(--butter-soft);
+        color: #d4a020;
+    }
+
+    /* Switch */
+    .candy-switch .form-check-input {
+        width: 3em;
+        height: 1.5em;
+        margin-right: 0.5rem;
+        background-color: #E0D4C8;
+        border: none;
+        border-radius: 999px;
+        transition: background-color 0.2s;
+    }
+
+    .candy-switch .form-check-input:checked {
+        background-color: var(--mint);
+    }
+
+    .candy-switch .form-check-label {
+        color: #362A4D;
+        font-weight: 600;
+        font-family: 'Quicksand', sans-serif;
+    }
+
+    /* Image preview */
+    .image-preview-wrapper {
+        min-height: 140px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #FFFBF7;
+        border-radius: 16px;
+        overflow: hidden;
+        border: 1px solid #F0E4D8;
+    }
+
+    .placeholder-image {
+        width: 100%;
+        height: 160px;
+        background: #FFF8F0;
+        border: 2px dashed #F0E4D8;
+        border-radius: 16px;
+    }
+
+    #id_image {
+        display: none;
+    }
+
+    /* Buttons */
+    .candy-btn-outline {
+        background: transparent;
+        border: 2px solid var(--pink);
+        color: var(--pink);
+        border-radius: 999px;
+        padding: 0.5rem 1rem;
+        font-weight: 600;
+        font-family: 'Quicksand', sans-serif;
+        transition: all 0.2s;
+        cursor: pointer;
+    }
+
+    .candy-btn-outline:hover {
+        background: var(--pink-soft);
+        border-color: var(--pink-soft);
+        color: var(--pink);
+        transform: translateY(-1px);
+    }
+
+    .candy-btn-primary {
+        background: linear-gradient(135deg, var(--pink), var(--butter));
+        color: #fff;
+        border: none;
+        border-radius: 999px;
+        padding: 0.65rem 1.5rem;
+        font-weight: 700;
+        font-family: 'Quicksand', sans-serif;
+        box-shadow: 0 4px 16px rgba(255, 111, 160, 0.25);
+        transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .candy-btn-primary:hover {
+        background: linear-gradient(135deg, #e85d8b, #e5b840);
+        box-shadow: 0 6px 20px rgba(255, 111, 160, 0.4);
+        transform: translateY(-2px) scale(1.02);
+        color: #fff;
+    }
+
+    .candy-btn-outline-secondary {
+        background: transparent;
+        border: 2px solid #E0D4C8;
+        color: #5B4A72;
+        border-radius: 999px;
+        padding: 0.65rem 1.5rem;
+        font-weight: 600;
+        font-family: 'Quicksand', sans-serif;
+        transition: all 0.2s;
+    }
+
+    .candy-btn-outline-secondary:hover {
+        background: #FFF0F5;
+        border-color: var(--pink-soft);
+        color: var(--pink);
+        transform: translateY(-1px);
+    }
+
+    .invalid-feedback {
+        color: var(--pink);
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-top: 4px;
+    }
+
+    @media (max-width: 768px) {
+        .product-form-wrapper .card-body {
+            padding: 1.25rem !important;
+        }
+    }
+</style>
+
 <script>
     (function () {
         const imageInput = document.getElementById('id_image');
         const preview = document.getElementById('imagePreview');
         const placeholder = document.getElementById('placeholderContainer');
 
-        // Use Django variable to determine initial image existence
         const hasExistingImage = {% if product and product.image %}true{% else %} false{% endif %};
 
-    function showPlaceholder(show) {
+    function togglePlaceholder(show) {
         if (placeholder) {
-            placeholder.classList.toggle('hidden', !show);
-            placeholder.style.display = show ? 'flex' : 'none';
+            if (show) {
+                placeholder.classList.remove('d-none');
+            } else {
+                placeholder.classList.add('d-none');
+            }
         }
-    }
-
-    function hidePreview() {
-        preview.classList.add('d-none');
-        preview.src = '#';
-        showPlaceholder(true);
     }
 
     function showPreview(src) {
         preview.src = src;
         preview.classList.remove('d-none');
-        showPlaceholder(false);
-        // Subtle fade-in
+        togglePlaceholder(false);
         preview.style.opacity = '0';
         setTimeout(() => { preview.style.opacity = '1'; }, 10);
+    }
+
+    function hidePreview() {
+        preview.classList.add('d-none');
+        preview.src = '#';
+        togglePlaceholder(true);
     }
 
     if (imageInput) {
@@ -562,7 +495,6 @@
                 };
                 reader.readAsDataURL(file);
             } else {
-                // No new file selected – revert to existing image if available
                 if (hasExistingImage) {
                     showPreview("{{ product.image.url|default:'' }}");
                 } else {
@@ -572,11 +504,11 @@
         });
     }
 
-    // Initial placeholder visibility
+    // initial state
     if (hasExistingImage) {
-        showPlaceholder(false);
+        togglePlaceholder(false);
     } else {
-        showPlaceholder(true);
+        togglePlaceholder(true);
     }
     }) ();
 </script>

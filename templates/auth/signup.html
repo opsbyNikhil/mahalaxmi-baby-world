@@ -1,0 +1,183 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Create Account{% endblock %}
+
+{% block css %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="bb-page bb-auth-page">
+    <div class="bb-auth-wrap">
+        <div class="bb-auth-card">
+            <div class="bb-auth-icon"><i class="bi bi-stars"></i></div>
+            <span class="bb-hero-eyebrow">Join Us</span>
+            <h1>Create Account</h1>
+            <p>Sign up to shop, track orders, and save your details for next time.</p>
+
+            {% if messages %}
+            <div class="bb-auth-errors">
+                {% for message in messages %}
+                <p><i class="bi bi-exclamation-circle-fill"></i> {{ message }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <form method="post" action="{% url 'signup' %}" id="signupForm" novalidate>
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ next }}">
+
+                <label for="first_name">First Name</label>
+                <input type="text" class="form-control" id="first_name" name="first_name"
+                    value="{{ old.first_name|default:'' }}" required>
+
+                <label for="email">Email Address</label>
+                <input type="email" class="form-control" id="email" name="email" value="{{ old.email|default:'' }}"
+                    required>
+
+                <label for="phone">Phone Number</label>
+                <input type="tel" class="form-control" id="phone" name="phone" value="{{ old.phone|default:'' }}"
+                    placeholder="10-digit mobile number">
+
+                <label for="username">Username</label>
+                <input type="text" class="form-control" id="username" name="username"
+                    value="{{ old.username|default:'' }}" required>
+
+                <label for="password1">Password</label>
+                <div class="bb-password-wrap">
+                    <input type="password" class="form-control" id="password1" name="password1" required
+                        autocomplete="new-password">
+                    <button type="button" class="bb-password-toggle" data-target="password1" aria-label="Show password">
+                        <i class="bi bi-eye-fill"></i>
+                    </button>
+                </div>
+
+                <!-- Live requirements checklist -->
+                <ul class="bb-password-checklist" id="passwordChecklist">
+                    <li data-rule="length"><i class="bi bi-circle"></i> At least 8 characters</li>
+                    <li data-rule="upper"><i class="bi bi-circle"></i> One uppercase letter</li>
+                    <li data-rule="lower"><i class="bi bi-circle"></i> One lowercase letter</li>
+                    <li data-rule="number"><i class="bi bi-circle"></i> One number</li>
+                    <li data-rule="special"><i class="bi bi-circle"></i> One special character</li>
+                </ul>
+
+                <label for="password2">Confirm Password</label>
+                <div class="bb-password-wrap">
+                    <input type="password" class="form-control" id="password2" name="password2" required
+                        autocomplete="new-password">
+                    <button type="button" class="bb-password-toggle" data-target="password2" aria-label="Show password">
+                        <i class="bi bi-eye-fill"></i>
+                    </button>
+                </div>
+                <p class="bb-password-match" id="passwordMatch"></p>
+
+                <button type="submit" class="bb-btn-primary" id="submitBtn">
+                    <i class="bi bi-person-plus-fill"></i> Create Account
+                </button>
+            </form>
+
+            <p class="bb-auth-switch">
+                Already have an account? <a href="{% url 'login' %}?next={{ next }}">Sign in</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // ---------- Show/hide password toggles ----------
+        document.querySelectorAll('.bb-password-toggle').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                const targetId = this.dataset.target;
+                const input = document.getElementById(targetId);
+                const icon = this.querySelector('i');
+
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.remove('bi-eye-fill');
+                    icon.classList.add('bi-eye-slash-fill');
+                    this.setAttribute('aria-label', 'Hide password');
+                } else {
+                    input.type = 'password';
+                    icon.classList.remove('bi-eye-slash-fill');
+                    icon.classList.add('bi-eye-fill');
+                    this.setAttribute('aria-label', 'Show password');
+                }
+            });
+        });
+
+        // ---------- Live password requirements ----------
+        const password1 = document.getElementById('password1');
+        const password2 = document.getElementById('password2');
+        const checklist = document.getElementById('passwordChecklist');
+        const matchMsg = document.getElementById('passwordMatch');
+        const submitBtn = document.getElementById('submitBtn');
+
+        const rules = {
+            length: (v) => v.length >= 8,
+            upper: (v) => /[A-Z]/.test(v),
+            lower: (v) => /[a-z]/.test(v),
+            number: (v) => /[0-9]/.test(v),
+            special: (v) => /[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\/~`;']/.test(v),
+        };
+
+        function checkPasswordRules() {
+            const value = password1.value;
+            let allPassed = true;
+
+            checklist.querySelectorAll('li').forEach(function (li) {
+                const rule = li.dataset.rule;
+                const passed = rules[rule](value);
+                const icon = li.querySelector('i');
+
+                li.classList.toggle('bb-rule-passed', passed);
+                icon.className = passed ? 'bi bi-check-circle-fill' : 'bi bi-circle';
+
+                if (!passed) allPassed = false;
+            });
+
+            return allPassed;
+        }
+
+        function checkPasswordMatch() {
+            if (password2.value === '') {
+                matchMsg.textContent = '';
+                matchMsg.className = 'bb-password-match';
+                return false;
+            }
+
+            const isMatch = password1.value === password2.value;
+            matchMsg.textContent = isMatch ? '✓ Passwords match' : '✗ Passwords do not match';
+            matchMsg.className = 'bb-password-match ' + (isMatch ? 'bb-match-ok' : 'bb-match-bad');
+            return isMatch;
+        }
+
+        password1.addEventListener('input', function () {
+            checkPasswordRules();
+            if (password2.value) checkPasswordMatch();
+        });
+
+        password2.addEventListener('input', checkPasswordMatch);
+
+        // ---------- Block submit until everything passes ----------
+        document.getElementById('signupForm').addEventListener('submit', function (e) {
+            const rulesOk = checkPasswordRules();
+            const matchOk = checkPasswordMatch();
+
+            if (!rulesOk || !matchOk) {
+                e.preventDefault();
+                if (!rulesOk) {
+                    checklist.classList.add('bb-checklist-shake');
+                    setTimeout(() => checklist.classList.remove('bb-checklist-shake'), 400);
+                }
+                if (!matchOk) {
+                    matchMsg.classList.add('bb-checklist-shake');
+                    setTimeout(() => matchMsg.classList.remove('bb-checklist-shake'), 400);
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}
