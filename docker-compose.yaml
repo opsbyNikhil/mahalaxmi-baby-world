@@ -5,14 +5,18 @@ services:
     image: postgres:17-alpine
     container_name: postgres_db
     restart: always
+
     environment:
       POSTGRES_DB: baby_shop_db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: "nikhil@97"
+    
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    
     network:
       - baby_world_network
+    
     ports:
       - "5432:5432"
 
@@ -20,19 +24,23 @@ services:
     image: baby_world:1.0.0
     container: baby_world:app
     restart: unless-stopped
+
     depends_on:
       - db
+    
     ports:
       - "8000:8000"
+    
     env_file:
       - .env
+    
     networks:
       - baby_world_network
 
 volumes:
   postgres_data:
+    driver: local
 
 networks:
   baby_world_network:
     driver: bridge
-    
