@@ -11,8 +11,28 @@ services:
       POSTGRES_PASSWORD: "nikhil@97"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    network:
+      - baby_world_network
     ports:
       - "5432:5432"
 
+  web:
+    image: baby_world:1.0.0
+    container: baby_world:app
+    restart: unless-stopped
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    networks:
+      - baby_world_network
+
 volumes:
   postgres_data:
+
+networks:
+  baby_world_network:
+    driver: bridge
+    
