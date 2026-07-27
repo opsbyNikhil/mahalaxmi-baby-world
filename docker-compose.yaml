@@ -22,7 +22,7 @@ services:
 
   web:
     image: baby_world:1.0.0
-    container: baby_world:app
+    container: baby_world_app
     restart: unless-stopped
 
     depends_on:
