@@ -14,7 +14,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     
-    network:
+    networks:
       - baby_world_network
     
     ports:
