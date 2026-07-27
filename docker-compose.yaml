@@ -1,0 +1,15 @@
+version: 3.9
+
+services:
+  db: 
+    image: postgres:17-alpine
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_DB: baby_shop_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: nikhil@97
+    volumes:
+      - postgres_data:  /var/lib/postgresql/data
+    ports:
+      "5432:5432"
