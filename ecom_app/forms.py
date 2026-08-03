@@ -10,11 +10,12 @@ class ProductForm(forms.ModelForm):
         fields = [
             'name', 'category', 'brand', 'description', 'price', 'stock',
             'is_available', 'image', 'product_type', 'theme', 'material',
-            'recommended_age', 'color', 'care_instructions',
+            'recommended_age', 'color', 'care_instructions','package_includes'
         ]
         widgets = {
             'description': forms.Textarea(attrs={'rows': 3, 'class': 'form-control'}),
             'care_instructions': forms.Textarea(attrs={'rows': 2, 'class': 'form-control'}),
+            'package_includes': forms.Textarea(attrs={'rows': 2, 'class': 'form-control', 'placeholder': 'e.g. 1x Stroller, 1x Rain Cover, 1x Manual'}),
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'brand': forms.TextInput(attrs={'class': 'form-control'}),
             'price': forms.NumberInput(attrs={'class': 'form-control'}),

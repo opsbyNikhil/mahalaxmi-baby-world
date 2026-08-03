@@ -6,6 +6,257 @@
 {% block css %}
 {{ block.super }}
 <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+<style>
+    /* ------------------------------------------------------------
+       Sign In – matches the marigold + deep teal + cream identity
+       used across the storefront (product_detail.html etc).
+       ------------------------------------------------------------ */
+    :root {
+        --pink: #FF6B6B;
+        --pink-soft: #FFE1E1;
+        --sky: #0E7C7B;
+        --sky-strong: #0A5C5B;
+        --sky-soft: #DCEFEF;
+        --butter: #FFA630;
+        --butter-soft: #FFE9C7;
+        --butter-deep: #E88A0E;
+        --plum: #23303A;
+        --plum-light: #5C6B74;
+        --cream: #FFF8EC;
+        --border: #EFE2CB;
+    }
+
+    .bb-auth-page {
+        background: var(--cream);
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        padding: 3rem 1rem;
+    }
+
+    .bb-auth-wrap {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+
+    .bb-auth-card {
+        background: #ffffff;
+        border-radius: 26px;
+        border: 2px solid var(--border);
+        box-shadow: 0 8px 30px rgba(35, 48, 58, 0.08);
+        padding: 2.5rem 2.5rem 2rem;
+        max-width: 440px;
+        width: 100%;
+        text-align: center;
+    }
+
+    .bb-auth-icon {
+        width: 58px;
+        height: 58px;
+        margin: 0 auto 1rem;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--pink), var(--butter));
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        box-shadow: 0 4px 14px rgba(255, 107, 107, 0.3);
+    }
+
+    .bb-hero-eyebrow {
+        display: inline-block;
+        font-family: 'Quicksand', sans-serif;
+        font-weight: 700;
+        font-size: 0.78rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--sky-strong);
+        background: var(--sky-soft);
+        padding: 0.25rem 0.9rem;
+        border-radius: 999px;
+        margin-bottom: 0.75rem;
+    }
+
+    .bb-auth-card h1 {
+        font-family: 'Fredoka', sans-serif;
+        font-weight: 600;
+        color: var(--plum);
+        margin: 0.25rem 0 0.5rem;
+        font-size: 1.8rem;
+    }
+
+    .bb-auth-card>p {
+        color: var(--plum-light);
+        font-size: 0.95rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .bb-auth-errors {
+        background: var(--pink-soft);
+        border: 1px solid var(--pink);
+        border-radius: 14px;
+        padding: 0.75rem 1rem;
+        margin-bottom: 1.25rem;
+        text-align: left;
+    }
+
+    .bb-auth-errors p {
+        color: #b34a4a;
+        font-weight: 600;
+        font-size: 0.88rem;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .bb-auth-errors p+p {
+        margin-top: 0.4rem;
+    }
+
+    .bb-auth-card form {
+        text-align: left;
+    }
+
+    .bb-auth-card label {
+        display: block;
+        font-weight: 700;
+        font-size: 0.85rem;
+        color: var(--plum);
+        margin: 1rem 0 0.35rem;
+    }
+
+    .bb-auth-card label:first-of-type {
+        margin-top: 0;
+    }
+
+    /* Pill-style inputs, consistent with the rest of the storefront */
+    .bb-input-pill {
+        display: flex;
+        align-items: center;
+        background: var(--cream);
+        border-radius: 999px;
+        border: 2px solid var(--border);
+        padding: 4px 6px;
+        transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    }
+
+    .bb-input-pill:focus-within {
+        background: #fff;
+        border-color: var(--sky);
+        box-shadow: 0 0 0 4px var(--sky-soft);
+    }
+
+    .bb-input-pill .bb-input-chip {
+        width: 34px;
+        height: 34px;
+        min-width: 34px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 4px;
+        background: var(--sky-soft);
+        color: var(--sky-strong);
+        font-size: 0.95rem;
+    }
+
+    .bb-input-pill input.form-control {
+        flex: 1;
+        border: none;
+        background: transparent;
+        padding: 10px 8px;
+        font-family: 'Quicksand', sans-serif;
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: var(--plum);
+        outline: none;
+        box-shadow: none;
+        min-width: 0;
+    }
+
+    .bb-input-pill input.form-control:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+    /* Eye icon toggle for password visibility */
+    .bb-password-toggle {
+        background: transparent;
+        border: none;
+        color: var(--plum-light);
+        width: 34px;
+        height: 34px;
+        min-width: 34px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: color 0.2s, background 0.2s;
+    }
+
+    .bb-password-toggle:hover {
+        color: var(--sky-strong);
+        background: var(--sky-soft);
+    }
+
+    .bb-password-toggle:focus {
+        outline: none;
+    }
+
+    .bb-btn-primary {
+        width: 100%;
+        background: linear-gradient(135deg, var(--pink), var(--butter));
+        color: #fff;
+        border: none;
+        border-radius: 999px;
+        padding: 0.7rem 1.5rem;
+        font-weight: 700;
+        font-family: 'Quicksand', sans-serif;
+        font-size: 1rem;
+        margin-top: 1.5rem;
+        box-shadow: 0 4px 16px rgba(255, 107, 107, 0.3);
+        transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .bb-btn-primary:hover {
+        background: linear-gradient(135deg, #e85d5d, var(--butter-deep));
+        box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+        transform: translateY(-2px) scale(1.01);
+        color: #fff;
+    }
+
+    .bb-auth-switch {
+        text-align: center;
+        font-size: 0.9rem;
+        color: var(--plum-light);
+        margin-top: 1rem;
+    }
+
+    .bb-auth-switch a {
+        color: var(--sky-strong);
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    .bb-auth-switch a:hover {
+        text-decoration: underline;
+    }
+
+    @media (max-width: 480px) {
+        .bb-auth-card {
+            padding: 2rem 1.5rem 1.5rem;
+            border-radius: 20px;
+        }
+    }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -30,14 +281,26 @@
                 <input type="hidden" name="next" value="{{ next }}">
 
                 <label for="username">Username</label>
-                <input type="text" class="form-control" id="username" name="username" required autofocus>
+                <div class="bb-input-pill">
+                    <span class="bb-input-chip"><i class="bi bi-person-fill"></i></span>
+                    <input type="text" class="form-control" id="username" name="username" required autofocus>
+                </div>
 
                 <label for="password">Password</label>
-                <input type="password" class="form-control" id="password" name="password" required>
+                <div class="bb-input-pill">
+                    <span class="bb-input-chip"><i class="bi bi-lock-fill"></i></span>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                    <button type="button" class="bb-password-toggle" id="togglePassword" aria-label="Show password">
+                        <i class="bi bi-eye-fill" id="togglePasswordIcon"></i>
+                    </button>
+                </div>
 
                 <button type="submit" class="bb-btn-primary">
                     <i class="bi bi-box-arrow-in-right"></i> Sign In
                 </button>
+                <p class="bb-auth-switch">
+                    <a href="{% url 'password_reset' %}">Forgot password?</a>
+                </p>
             </form>
 
             <p class="bb-auth-switch">
@@ -46,4 +309,26 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block js %}
+{{ block.super }}
+<script>
+    (function () {
+        'use strict';
+        const toggleBtn = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+        const toggleIcon = document.getElementById('togglePasswordIcon');
+
+        if (toggleBtn && passwordInput && toggleIcon) {
+            toggleBtn.addEventListener('click', function () {
+                const isHidden = passwordInput.type === 'password';
+                passwordInput.type = isHidden ? 'text' : 'password';
+                toggleIcon.classList.toggle('bi-eye-fill', !isHidden);
+                toggleIcon.classList.toggle('bi-eye-slash-fill', isHidden);
+                toggleBtn.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
+            });
+        }
+    })();
+</script>
 {% endblock %}

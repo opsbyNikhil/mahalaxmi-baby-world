@@ -1,0 +1,415 @@
+{% extends 'base.html' %}
+
+{% block title %}My Wishlist{% endblock %}
+
+{% block content %}
+
+<style>
+    .bb-page {
+        background: var(--cream);
+        color: var(--plum);
+        font-family: 'Quicksand', 'Nunito Sans', sans-serif;
+    }
+
+    .bb-page h1,
+    .bb-page h2,
+    .bb-page h5 {
+        font-family: 'Fredoka', sans-serif;
+        color: var(--plum);
+    }
+
+    .bb-wishlist-header {
+        text-align: center;
+        padding: 3rem 0 2rem;
+    }
+
+    .bb-eyebrow {
+        display: block;
+        font-family: 'Quicksand', sans-serif;
+        font-weight: 700;
+        font-size: 0.75rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--sky-strong);
+        margin-bottom: 0.35rem;
+    }
+
+    .bb-wishlist-header h1 {
+        font-size: 2.1rem;
+        font-weight: 600;
+    }
+
+    .bb-wishlist-section {
+        background: var(--pink-subtle);
+        padding: 1rem 0 4rem;
+        min-height: 40vh;
+    }
+
+    .bb-product-card {
+        background: #fff;
+        border: 2px solid var(--border-default);
+        border-radius: var(--radius-xl);
+        overflow: hidden;
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .bb-product-card:hover {
+        transform: translateY(-6px);
+        box-shadow: var(--shadow-lg), var(--shadow-glow-pink);
+        border-color: var(--pink-soft);
+    }
+
+    .bb-product-media {
+        position: relative;
+        aspect-ratio: 4 / 3;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.4rem;
+        background: var(--sky-soft);
+    }
+
+    .bb-product-media img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .bb-badge-category {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: rgba(255, 255, 255, 0.92);
+        color: var(--plum);
+        font-family: 'Quicksand', sans-serif;
+        font-weight: 700;
+        font-size: 0.68rem;
+        padding: 0.3rem 0.65rem;
+        border-radius: var(--radius-pill);
+    }
+
+    .bb-product-card .card-body {
+        padding: 1.15rem 1.25rem 1.35rem;
+    }
+
+    .bb-product-card h5 {
+        font-size: 1.08rem;
+        font-weight: 600;
+        margin-bottom: 0.35rem;
+    }
+
+    .bb-product-card .text-muted {
+        font-size: 0.88rem;
+        color: var(--text-secondary) !important;
+    }
+
+    .bb-price {
+        font-family: 'Fredoka', sans-serif;
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: var(--pink-strong);
+        margin: 0.4rem 0 0.9rem;
+    }
+
+    .bb-btn-outline {
+        flex: 1;
+        border: 2px solid var(--sky);
+        color: var(--sky-strong);
+        background: transparent;
+        border-radius: var(--radius-pill);
+        padding: 0.55rem 0.5rem;
+        font-family: 'Quicksand', sans-serif;
+        font-weight: 700;
+        font-size: 0.9rem;
+        text-align: center;
+        text-decoration: none;
+        transition: all var(--transition-fast);
+    }
+
+    .bb-btn-outline:hover,
+    .bb-btn-outline:focus-visible {
+        background: var(--sky);
+        color: #fff;
+    }
+
+    .bb-btn-add {
+        flex: 1;
+        border: none;
+        background: linear-gradient(135deg, var(--pink), var(--butter));
+        color: #fff;
+        border-radius: var(--radius-pill);
+        padding: 0.55rem 0.5rem;
+        font-family: 'Quicksand', sans-serif;
+        font-weight: 700;
+        font-size: 0.9rem;
+        box-shadow: 0 3px 12px rgba(255, 111, 160, 0.3);
+        transition: all var(--transition-bouncy);
+    }
+
+    .bb-btn-add:hover,
+    .bb-btn-add:focus-visible {
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: var(--shadow-glow-pink);
+    }
+
+    .bb-btn-remove {
+        flex: 0 0 auto;
+        width: 42px;
+        height: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid var(--border-default);
+        background: #fff;
+        border-radius: 50%;
+        font-size: 1.05rem;
+        cursor: pointer;
+        transition: all var(--transition-bouncy);
+        line-height: 1;
+    }
+
+    .bb-btn-remove:hover,
+    .bb-btn-remove:focus-visible {
+        border-color: var(--pink-strong);
+        background: var(--pink-subtle);
+        transform: translateY(-2px) scale(1.05);
+    }
+
+    .bb-empty-wishlist {
+        text-align: center;
+        padding: 3rem 1.5rem;
+        background: #fff;
+        border: 2px dashed var(--border-default);
+        border-radius: var(--radius-xl);
+    }
+
+    .bb-empty-wishlist .bb-empty-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        display: block;
+    }
+
+    .bb-empty-wishlist p {
+        color: var(--text-secondary);
+        margin-bottom: 1.5rem;
+    }
+
+    .bb-btn-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: linear-gradient(135deg, var(--pink), var(--butter));
+        color: #fff;
+        border: none;
+        padding: 0.75rem 1.7rem;
+        border-radius: var(--radius-pill);
+        font-family: 'Quicksand', sans-serif;
+        font-weight: 800;
+        font-size: 0.98rem;
+        text-decoration: none;
+        box-shadow: 0 8px 20px -8px rgba(255, 111, 160, 0.45);
+        transition: transform var(--transition-bouncy), box-shadow var(--transition-bouncy);
+    }
+
+    .bb-btn-primary:hover,
+    .bb-btn-primary:focus-visible {
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: var(--shadow-glow-pink);
+        color: #fff;
+    }
+
+    .bb-page a:focus-visible,
+    .bb-page button:focus-visible {
+        outline: 2px solid var(--sky-strong);
+        outline-offset: 2px;
+    }
+
+    #cartToast.text-bg-success {
+        background-color: var(--mint) !important;
+    }
+
+    #cartToast.text-bg-danger {
+        background-color: var(--pink-strong) !important;
+    }
+</style>
+
+<div class="bb-page">
+    <div class="container">
+        <div class="bb-wishlist-header">
+            <span class="bb-eyebrow">Saved with Love</span>
+            <h1>My Wishlist</h1>
+        </div>
+    </div>
+
+    <div class="bb-wishlist-section">
+        <div class="container">
+            <div class="row g-4" id="wishlist-grid">
+                {% for item in wishlist_items %}
+                <div class="col-md-4 col-lg-3" id="wishlist-item-{{ item.product.id }}">
+                    <div class="card bb-product-card h-100">
+                        <div class="bb-product-media">
+                            {% if item.product.image %}
+                            <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                            {% else %}
+                            <span>🪑</span>
+                            {% endif %}
+                            <span class="bb-badge-category">{{ item.product.category.name }}</span>
+                        </div>
+                        <div class="card-body">
+                            <h5>{{ item.product.name }}</h5>
+                            <p class="text-muted">{{ item.product.description|truncatewords:10 }}</p>
+                            <p class="bb-price">₹{{ item.product.price }}</p>
+                            <div class="d-flex gap-2">
+                                <a href="{% url 'product_detail' item.product.id %}" class="bb-btn-outline">View</a>
+                                <button class="bb-btn-add add-to-cart-btn" data-product-id="{{ item.product.id }}">
+                                    🛒 Add
+                                </button>
+                                <button class="bb-btn-remove remove-wishlist-btn"
+                                    data-product-id="{{ item.product.id }}"
+                                    data-toggle-url="{% url 'toggle_wishlist' item.product.id %}"
+                                    aria-label="Remove from wishlist">
+                                    <span>🗑️</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12">
+                    <div class="bb-empty-wishlist">
+                        <span class="bb-empty-icon">💔</span>
+                        <h5>Your wishlist is empty</h5>
+                        <p>Save your favourite baby essentials here to shop them later.</p>
+                        <a href="{% url 'home' %}" class="bb-btn-primary">Browse Products →</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1080;">
+    <div id="cartToast" class="toast align-items-center border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body" id="cartToastBody">
+                Added to cart!
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function showCartToast(message, isError = false) {
+        const toastEl = document.getElementById('cartToast');
+        const toastBody = document.getElementById('cartToastBody');
+
+        toastBody.textContent = message;
+        toastEl.classList.remove('text-bg-success', 'text-bg-danger');
+        toastEl.classList.add(isError ? 'text-bg-danger' : 'text-bg-success');
+
+        const toast = new bootstrap.Toast(toastEl, { delay: 2500 });
+        toast.show();
+    }
+
+    document.querySelectorAll('.remove-wishlist-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const csrftoken = getCookie('csrftoken');
+            const toggleUrl = this.dataset.toggleUrl;
+            const productId = this.dataset.productId;
+
+            fetch(toggleUrl, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrftoken,
+                },
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        const card = document.getElementById('wishlist-item-' + productId);
+                        if (card) {
+                            card.remove();
+                        }
+                        showCartToast('Removed from wishlist');
+
+                        const grid = document.getElementById('wishlist-grid');
+                        if (grid && grid.children.length === 0) {
+                            location.reload();
+                        }
+                    } else {
+                        showCartToast('Error: ' + data.message, true);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showCartToast('Something went wrong. Please try again.', true);
+                });
+        });
+    });
+
+    document.querySelectorAll('.add-to-cart-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const productId = this.dataset.productId;
+            const csrftoken = getCookie('csrftoken');
+
+            fetch("{% url 'add_to_cart' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': csrftoken,
+                },
+                body: new URLSearchParams({
+                    'product_id': productId,
+                    'quantity': 1
+                })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        const cartBadge = document.getElementById('cart-badge');
+                        if (cartBadge) {
+                            cartBadge.textContent = data.cart_count;
+                        }
+                        showCartToast(data.message || 'Added to cart!');
+                    } else {
+                        showCartToast('Error: ' + data.message, true);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showCartToast('Something went wrong. Please try again.', true);
+                });
+        });
+    });
+</script>
+
+{% endblock %}

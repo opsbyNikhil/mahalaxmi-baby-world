@@ -1,0 +1,73 @@
+{% extends 'dashboard/dashboard_base.html' %}
+{% load static %}
+
+{% block title %}Categories · BabyShop Admin{% endblock %}
+
+{% block page_title %}Baby Categories{% endblock %}
+
+{% block content %}
+<div class="glass-table-wrap">
+    <div class="table-header">
+        <h6><i class="bi bi-tags-fill me-2 text-accent"></i>Baby Categories</h6>
+        <a href="{% url 'dashboard_category_add' %}" class="btn-accent">
+            <i class="bi bi-plus-circle-fill me-1"></i>Add Category
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Icon</th>
+                    <th>Order</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for category in categories %}
+                <tr>
+                    <td>
+                        <div class="product-cell">
+                            <div class="product-thumb">
+                                {% if category.image %}
+                                <img src="{{ category.image.url }}" alt="{{ category.name }}">
+                                {% else %}
+                                <span style="font-size:1.2rem;">{{ category.icon|default:"🧸" }}</span>
+                                {% endif %}
+                            </div>
+                            <div>
+                                <div class="product-name">{{ category.name }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>{{ category.icon|default:"—" }}</td>
+                    <td>{{ category.display_order }}</td>
+                    <td>
+                        <span class="badge-status {% if category.is_active %}active{% else %}inactive{% endif %}">
+                            {% if category.is_active %}Active{% else %}Inactive{% endif %}
+                        </span>
+                    </td>
+                    <td>
+                        <a href="{% url 'dashboard_category_edit' category.pk %}" class="table-action-btn edit">
+                            <i class="bi bi-pencil-fill"></i> Edit
+                        </a>
+                        <a href="{% url 'dashboard_category_delete' category.pk %}" class="table-action-btn delete">
+                            <i class="bi bi-trash-fill"></i> Delete
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center py-4">
+                        <i class="bi bi-inbox" style="font-size:1.8rem; color:var(--text-tertiary);"></i>
+                        <p class="mb-0 mt-2" style="color:var(--text-tertiary);">No categories yet.</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

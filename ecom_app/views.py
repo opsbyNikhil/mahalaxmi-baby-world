@@ -6,6 +6,7 @@ from .cart import (
     add_to_cart, remove_from_cart, update_cart_quantity,
     get_cart_items, get_cart_total, get_cart_count, clear_cart
 )
+from django.urls import reverse
 from .models import Order, OrderItem
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
@@ -13,7 +14,7 @@ from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import ProductForm
 from .models import Product
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.hashers import make_password
@@ -30,6 +31,20 @@ from django.db.models import Sum
 from .models import Order
 from django.contrib.auth import login, logout, authenticate
 import re
+from .models import Product, Wishlist, BabyCategory
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from django.contrib.auth import views as auth_views
+from django.urls import reverse_lazy
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import views as auth_views
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.conf import settings
+from django.core.mail import EmailMultiAlternatives
+from django.utils.html import strip_tags
+
 
 
 # ---------- Auth ----------
@@ -97,14 +112,13 @@ def signup_view(request):
         )
         Customer.objects.create(user=user, phone=phone)
 
-        user = authenticate(request, username=username, password=password1)
-        login(request, user)
+        # No auto-login — send them to the login page instead
+        messages.success(request, f"Account created successfully! Please sign in to continue, {first_name}.")
 
-        messages.success(request, f"Welcome, {first_name}!")
-        return redirect(next_url)
+        login_url = reverse('login')
+        return redirect(f'{login_url}?next={next_url}')
 
     return render(request, 'auth/signup.html', {'next': next_url})
-
 
 def login_view(request):
     if request.user.is_authenticated:
@@ -138,14 +152,111 @@ def logout_view(request):
     messages.success(request, "You've been signed out.")
     return redirect('home')
 
+class CustomPasswordResetView(auth_views.PasswordResetView):
+    template_name = 'auth/forgot_password.html'
+    email_template_name = 'auth/password_reset_email.html'
+    subject_template_name = 'auth/password_reset_subject.txt'
+    success_url = reverse_lazy('password_reset_done')
+    html_email_template_name = 'auth/password_reset_email.html'
+
+class CustomPasswordResetConfirmView(auth_views.PasswordResetConfirmView):
+    template_name = 'auth/password_reset_confirm.html'
+    success_url = reverse_lazy('password_reset_complete')
+
+    def form_valid(self, form):
+        # form_valid() is where Django actually saves the new password.
+        # Call super() first so the password change happens, then send
+        # the confirmation email using the now-saved user.
+        response = super().form_valid(form)
+
+        user = form.user  # the user whose password was just changed
+
+        subject = 'Your password has been changed - Baby Store'
+        message = render_to_string('auth/password_changed_email.html', {
+            'user': user,
+        })
+
+        send_mail(
+            subject,
+            message,
+            settings.DEFAULT_FROM_EMAIL,
+            [user.email],
+            fail_silently=True,  # don't break the password reset flow if email fails
+        )
+
+        return response
+
+# Replace CustomPasswordResetConfirmView in views.py with this version.
+# Sends a proper HTML email (plain text fallback + HTML) using
+# EmailMultiAlternatives, same approach Django uses internally for
+# the reset-request email when html_email_template_name is set.
+
+
+
+
+class CustomPasswordResetConfirmView(auth_views.PasswordResetConfirmView):
+    template_name = 'auth/password_reset_confirm.html'
+    success_url = reverse_lazy('password_reset_complete')
+
+    def form_valid(self, form):
+        # form_valid() is where Django actually saves the new password.
+        # Call super() first so the password change happens, then send
+        # the confirmation email using the now-saved user.
+        response = super().form_valid(form)
+
+        user = form.user
+
+        login_url = self.request.build_absolute_uri(reverse('login'))
+
+        html_content = render_to_string('auth/password_changed_email.html', {
+            'user': user,
+            'login_url': login_url,
+        })
+        text_content = strip_tags(html_content)  # plain-text fallback for clients that don't render HTML
+
+        email = EmailMultiAlternatives(
+            subject='Your password has been changed - Baby Store',
+            body=text_content,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=[user.email],
+        )
+        email.attach_alternative(html_content, "text/html")
+
+        try:
+            email.send(fail_silently=False)
+        except Exception:
+            # Don't let an email failure break the password reset itself —
+            # the password is already changed at this point regardless.
+            pass
+
+        return response
 
 def home(request):
     featured_products = Product.objects.filter(is_available=True).order_by('-created_at')[:12]
+    categories = BabyCategory.objects.filter(is_active=True)
+
+    wishlist_ids = set()
+    if request.user.is_authenticated:
+        wishlist_ids = set(
+            Wishlist.objects.filter(user=request.user).values_list('product_id', flat=True)
+        )
+
     context = {
         'products': featured_products,
+        'categories': categories,
+        'wishlist_ids': wishlist_ids,
     }
     return render(request, "home.html", context)
 
+def category_products(request, slug):
+    category = get_object_or_404(BabyCategory, slug=slug, is_active=True)
+    products = Product.objects.filter(category__slug=slug, is_available=True)
+
+    context = {
+        'category': category,
+        'products': products,
+    }
+    return render(request, 'category_products.html', context)
 
 def product_detail(request, pk):
     product = get_object_or_404(Product, pk=pk, is_available=True)
@@ -183,15 +294,43 @@ def category_products(request, slug):
 
 
 def search_products(request):
-    query = request.GET.get('q')
+    query = request.GET.get('q', '').strip()
+
     if query:
-        products = Product.objects.filter(
-            Q(name__icontains=query) | Q(description__icontains=query) | Q(brand__icontains=query),
-            is_available=True
-        )
+        words = query.split()
+        combined = Q()
+        for word in words:
+            combined &= (
+                Q(name__icontains=word) |
+                Q(description__icontains=word) |
+                Q(brand__icontains=word)
+            )
+        products = Product.objects.filter(combined, is_available=True).distinct()
     else:
         products = Product.objects.none()
     return render(request, 'products/search_results.html', {'products': products, 'query': query})
+
+def search_suggestions(request):
+    query = request.GET.get('q', '').strip()
+    results = []
+    if query:
+        words = query.split()
+        combined = Q()
+        for word in words:
+            combined &= (
+                Q(name__icontains=word) |
+                Q(description__icontains=word) |
+                Q(brand__icontains=word)
+            )
+        products = Product.objects.filter(combined, is_available=True).distinct()[:6]
+        for p in products:
+            results.append({
+                'name': p.name,
+                'price': str(p.price),
+                'url': reverse('product_detail', args=[p.pk]),
+                'image': p.image.url if p.image else '',
+            })
+    return JsonResponse({'results': results})
 
 def product_list(request):
     """Display all available products."""
@@ -387,6 +526,170 @@ def order_success(request, order_id):
     return render(request, 'cart/order_success.html', {'order': order})
 
 
+@login_required
+def wishlist(request):
+    """Show the logged-in user's wishlist."""
+    wishlist_obj, _ = Wishlist.objects.get_or_create(user=request.user)
+    products = wishlist_obj.products.all()
+    return render(request, 'products/wishlist.html', {
+        'products': products,
+    })
+
+
+@login_required
+def add_to_wishlist(request, product_id):
+    """Add a product to the user's wishlist, then return to where they came from."""
+    product = get_object_or_404(Product, id=product_id)
+    wishlist_obj, _ = Wishlist.objects.get_or_create(user=request.user)
+    wishlist_obj.products.add(product)
+    messages.success(request, f"Added {product.name} to your wishlist.")
+    return redirect(request.META.get('HTTP_REFERER', 'product_list'))
+
+@login_required
+def toggle_wishlist(request, product_id):
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'message': 'Invalid request method'}, status=405)
+
+    product = get_object_or_404(Product, id=product_id)
+    wishlist_item, created = Wishlist.objects.get_or_create(user=request.user, product=product)
+
+    if not created:
+        wishlist_item.delete()
+        in_wishlist = False
+    else:
+        in_wishlist = True
+
+    wishlist_count = Wishlist.objects.filter(user=request.user).count()
+
+    return JsonResponse({
+        'success': True,
+        'in_wishlist': in_wishlist,
+        'wishlist_count': wishlist_count,
+        'message': f"{'Added' if in_wishlist else 'Removed'} {product.name} {'to' if in_wishlist else 'from'} your wishlist.",
+    })
+
+@login_required
+def wishlist_view(request):
+    wishlist_items = Wishlist.objects.filter(user=request.user).select_related('product', 'product__category')
+    context = {
+        'wishlist_items': wishlist_items,
+    }
+    return render(request, 'cart/wishlist.html', context)
+
+@login_required
+def remove_from_wishlist(request, product_id):
+    """Remove a product from the user's wishlist."""
+    product = get_object_or_404(Product, id=product_id)
+    wishlist_obj, _ = Wishlist.objects.get_or_create(user=request.user)
+    wishlist_obj.products.remove(product)
+    messages.success(request, f"Removed {product.name} from your wishlist.")
+    return redirect(request.META.get('HTTP_REFERER', 'wishlist'))
+
+ 
+@login_required
+def account_settings(request):
+    """
+    Renders the account settings page: profile details, password form,
+    and saved addresses.
+ 
+    Assumes an optional `Address` model with a ForeignKey to the user
+    (e.g. `Address.objects.filter(user=request.user)`). If you don't
+    have that model yet, `addresses` can stay an empty queryset/list —
+    the template already handles the empty state.
+    """
+    try:
+        from .models import Address
+        addresses = Address.objects.filter(user=request.user).order_by('-is_default', '-id')
+    except ImportError:
+        addresses = []
+ 
+    context = {
+        'addresses': addresses,
+    }
+    return render(request, 'cart/account_settings.html', context)
+ 
+ 
+@login_required
+def update_profile(request):
+    """
+    Updates first name, last name, email, and phone (if you have a
+    Profile model with a `phone` field, e.g. via a OneToOneField on
+    the user — adjust the profile lookup/creation to match your setup).
+    """
+    if request.method != 'POST':
+        return redirect('account_settings')
+ 
+    user = request.user
+    user.first_name = request.POST.get('first_name', '').strip()
+    user.last_name = request.POST.get('last_name', '').strip()
+    email = request.POST.get('email', '').strip()
+ 
+    if not email:
+        messages.error(request, 'Email address is required.')
+        return redirect('account_settings')
+ 
+    user.email = email
+    user.save()
+ 
+    # Optional: only runs if you have a related Profile model with a
+    # `phone` field. Remove this block if you store phone elsewhere,
+    # or on the User model directly.
+    phone = request.POST.get('phone', '').strip()
+    profile = getattr(user, 'profile', None)
+    if profile is not None:
+        profile.phone = phone
+        profile.save()
+ 
+    messages.success(request, 'Profile updated successfully!')
+    return redirect('account_settings')
+ 
+ 
+@login_required
+def change_password(request):
+    """
+    Changes the user's password using Django's built-in
+    PasswordChangeForm (handles current-password verification,
+    validators, and hashing) and keeps the session authenticated
+    afterward via update_session_auth_hash.
+    """
+    if request.method != 'POST':
+        return redirect('account_settings')
+ 
+    form = PasswordChangeForm(
+        user=request.user,
+        data={
+            'old_password': request.POST.get('current_password'),
+            'new_password1': request.POST.get('new_password'),
+            'new_password2': request.POST.get('confirm_password'),
+        },
+    )
+ 
+    if form.is_valid():
+        user = form.save()
+        update_session_auth_hash(request, user)  # keep the user logged in
+        messages.success(request, 'Password updated successfully!')
+    else:
+        # Surface the first validation error (wrong current password,
+        # passwords don't match, too weak, etc.)
+        first_error = next(iter(form.errors.values()))[0]
+        messages.error(request, first_error)
+ 
+    return redirect('account_settings')
+ 
+ 
+@login_required
+def delete_account(request):
+
+    if request.method != 'POST':
+        return redirect('account_settings')
+ 
+    user = request.user
+    logout(request)
+    user.delete()
+    messages.success(request, 'Your account has been deleted.')
+    return redirect('home')
+ 
+
 @staff_member_required
 def dashboard_home(request):
     products = Product.objects.all().order_by('-id')
@@ -529,3 +832,81 @@ def reset_admin_password(request):
     user.set_password("Admin@12345")
     user.save()
     return HttpResponse("Password reset successfully")
+
+def get_dashboard_context(request, extra=None):
+    """Shared sidebar context every dashboard page needs."""
+    context = {
+        'sidebar_categories': BabyCategory.objects.filter(is_active=True),
+        'total_products': Product.objects.count(),
+    }
+    if extra:
+        context.update(extra)
+    return context
+
+
+@staff_member_required
+def dashboard_category_list(request):
+    categories = BabyCategory.objects.all().order_by('display_order', 'name')
+    context = get_dashboard_context(request, {'categories': categories})
+    return render(request, 'dashboard/categories/category_list.html', context)
+
+@staff_member_required
+def dashboard_category_add(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        icon = request.POST.get('icon', '')
+        image = request.FILES.get('image')
+        display_order = request.POST.get('display_order') or 0
+        is_active = request.POST.get('is_active') == 'on'
+
+        if not name:
+            messages.error(request, 'Category name is required.')
+            return redirect('dashboard_category_add')
+
+        BabyCategory.objects.create(
+            name=name,
+            icon=icon,
+            image=image,
+            display_order=display_order,
+            is_active=is_active,
+        )
+        messages.success(request, f'Category "{name}" added successfully.')
+        return redirect('dashboard_category_list')
+
+    context = get_dashboard_context(request, {'category': None})
+    return render(request, 'dashboard/categories/category_form.html', context)
+
+
+@staff_member_required
+def dashboard_category_edit(request, pk):
+    category = get_object_or_404(BabyCategory, pk=pk)
+
+    if request.method == 'POST':
+        category.name = request.POST.get('name')
+        category.icon = request.POST.get('icon', '')
+        if request.FILES.get('image'):
+            category.image = request.FILES.get('image')
+        category.display_order = request.POST.get('display_order') or 0
+        category.is_active = request.POST.get('is_active') == 'on'
+        category.save()
+
+        messages.success(request, f'Category "{category.name}" updated successfully.')
+        return redirect('dashboard_category_list')
+
+    context = get_dashboard_context(request, {'category': category})
+    return render(request, 'dashboard/categories/category_form.html', context)
+
+
+
+@staff_member_required
+def dashboard_category_delete(request, pk):
+    category = get_object_or_404(BabyCategory, pk=pk)
+
+    if request.method == 'POST':
+        name = category.name
+        category.delete()
+        messages.success(request, f'Category "{name}" deleted.')
+        return redirect('dashboard_category_list')
+
+    context = get_dashboard_context(request, {'category': category})
+    return render(request, 'dashboard/categories/category_confirm_delete.html', context)

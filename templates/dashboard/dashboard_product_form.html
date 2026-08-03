@@ -171,6 +171,16 @@
                                 {% if form.care_instructions.errors %}<div class="invalid-feedback d-block">{{
                                     form.care_instructions.errors }}</div>{% endif %}
                             </div>
+
+                            <!-- Package Includes -->
+                            <div class="col-12">
+                                <label for="{{ form.package_includes.id_for_label }}" class="form-label fw-semibold">{{ form.package_includes.label }}</label>
+                                <div class="input-pill textarea-pill">
+                                    <span class="input-chip chip-pink"><i class="bi bi-box2-heart-fill"></i></span>
+                                    {{ form.package_includes }}
+                                </div>
+                                {% if form.package_includes.errors %}<div class="invalid-feedback d-block">{{ form.package_includes.errors }}</div>{% endif %}
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -10,8 +10,7 @@
 
 /* --- CONTAINER: no wrapping, tight gaps --- */
 .bb-navbar-container {
-    flex-wrap: nowrap !important;
-    gap: 0.3rem 0.5rem;
+    flex-wrap: nowrap !important;   /* forces everything onto one line, fights your offcanvas layout */
 }
 
 /* --- BRAND: never shrink, keep readable --- */
@@ -143,7 +142,7 @@
 
 .bb-cart-badge {
     background: var(--bb-plum) !important;
-    font-family: 'Nunito Sans', sans-serif;
+    /* font-family: 'Nunito Sans', sans-serif; */
 }
 
 /* ============================================

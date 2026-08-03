@@ -1,0 +1,506 @@
+/* ==========================================================
+   account_settings.css -- Account Settings page
+   Same marigold + deep teal + cream identity as navbar.html,
+   home.html, product_detail.html, products.css,
+   category_products.css, cart.css and checkout.css
+   (marigold #FFA630, teal #0E7C7B, cream #FFF8EC, coral #FF6B6B)
+   ========================================================== */
+
+:root {
+    --cream: #FFF8EC;
+    --pink: #FF6B6B;
+    /* coral accent */
+    --pink-strong: #E85454;
+    --pink-soft: #FFE1E1;
+    --pink-subtle: #FFF1F1;
+    --sky: #0E7C7B;
+    /* deep teal, primary brand color */
+    --sky-strong: #0A5C5B;
+    --sky-soft: #DCEFEF;
+    --sky-subtle: #EFF8F8;
+    --butter: #FFA630;
+    /* marigold */
+    --butter-soft: #FFE9C7;
+    --butter-deep: #E88A0E;
+    --plum: #23303A;
+    --text-secondary: #5C6B74;
+    --text-tertiary: #97A5AC;
+    --border-default: #EFE2CB;
+    --border-light: #F6EEDD;
+    --radius-md: 12px;
+    --radius-xl: 20px;
+    --radius-pill: 999px;
+    --shadow-sm: 0 1px 3px rgba(35, 48, 58, 0.08);
+    --shadow-lg: 0 14px 32px -10px rgba(35, 48, 58, 0.18);
+    --transition-fast: 180ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bouncy: 260ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.bb-page {
+    background: var(--cream);
+    color: var(--plum);
+    font-family: 'Quicksand', 'Nunito Sans', sans-serif;
+    min-height: 60vh;
+}
+
+.bb-page h1,
+.bb-page h5 {
+    font-family: 'Fredoka', sans-serif;
+    color: var(--plum);
+}
+
+.bb-hero-eyebrow {
+    display: inline-block;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--sky-strong);
+    background: var(--sky-subtle);
+    padding: 0.35rem 0.9rem;
+    border-radius: var(--radius-pill);
+    margin-bottom: 0.85rem;
+}
+
+/* ---------- Hero ---------- */
+.bb-settings-hero {
+    padding: 2.5rem 0 1.75rem;
+}
+
+.bb-settings-hero h1 {
+    font-size: clamp(1.9rem, 3.5vw, 2.6rem);
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+}
+
+.bb-settings-hero p {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+/* ---------- Profile summary card ---------- */
+.bb-settings-profile-card {
+    background: #fff;
+    border: 2px solid var(--border-default);
+    border-radius: var(--radius-xl);
+    padding: 1.75rem 1.5rem;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.bb-settings-avatar {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, var(--butter), var(--pink));
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 1.6rem;
+    margin: 0 auto 0.85rem;
+    box-shadow: 0 4px 14px rgba(255, 166, 48, 0.35);
+}
+
+.bb-settings-profile-card h5 {
+    font-size: 1.05rem;
+    margin-bottom: 0.2rem;
+}
+
+.bb-settings-email {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.7rem;
+    word-break: break-word;
+}
+
+.bb-settings-member-since {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--sky-strong);
+    background: var(--sky-subtle);
+    padding: 0.3rem 0.7rem;
+    border-radius: var(--radius-pill);
+}
+
+/* ---------- Sidebar nav ---------- */
+.bb-settings-nav {
+    background: #fff;
+    border: 2px solid var(--border-default);
+    border-radius: var(--radius-xl);
+    padding: 0.6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.bb-settings-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.65rem 0.9rem;
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    font-size: 0.88rem;
+    text-decoration: none;
+    transition: all var(--transition-fast);
+}
+
+.bb-settings-nav-link i {
+    color: var(--text-tertiary);
+    width: 18px;
+    text-align: center;
+    transition: color var(--transition-fast);
+}
+
+.bb-settings-nav-link:hover {
+    background: var(--sky-subtle);
+    color: var(--sky-strong);
+}
+
+.bb-settings-nav-link:hover i {
+    color: var(--sky-strong);
+}
+
+.bb-settings-nav-link.active {
+    background: var(--butter-soft);
+    color: var(--butter-deep);
+}
+
+.bb-settings-nav-link.active i {
+    color: var(--butter-deep);
+}
+
+/* ---------- Settings cards ---------- */
+.bb-settings-card {
+    background: #fff;
+    border: 2px solid var(--border-default);
+    border-radius: var(--radius-xl);
+    padding: 1.5rem 1.5rem 1.75rem;
+    margin-bottom: 1.5rem;
+    scroll-margin-top: 6.5rem;
+}
+
+.bb-card-heading {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-bottom: 1.25rem;
+    color: var(--plum);
+}
+
+.bb-card-heading i {
+    color: var(--sky);
+}
+
+.bb-settings-card label {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.35rem;
+    display: inline-block;
+}
+
+.bb-settings-card .form-control {
+    border: 2px solid var(--border-default);
+    border-radius: var(--radius-md);
+    padding: 0.6rem 0.9rem;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 600;
+    color: var(--plum);
+    background: var(--cream);
+    transition: all var(--transition-fast);
+}
+
+.bb-settings-card .form-control:focus {
+    border-color: var(--sky);
+    box-shadow: 0 0 0 4px var(--sky-soft);
+    background: #fff;
+    outline: none;
+}
+
+.bb-btn-save {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, var(--butter), var(--butter-deep));
+    color: #fff;
+    border: none;
+    padding: 0.65rem 1.5rem;
+    border-radius: var(--radius-pill);
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-top: 1.25rem;
+    box-shadow: 0 3px 12px rgba(255, 166, 48, 0.4);
+    transition: all var(--transition-bouncy);
+}
+
+.bb-btn-save:hover,
+.bb-btn-save:focus-visible {
+    background: linear-gradient(135deg, var(--butter-deep), var(--butter));
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 0 20px rgba(255, 166, 48, 0.45);
+    color: #fff;
+}
+
+/* ---------- Saved addresses ---------- */
+.bb-address-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    margin-bottom: 1.25rem;
+}
+
+.bb-address-item {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    border: 2px solid var(--border-default);
+    border-radius: var(--radius-md);
+    padding: 0.9rem 1.1rem;
+    transition: border-color var(--transition-fast);
+}
+
+.bb-address-item:hover {
+    border-color: var(--sky-soft);
+}
+
+.bb-address-info strong {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    font-size: 0.92rem;
+    color: var(--plum);
+    margin-right: 0.5rem;
+}
+
+.bb-address-default-badge {
+    display: inline-block;
+    background: var(--sky-soft);
+    color: var(--sky-strong);
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 0.15rem 0.55rem;
+    border-radius: var(--radius-pill);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.bb-address-info p {
+    margin: 0.3rem 0 0;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.bb-address-actions {
+    display: flex;
+    gap: 0.4rem;
+    flex-shrink: 0;
+}
+
+.bb-address-edit-btn,
+.bb-address-remove-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    transition: all var(--transition-fast);
+}
+
+.bb-address-edit-btn {
+    background: var(--sky-soft);
+    color: var(--sky-strong);
+}
+
+.bb-address-edit-btn:hover {
+    background: var(--sky);
+    color: #fff;
+}
+
+.bb-address-remove-btn {
+    background: var(--pink-subtle);
+    color: var(--pink-strong);
+}
+
+.bb-address-remove-btn:hover {
+    background: var(--pink-soft);
+}
+
+.bb-settings-empty-note {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: var(--cream);
+    border: 1px dashed var(--border-default);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.bb-btn-add-address {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border: 2px solid var(--sky);
+    color: var(--sky-strong);
+    background: transparent;
+    border-radius: var(--radius-pill);
+    padding: 0.55rem 1.2rem;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    font-size: 0.88rem;
+    transition: all var(--transition-fast);
+}
+
+.bb-btn-add-address:hover {
+    background: var(--sky);
+    color: #fff;
+}
+
+/* ---------- Danger zone ---------- */
+.bb-danger-zone {
+    border-color: var(--pink-soft);
+    background: var(--pink-subtle);
+}
+
+.bb-danger-heading,
+.bb-danger-heading i {
+    color: var(--pink-strong) !important;
+}
+
+.bb-danger-zone p {
+    font-family: 'Quicksand', sans-serif;
+    color: var(--text-secondary);
+    margin-bottom: 1.1rem;
+}
+
+.bb-btn-danger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--pink-strong);
+    color: #fff;
+    border: none;
+    padding: 0.6rem 1.4rem;
+    border-radius: var(--radius-pill);
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    font-size: 0.88rem;
+    transition: all var(--transition-fast);
+}
+
+.bb-btn-danger:hover {
+    background: #d13f3f;
+    transform: translateY(-1px);
+}
+
+.bb-page a:focus-visible,
+.bb-page button:focus-visible {
+    outline: 2px solid var(--sky-strong);
+    outline-offset: 2px;
+}
+
+/* ---------- Delete-account modal ---------- */
+.bb-settings-modal .modal-content {
+    border-radius: var(--radius-xl);
+    border: none;
+    overflow: hidden;
+}
+
+.bb-settings-modal .modal-header {
+    border-bottom: 1px solid var(--border-default);
+    background: var(--pink-subtle);
+}
+
+.bb-settings-modal .modal-title {
+    font-family: 'Fredoka', sans-serif;
+    color: var(--pink-strong);
+}
+
+.bb-settings-modal .modal-body {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 500;
+    color: var(--text-secondary);
+    padding: 1.5rem;
+}
+
+.bb-settings-modal .modal-footer {
+    border-top: 1px solid var(--border-default);
+}
+
+.bb-modal-btn-cancel {
+    border: 2px solid var(--border-default);
+    background: transparent;
+    color: var(--text-secondary);
+    border-radius: var(--radius-pill);
+    padding: 0.5rem 1.3rem;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    transition: all var(--transition-fast);
+}
+
+.bb-modal-btn-cancel:hover {
+    background: var(--sky-subtle);
+    border-color: var(--sky);
+    color: var(--sky-strong);
+}
+
+.bb-modal-btn-remove {
+    border: none;
+    background: var(--pink-strong);
+    color: #fff;
+    border-radius: var(--radius-pill);
+    padding: 0.5rem 1.3rem;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    transition: all var(--transition-fast);
+}
+
+.bb-modal-btn-remove:hover {
+    background: #d13f3f;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 991.98px) {
+    .bb-settings-nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .bb-settings-nav-link {
+        flex: 1 1 auto;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .bb-settings-card {
+        padding: 1.25rem;
+    }
+
+    .bb-address-item {
+        flex-direction: column;
+    }
+
+    .bb-address-actions {
+        align-self: flex-end;
+    }
+}

@@ -1,0 +1,361 @@
+{% extends 'dashboard/dashboard_base.html' %}
+{% load static %}
+
+{% block title %}{% if category %}Edit{% else %}Add{% endif %} Category · BabyShop Admin{% endblock %}
+
+{% block page_title %}{% if category %}Edit Category{% else %}Add New Category{% endif %}{% endblock %}
+
+{% block content %}
+<div class="product-form-wrapper">
+    <form method="post" enctype="multipart/form-data" id="categoryForm" novalidate>
+        {% csrf_token %}
+
+        <div class="row g-4">
+            <!-- Left column: main fields -->
+            <div class="col-lg-8">
+                <div class="candy-card mb-4">
+                    <div class="card-body p-4">
+                        <h6 class="card-title"><i class="bi bi-tags-fill me-2"></i>Category Details</h6>
+
+                        <div class="row g-3">
+                            <!-- Name -->
+                            <div class="col-md-8">
+                                <label for="categoryName" class="form-label fw-semibold">Category Name</label>
+                                <div class="input-pill">
+                                    <span class="input-chip chip-pink"><i class="bi bi-tag-fill"></i></span>
+                                    <input type="text" id="categoryName" name="name" placeholder="e.g. Baby Strollers"
+                                        value="{{ category.name|default:'' }}" required>
+                                </div>
+                            </div>
+
+                            <!-- Display Order -->
+                            <div class="col-md-4">
+                                <label for="categoryOrder" class="form-label fw-semibold">Display Order</label>
+                                <div class="input-pill">
+                                    <span class="input-chip chip-sky"><i class="bi bi-sort-numeric-down"></i></span>
+                                    <input type="number" id="categoryOrder" name="display_order" min="0"
+                                        value="{{ category.display_order|default:0 }}">
+                                </div>
+                            </div>
+
+                            <!-- Icon -->
+                            <div class="col-md-6">
+                                <label for="categoryIcon" class="form-label fw-semibold">Icon (emoji fallback)</label>
+                                <div class="input-pill">
+                                    <span class="input-chip chip-butter"><i class="bi bi-emoji-smile-fill"></i></span>
+                                    <input type="text" id="categoryIcon" name="icon" maxlength="10" placeholder="🍼"
+                                        value="{{ category.icon|default:'' }}">
+                                </div>
+                                <small class="text-muted d-block mt-1">Shown only if no image is uploaded</small>
+                            </div>
+
+                            <!-- Active switch -->
+                            <div class="col-md-6 d-flex align-items-center">
+                                <div class="form-check form-switch candy-switch mt-3">
+                                    <input class="form-check-input" type="checkbox" id="isActive" name="is_active" {% if category.is_active or not category %}checked{% endif %}>
+                                    <label class="form-check-label fw-semibold" for="isActive">Active</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right column: image & actions -->
+            <div class="col-lg-4">
+                <!-- Image card -->
+                <div class="candy-card mb-4">
+                    <div class="card-body p-4">
+                        <h6 class="card-title"><i class="bi bi-image-fill me-2"></i>Category Image</h6>
+
+                        <div class="text-center">
+                            <div class="image-preview-wrapper mb-3" id="imagePreviewWrapper">
+                                {% if category and category.image %}
+                                <img src="{{ category.image.url }}" alt="Current image"
+                                    class="img-fluid rounded-circle border" id="imagePreview"
+                                    style="width:120px;height:120px;object-fit:cover;">
+                                <div class="placeholder-image rounded-circle d-flex align-items-center justify-content-center d-none"
+                                    id="placeholderContainer" style="width:120px;height:120px;margin:0 auto;">
+                                    <i class="bi bi-camera" style="font-size:2rem;"></i>
+                                </div>
+                                {% else %}
+                                <img src="#" alt="Image preview" class="img-fluid rounded-circle border d-none"
+                                    id="imagePreview" style="width:120px;height:120px;object-fit:cover;">
+                                <div class="placeholder-image rounded-circle d-flex align-items-center justify-content-center"
+                                    id="placeholderContainer"
+                                    style="width:120px;height:120px;margin:0 auto;color:#B0A3BF;">
+                                    <i class="bi bi-camera" style="font-size:2rem;"></i>
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="mb-2">
+                                <label for="id_image" class="btn candy-btn-outline btn-sm w-100">
+                                    <i class="bi bi-upload me-1"></i> Choose Image
+                                </label>
+                                <input type="file" id="id_image" name="image" accept="image/*">
+                            </div>
+                            <small class="text-muted d-block">Recommended: square, at least 150×150px</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action buttons -->
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn candy-btn-primary btn-lg">
+                        <i class="bi bi-check-circle-fill me-2"></i>{% if category %}Update Category{% else %}Add
+                        Category{% endif %}
+                    </button>
+                    <a href="{% url 'dashboard_category_list' %}" class="btn candy-btn-outline-secondary btn-lg">
+                        <i class="bi bi-arrow-left me-2"></i>Cancel
+                    </a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<style>
+    /* ------------------------------------------------------------
+       Candy Shop – Category Form (shared styling with product form)
+       ------------------------------------------------------------ */
+    .product-form-wrapper .candy-card {
+        background: #ffffff;
+        border-radius: 22px;
+        border: 2px solid #F0E4D8;
+        box-shadow: 0 4px 14px rgba(54, 42, 77, 0.06);
+        transition: box-shadow 0.2s;
+        overflow: hidden;
+    }
+
+    .product-form-wrapper .candy-card:hover {
+        box-shadow: 0 6px 20px rgba(255, 111, 160, 0.08);
+    }
+
+    .product-form-wrapper .card-title {
+        font-family: 'Fredoka', sans-serif;
+        font-weight: 600;
+        color: #362A4D;
+        font-size: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .input-pill {
+        display: flex;
+        align-items: center;
+        background: #FFF8F0;
+        border-radius: 999px;
+        border: 2px solid transparent;
+        padding: 4px 6px;
+        transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+    }
+
+    .input-pill:focus-within {
+        background: #fff;
+        border-color: var(--pink);
+        box-shadow: 0 0 0 5px var(--pink-soft);
+    }
+
+    .input-pill input {
+        flex: 1;
+        border: none;
+        background: transparent;
+        padding: 11px 14px 11px 4px;
+        font-family: 'Quicksand', sans-serif;
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: var(--plum);
+        outline: none;
+        min-width: 0;
+    }
+
+    .input-pill input::placeholder {
+        color: #B0A3BF;
+        font-weight: 400;
+    }
+
+    .input-chip {
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 6px;
+        font-size: 0.95rem;
+    }
+
+    .chip-pink {
+        background: var(--pink-soft);
+        color: var(--pink);
+    }
+
+    .chip-sky {
+        background: var(--sky-soft);
+        color: var(--sky);
+    }
+
+    .chip-mint {
+        background: var(--mint-soft);
+        color: #5cb88a;
+    }
+
+    .chip-butter {
+        background: var(--butter-soft);
+        color: #d4a020;
+    }
+
+    .candy-switch .form-check-input {
+        width: 3em;
+        height: 1.5em;
+        margin-right: 0.5rem;
+        background-color: #E0D4C8;
+        border: none;
+        border-radius: 999px;
+        transition: background-color 0.2s;
+    }
+
+    .candy-switch .form-check-input:checked {
+        background-color: var(--mint);
+    }
+
+    .candy-switch .form-check-label {
+        color: #362A4D;
+        font-weight: 600;
+        font-family: 'Quicksand', sans-serif;
+    }
+
+    .image-preview-wrapper {
+        min-height: 140px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #FFFBF7;
+        border-radius: 16px;
+        overflow: hidden;
+        border: 1px solid #F0E4D8;
+        padding: 1rem;
+    }
+
+    .placeholder-image {
+        background: #FFF8F0;
+        border: 2px dashed #F0E4D8;
+    }
+
+    #id_image {
+        display: none;
+    }
+
+    .candy-btn-outline {
+        background: transparent;
+        border: 2px solid var(--pink);
+        color: var(--pink);
+        border-radius: 999px;
+        padding: 0.5rem 1rem;
+        font-weight: 600;
+        font-family: 'Quicksand', sans-serif;
+        transition: all 0.2s;
+        cursor: pointer;
+    }
+
+    .candy-btn-outline:hover {
+        background: var(--pink-soft);
+        border-color: var(--pink-soft);
+        color: var(--pink);
+        transform: translateY(-1px);
+    }
+
+    .candy-btn-primary {
+        background: linear-gradient(135deg, var(--pink), var(--butter));
+        color: #fff;
+        border: none;
+        border-radius: 999px;
+        padding: 0.65rem 1.5rem;
+        font-weight: 700;
+        font-family: 'Quicksand', sans-serif;
+        box-shadow: 0 4px 16px rgba(255, 111, 160, 0.25);
+        transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .candy-btn-primary:hover {
+        background: linear-gradient(135deg, #e85d8b, #e5b840);
+        box-shadow: 0 6px 20px rgba(255, 111, 160, 0.4);
+        transform: translateY(-2px) scale(1.02);
+        color: #fff;
+    }
+
+    .candy-btn-outline-secondary {
+        background: transparent;
+        border: 2px solid #E0D4C8;
+        color: #5B4A72;
+        border-radius: 999px;
+        padding: 0.65rem 1.5rem;
+        font-weight: 600;
+        font-family: 'Quicksand', sans-serif;
+        transition: all 0.2s;
+    }
+
+    .candy-btn-outline-secondary:hover {
+        background: #FFF0F5;
+        border-color: var(--pink-soft);
+        color: var(--pink);
+        transform: translateY(-1px);
+    }
+
+    @media (max-width: 768px) {
+        .product-form-wrapper .card-body {
+            padding: 1.25rem !important;
+        }
+    }
+</style>
+
+<script>
+    (function () {
+        const imageInput = document.getElementById('id_image');
+        const preview = document.getElementById('imagePreview');
+        const placeholder = document.getElementById('placeholderContainer');
+
+        const hasExistingImage = {% if category and category.image %}true{% else %} false{% endif %};
+
+    function togglePlaceholder(show) {
+        if (placeholder) {
+            placeholder.classList.toggle('d-none', !show);
+        }
+    }
+
+    function showPreview(src) {
+        preview.src = src;
+        preview.classList.remove('d-none');
+        togglePlaceholder(false);
+        preview.style.opacity = '0';
+        setTimeout(() => { preview.style.opacity = '1'; }, 10);
+    }
+
+    function hidePreview() {
+        preview.classList.add('d-none');
+        preview.src = '#';
+        togglePlaceholder(true);
+    }
+
+    if (imageInput) {
+        imageInput.addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (ev) { showPreview(ev.target.result); };
+                reader.readAsDataURL(file);
+            } else {
+                if (hasExistingImage) {
+                    showPreview("{{ category.image.url|default:'' }}");
+                } else {
+                    hidePreview();
+                }
+            }
+        });
+    }
+
+    togglePlaceholder(!hasExistingImage);
+    }) ();
+</script>
+{% endblock %}

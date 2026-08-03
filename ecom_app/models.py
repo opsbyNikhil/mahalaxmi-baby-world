@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.text import slugify
 from django.contrib.auth.models import User
+from django.conf import settings
 
 
 class Category(models.Model):
@@ -174,7 +175,12 @@ class OrderItem(models.Model):
         return self.price * self.quantity
 
 
-
+class Wishlist(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='wishlist_items')
+    product = models.ForeignKey('Product', on_delete=models.CASCADE)
+    added_at = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        unique_together = ('user', 'product')
 
 
 class Customer(models.Model):
@@ -188,3 +194,33 @@ class Customer(models.Model):
 
     def __str__(self):
         return self.user.get_full_name() or self.user.username
+
+class BabyCategory(models.Model):
+    name = models.CharField(max_length=100)
+    icon = models.CharField(
+        max_length=10,
+        blank=True,
+        help_text="Emoji fallback shown if no image is uploaded, e.g. 🍼"
+    )
+    image = models.ImageField(
+        upload_to='category_icons/',
+        blank=True,
+        null=True,
+        help_text="Circular category image (recommended: square, at least 150x150px)"
+    )
+    slug = models.SlugField(max_length=120, unique=True, blank=True)
+    display_order = models.PositiveIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['display_order', 'name']
+        verbose_name = "Baby Category"
+        verbose_name_plural = "Baby Categories"
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)

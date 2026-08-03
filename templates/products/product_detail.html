@@ -7,28 +7,38 @@
 {{ block.super }}
 <style>
     /* ------------------------------------------------------------
-     Candy Shop detail – public page, same playful style
+     Product detail – aligned with the marigold + deep teal + cream
+     identity introduced in the navbar (navbar.html: --bb2-marigold
+     #FFA630, --bb2-teal #0E7C7B, --bb2-cream #FFF8EC, --bb2-coral
+     #FF6B6B) and carried into home.html.
      ------------------------------------------------------------ */
     :root {
-        --pink: #FF6FA0;
-        --pink-soft: #FFD3E4;
-        --sky: #5FC9E8;
-        --sky-soft: #CDEFFA;
-        --butter: #FFCB47;
-        --butter-soft: #FFF3CC;
+        --pink: #FF6B6B;
+        /* coral accent */
+        --pink-soft: #FFE1E1;
+        --sky: #0E7C7B;
+        /* deep teal, primary brand color */
+        --sky-strong: #0A5C5B;
+        --sky-soft: #DCEFEF;
+        --butter: #FFA630;
+        /* marigold */
+        --butter-soft: #FFE9C7;
+        --butter-deep: #E88A0E;
         --mint: #7EE0B8;
+        /* kept distinct as a semantic "in stock" success green */
         --mint-soft: #D4F7E8;
-        --plum: #362A4D;
-        --plum-light: #5B4A72;
-        --cream: #FFF8F0;
+        --plum: #23303A;
+        --plum-light: #5C6B74;
+        --cream: #FFF8EC;
+        --border: #EFE2CB;
     }
 
     /* ---------- Main card ---------- */
     .detail-card {
         background: #ffffff;
         border-radius: 22px;
-        border: 2px solid #F0E4D8;
-        box-shadow: 0 4px 12px rgba(54, 42, 77, 0.06);
+        border: 2px solid var(--border);
+        box-shadow: 0 4px 12px rgba(35, 48, 58, 0.06);
         overflow: hidden;
         padding: 1.5rem 2rem;
     }
@@ -53,7 +63,7 @@
     }
 
     .bb-breadcrumb .active {
-        color: var(--pink);
+        color: var(--sky);
     }
 
     /* ---------- Product image ---------- */
@@ -61,7 +71,7 @@
         background: var(--cream);
         border-radius: 18px;
         padding: 1rem;
-        border: 2px solid #F0E4D8;
+        border: 2px solid var(--border);
         text-align: center;
     }
 
@@ -70,6 +80,12 @@
         max-height: 420px;
         object-fit: contain;
         border-radius: 12px;
+        cursor: zoom-in;
+        transition: transform 0.2s ease;
+    }
+
+    .detail-image-wrap img:hover {
+        transform: scale(1.02);
     }
 
     /* ---------- Info sections ---------- */
@@ -79,7 +95,7 @@
         color: var(--plum);
         font-size: 1.1rem;
         margin-bottom: 0.75rem;
-        border-bottom: 2px solid #FDF3E9;
+        border-bottom: 2px solid var(--butter-soft);
         padding-bottom: 0.4rem;
     }
 
@@ -116,14 +132,14 @@
 
     .stock-out {
         background: var(--pink-soft);
-        color: #b34a6a;
+        color: #b34a4a;
     }
 
     .detail-description {
         background: var(--cream);
         padding: 1rem 1.25rem;
         border-radius: 16px;
-        border: 1px solid #F0E4D8;
+        border: 1px solid var(--border);
         color: var(--plum-light);
         line-height: 1.7;
     }
@@ -136,7 +152,7 @@
         background: var(--cream);
         padding: 1.25rem 1.5rem;
         border-radius: 16px;
-        border: 1px solid #F0E4D8;
+        border: 1px solid var(--border);
     }
 
     .spec-item {
@@ -173,7 +189,7 @@
         background: var(--cream);
         padding: 0.2rem 0.8rem;
         border-radius: 20px;
-        border: 1px solid #F0E4D8;
+        border: 1px solid var(--border);
         font-size: 0.85rem;
         color: var(--plum-light);
     }
@@ -181,7 +197,7 @@
     /* ---------- Add to cart ---------- */
     .qty-input {
         width: 80px;
-        border: 2px solid #F0E4D8;
+        border: 2px solid var(--border);
         border-radius: 999px;
         padding: 0.4rem 0.75rem;
         font-weight: 600;
@@ -191,26 +207,29 @@
     }
 
     .qty-input:focus {
-        border-color: var(--pink);
-        box-shadow: 0 0 0 4px var(--pink-soft);
+        border-color: var(--sky);
+        box-shadow: 0 0 0 4px var(--sky-soft);
         outline: none;
     }
 
+    /* Solid marigold fill -- matches the "Add" button on the home
+       page grid, kept distinct from the teal "Continue Shopping"
+       link and the coral price/stock-out accents. */
     .btn-add-cart {
-        background: linear-gradient(135deg, var(--pink), var(--butter));
+        background: linear-gradient(135deg, var(--butter), var(--butter-deep));
         color: #fff;
         border: none;
         border-radius: 999px;
         padding: 0.6rem 1.8rem;
         font-weight: 700;
         font-family: 'Quicksand', sans-serif;
-        box-shadow: 0 4px 14px rgba(255, 111, 160, 0.25);
+        box-shadow: 0 4px 14px rgba(255, 166, 48, 0.35);
         transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     .btn-add-cart:hover {
-        background: linear-gradient(135deg, #e85d8b, #e5b840);
-        box-shadow: 0 6px 18px rgba(255, 111, 160, 0.4);
+        background: linear-gradient(135deg, var(--butter-deep), var(--butter));
+        box-shadow: 0 6px 18px rgba(255, 166, 48, 0.45);
         transform: translateY(-2px) scale(1.02);
         color: #fff;
     }
@@ -223,7 +242,7 @@
     }
 
     .btn-continue {
-        border: 2px solid #F0E4D8;
+        border: 2px solid var(--border);
         background: transparent;
         color: var(--plum-light);
         border-radius: 999px;
@@ -235,9 +254,9 @@
     }
 
     .btn-continue:hover {
-        background: var(--cream);
-        border-color: var(--plum-light);
-        color: var(--plum);
+        background: var(--sky-soft);
+        border-color: var(--sky);
+        color: var(--sky-strong);
     }
 
     /* ---------- Related products ---------- */
@@ -250,7 +269,7 @@
 
     .related-card {
         background: #ffffff;
-        border: 2px solid #F0E4D8;
+        border: 2px solid var(--border);
         border-radius: 16px;
         padding: 0.75rem;
         text-align: center;
@@ -259,7 +278,7 @@
 
     .related-card:hover {
         transform: translateY(-4px);
-        border-color: var(--pink-soft);
+        border-color: var(--butter-soft);
     }
 
     .related-card img {
@@ -268,6 +287,7 @@
         object-fit: cover;
         border-radius: 10px;
         background: var(--cream);
+        cursor: zoom-in;
     }
 
     .related-card .name {
@@ -284,7 +304,7 @@
     }
 
     .related-card .btn-view {
-        border: 2px solid #F0E4D8;
+        border: 2px solid var(--border);
         background: transparent;
         color: var(--plum-light);
         border-radius: 999px;
@@ -297,13 +317,13 @@
     }
 
     .related-card .btn-view:hover {
-        background: var(--cream);
-        border-color: var(--pink);
-        color: var(--pink);
+        background: var(--sky-soft);
+        border-color: var(--sky);
+        color: var(--sky-strong);
     }
 
     .related-divider {
-        border-top: 2px solid #F0E4D8;
+        border-top: 2px solid var(--border);
         opacity: 0.6;
         margin: 3rem 0 1.5rem;
     }
@@ -313,7 +333,53 @@
         background: var(--plum);
         color: #fff;
         border-radius: 20px;
-        border: 2px solid var(--pink-soft);
+        border: 2px solid var(--butter-soft);
+    }
+
+    /* ---------- Image Lightbox Modal ---------- */
+    #imageLightboxModal .modal-content {
+        background: transparent;
+        border: none;
+        box-shadow: none;
+    }
+
+    #imageLightboxModal .modal-dialog {
+        max-width: 90vw;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0 auto;
+    }
+
+    #imageLightboxModal .modal-body {
+        padding: 0;
+        text-align: center;
+        position: relative;
+    }
+
+    #imageLightboxModal img {
+        max-width: 100%;
+        max-height: 85vh;
+        object-fit: contain;
+        border-radius: 16px;
+        background: #fff;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    #imageLightboxModal .btn-close {
+        position: absolute;
+        top: -0.5rem;
+        right: -0.5rem;
+        background-color: #fff;
+        border-radius: 50%;
+        opacity: 1;
+        padding: 0.6rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+    }
+
+    #imageLightboxModal .modal-backdrop.show {
+        opacity: 0.85;
     }
 
     /* ---------- Responsive ---------- */
@@ -329,6 +395,10 @@
 
         .related-grid {
             grid-template-columns: repeat(2, 1fr);
+        }
+
+        #imageLightboxModal img {
+            max-height: 70vh;
         }
     }
 </style>
@@ -358,9 +428,11 @@
             <div class="col-md-6">
                 <div class="detail-image-wrap">
                     {% if product.image %}
-                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="js-lightbox-trigger"
+                        data-full-src="{{ product.image.url }}" data-caption="{{ product.name }}">
                     {% else %}
-                    <img src="{% static 'images/placeholder.png' %}" alt="No image" style="opacity:0.4;">
+                    <img src="{% static 'images/placeholder.png' %}" alt="No image"
+                        style="opacity:0.4; cursor:default;">
                     {% endif %}
                 </div>
             </div>
@@ -375,7 +447,7 @@
                         {% if product.brand %}<strong>Brand:</strong> {{ product.brand }}<br>{% endif %}
                         <strong>Category:</strong>
                         <span
-                            style="background: var(--pink-soft); color: var(--pink); padding:0.2rem 0.8rem; border-radius:20px;">
+                            style="background: var(--sky-soft); color: var(--sky-strong); padding:0.2rem 0.8rem; border-radius:20px;">
                             {{ product.category.name }}
                         </span>
                     </div>
@@ -384,9 +456,9 @@
 
                     <div>
                         {% if product.stock > 0 %}
-                        <span class="stock-badge stock-in">In Stock ({{ product.stock }} available)</span>
+                        <span class="stock-badge stock-in" id="stockBadge">In Stock (<span id="stockCount">{{ product.stock }}</span> available)</span>
                         {% else %}
-                        <span class="stock-badge stock-out">Out of Stock</span>
+                        <span class="stock-badge stock-out" id="stockBadge">Out of Stock</span>
                         {% endif %}
                     </div>
 
@@ -452,7 +524,8 @@
         {% for item in related_products %}
         <div class="related-card">
             {% if item.image %}
-            <img src="{{ item.image.url }}" alt="{{ item.name }}">
+            <img src="{{ item.image.url }}" alt="{{ item.name }}" class="js-lightbox-trigger"
+                data-full-src="{{ item.image.url }}" data-caption="{{ item.name }}">
             {% else %}
             <div style="height:120px; background:var(--cream); border-radius:10px;"></div>
             {% endif %}
@@ -464,6 +537,18 @@
     </div>
     {% endif %}
 
+</div>
+
+<!-- Image Lightbox Modal: opens full-size image in a popup window on click -->
+<div class="modal fade" id="imageLightboxModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <img id="lightboxImage" src="" alt="">
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Add to Cart Toast -->
@@ -509,12 +594,41 @@
             toast.show();
         }
 
+        // ---------------- Image lightbox: click any product image to open it full-size ----------------
+        const lightboxModalEl = document.getElementById('imageLightboxModal');
+        const lightboxImage = document.getElementById('lightboxImage');
+        let lightboxModal = null;
+        if (lightboxModalEl && window.bootstrap) {
+            lightboxModal = new bootstrap.Modal(lightboxModalEl);
+        }
+
+        document.querySelectorAll('.js-lightbox-trigger').forEach(function (img) {
+            img.addEventListener('click', function () {
+                const fullSrc = this.dataset.fullSrc || this.src;
+                const caption = this.dataset.caption || '';
+                lightboxImage.src = fullSrc;
+                lightboxImage.alt = caption;
+                if (lightboxModal) {
+                    lightboxModal.show();
+                }
+            });
+        });
+
+        // ---------------- Add to cart: updates cart badge and stock count live, no page reload ----------------
         const addBtn = document.getElementById('add-to-cart-btn');
         if (addBtn) {
             addBtn.addEventListener('click', function (e) {
                 const productId = this.dataset.productId;
-                const quantity = document.getElementById('qty').value;
+                const qtyInput = document.getElementById('qty');
+                const quantity = parseInt(qtyInput.value, 10);
                 const csrftoken = getCookie('csrftoken');
+
+                if (!quantity || quantity < 1) {
+                    showCartToast('Please enter a valid quantity.', true);
+                    return;
+                }
+
+                addBtn.disabled = true;
 
                 fetch("{% url 'add_to_cart' %}", {
                     method: 'POST',
@@ -533,8 +647,28 @@
                     })
                     .then(data => {
                         if (data.success) {
+                            // live-update the cart icon badge in the navbar
                             const cartBadge = document.getElementById('cart-badge');
                             if (cartBadge) cartBadge.textContent = data.cart_count;
+
+                            // live-update the remaining stock shown on this page, without a reload
+                            const stockCountEl = document.getElementById('stockCount');
+                            if (stockCountEl) {
+                                const remaining = Math.max(0, parseInt(stockCountEl.textContent, 10) - quantity);
+                                stockCountEl.textContent = remaining;
+                                qtyInput.max = remaining;
+
+                                if (remaining <= 0) {
+                                    const stockBadge = document.getElementById('stockBadge');
+                                    stockBadge.classList.remove('stock-in');
+                                    stockBadge.classList.add('stock-out');
+                                    stockBadge.textContent = 'Out of Stock';
+                                    addBtn.disabled = true;
+                                    addBtn.textContent = 'Out of Stock';
+                                    qtyInput.disabled = true;
+                                }
+                            }
+
                             showCartToast(data.message || 'Added to cart!');
                         } else {
                             showCartToast('Error: ' + data.message, true);
@@ -543,6 +677,14 @@
                     .catch(error => {
                         console.error('Error:', error);
                         showCartToast('Something went wrong. Please try again.', true);
+                    })
+                    .finally(() => {
+                        if (!addBtn.disabled) return;
+                        // re-enable unless we just hit zero stock above
+                        const stockCountEl = document.getElementById('stockCount');
+                        if (!stockCountEl || parseInt(stockCountEl.textContent, 10) > 0) {
+                            addBtn.disabled = false;
+                        }
                     });
             });
         }

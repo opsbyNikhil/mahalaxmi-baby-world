@@ -5,6 +5,50 @@
 {% block content %}
 
 <style>
+    /* ==========================================================
+       Palette override -- brings this page in line with the
+       marigold + deep teal identity introduced in the navbar
+       (navbar.html: --bb2-marigold #FFA630, --bb2-teal #0E7C7B,
+       --bb2-cream #FFF8EC, --bb2-coral #FF6B6B).
+       Same variable names the rest of this template already uses
+       (--pink, --sky, --butter, --plum, --cream, --mint, etc.),
+       just repointed to the new hex values so every class below
+       needs zero structural changes. If these variables are also
+       declared in base.html's :root, move this block there instead
+       so it applies site-wide from a single source of truth.
+       ========================================================== */
+    .bb-page {
+        --cream: #FFF8EC;
+        --pink: #FF6B6B;
+        /* was blush rose -> now coral, the site's energetic accent */
+        --pink-strong: #E85454;
+        --pink-soft: #FFE1E1;
+        --pink-subtle: #FFF1F1;
+        --sky: #0E7C7B;
+        /* was baby blue -> now deep teal, the site's grounding color */
+        --sky-strong: #0A5C5B;
+        --sky-soft: #DCEFEF;
+        --sky-subtle: #EFF8F8;
+        --butter: #FFA630;
+        /* marigold stays the "golden" highlight, just deeper */
+        --butter-soft: #FFE9C7;
+        --mint: #0E7C7B;
+        --mint-soft: #DCEFEF;
+        --plum: #23303A;
+        /* heading/ink color, matches navbar's --bb2-ink */
+        --text-secondary: #5C6B74;
+        --text-tertiary: #97A5AC;
+        --border-default: #EFE2CB;
+        --border-light: #F6EEDD;
+        --radius-xl: 20px;
+        --radius-pill: 999px;
+        --shadow-sm: 0 1px 3px rgba(35, 48, 58, 0.08);
+        --shadow-lg: 0 14px 32px -10px rgba(35, 48, 58, 0.18);
+        --shadow-glow-pink: 0 0 24px rgba(255, 107, 107, 0.3);
+        --transition-fast: 180ms cubic-bezier(0.4, 0, 0.2, 1);
+        --transition-bouncy: 260ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
     .bb-page {
         background: var(--cream);
         color: var(--plum);
@@ -67,7 +111,7 @@
         font-weight: 800;
         font-size: 1.02rem;
         text-decoration: none;
-        box-shadow: 0 8px 20px -8px rgba(255, 111, 160, 0.45);
+        box-shadow: 0 8px 20px -8px rgba(255, 107, 107, 0.45);
         transition: transform var(--transition-bouncy), box-shadow var(--transition-bouncy), background 0.15s ease;
     }
 
@@ -162,6 +206,64 @@
         animation-delay: -2.4s;
     }
 
+    /* Wishlist button */
+    .bb-btn-wishlist {
+        flex: 0 0 auto;
+        width: 42px;
+        height: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid var(--border-default);
+        background: #fff;
+        border-radius: 50%;
+        font-size: 1.05rem;
+        cursor: pointer;
+        transition: all var(--transition-bouncy);
+        line-height: 1;
+    }
+
+    .bb-btn-wishlist:hover,
+    .bb-btn-wishlist:focus-visible {
+        border-color: var(--pink-soft);
+        background: var(--pink-subtle);
+        transform: translateY(-2px) scale(1.05);
+    }
+
+    .bb-btn-wishlist.active {
+        border-color: var(--pink-strong);
+        background: var(--pink-subtle);
+        animation: bb-heart-pop 0.35s ease;
+    }
+
+    .bb-btn-wishlist.active .heart-icon {
+        filter: none;
+    }
+
+    .bb-btn-wishlist .heart-icon {
+        filter: grayscale(1) opacity(0.55);
+        transition: filter var(--transition-fast);
+    }
+
+    .bb-btn-wishlist.active .heart-icon,
+    .bb-btn-wishlist:hover .heart-icon {
+        filter: none;
+    }
+
+    @keyframes bb-heart-pop {
+        0% {
+            transform: scale(1);
+        }
+
+        40% {
+            transform: scale(1.3);
+        }
+
+        100% {
+            transform: scale(1);
+        }
+    }
+
     @keyframes bb-swing {
 
         0%,
@@ -176,7 +278,7 @@
 
     .bb-thread {
         width: 2px;
-        background: rgba(54, 42, 77, 0.25);
+        background: rgba(35, 48, 58, 0.25);
     }
 
     .bb-string.moon .bb-thread {
@@ -384,21 +486,22 @@
     .bb-btn-add {
         flex: 1;
         border: none;
-        background: linear-gradient(135deg, var(--pink), var(--butter));
+        background: linear-gradient(135deg, var(--butter), #E88A0E);
         color: #fff;
         border-radius: var(--radius-pill);
         padding: 0.55rem 0.5rem;
         font-family: 'Quicksand', sans-serif;
         font-weight: 700;
         font-size: 0.9rem;
-        box-shadow: 0 3px 12px rgba(255, 111, 160, 0.3);
+        box-shadow: 0 3px 12px rgba(255, 166, 48, 0.4);
         transition: all var(--transition-bouncy);
     }
 
     .bb-btn-add:hover,
     .bb-btn-add:focus-visible {
+        background: linear-gradient(135deg, #E88A0E, var(--butter));
         transform: translateY(-2px) scale(1.02);
-        box-shadow: var(--shadow-glow-pink);
+        box-shadow: 0 0 20px rgba(255, 166, 48, 0.45);
     }
 
     .bb-page a:focus-visible,
@@ -421,6 +524,85 @@
             margin-top: 2rem;
         }
     }
+
+    .bb-categories {
+        padding: 2.5rem 0 0.5rem;
+    }
+
+    .bb-category-scroll {
+        display: flex;
+        gap: 1.75rem;
+        overflow-x: auto;
+        padding: 0.5rem 0.25rem 1rem;
+        scrollbar-width: thin;
+    }
+
+    .bb-category-scroll::-webkit-scrollbar {
+        height: 6px;
+    }
+
+    .bb-category-scroll::-webkit-scrollbar-thumb {
+        background: var(--pink-soft);
+        border-radius: var(--radius-pill);
+    }
+
+    .bb-category-item {
+        flex: 0 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-decoration: none;
+        width: 96px;
+        text-align: center;
+    }
+
+    .bb-category-circle {
+        width: 76px;
+        height: 76px;
+        border-radius: 50%;
+        background: var(--sky-soft);
+        border: 2px solid var(--border-default);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        margin-bottom: 0.6rem;
+        transition: all var(--transition-bouncy);
+    }
+
+    .bb-category-item:nth-child(4n+2) .bb-category-circle {
+        background: var(--pink-soft);
+    }
+
+    .bb-category-item:nth-child(4n+3) .bb-category-circle {
+        background: var(--butter-soft);
+    }
+
+    .bb-category-item:nth-child(4n+4) .bb-category-circle {
+        background: var(--mint-soft);
+    }
+
+    .bb-category-item:hover .bb-category-circle,
+    .bb-category-item:focus-visible .bb-category-circle {
+        transform: translateY(-4px) scale(1.05);
+        border-color: var(--pink-soft);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .bb-category-label {
+        font-family: 'Quicksand', sans-serif;
+        font-weight: 700;
+        font-size: 0.82rem;
+        color: var(--plum);
+        line-height: 1.2;
+    }
+
+    .bb-category-circle img.bb-category-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+    }
 </style>
 
 <div class="bb-page">
@@ -434,10 +616,10 @@
                     <span class="bb-hero-eyebrow">Hyderabad's Baby Store</span>
                     <h1>Everything Your Little One Needs</h1>
                     <p class="lead">
-                        Strollers, carry cots, swings, walkers and more — chosen for
+                        Strollers, carry cots, swings, walkers and more -- chosen for
                         comfort, safety and a whole lot of giggles.
                     </p>
-                    <a href="#featured" class="bb-btn-primary">Shop Now →</a>
+                    <a href="#featured" class="bb-btn-primary">Shop Now &rarr;</a>
 
                     <div class="bb-trust-strip">
                         <span class="bb-trust-item">🚚 Free delivery over ₹999</span>
@@ -473,6 +655,33 @@
 
     <div class="bb-divider"></div>
 
+    <!-- ---------- Shop by Category ---------- -->
+    <div class="bb-categories">
+        <div class="container">
+            <div class="bb-section-heading">
+                <span class="bb-eyebrow">Browse</span>
+                <h2>Shop by Category</h2>
+            </div>
+
+            <div class="bb-category-scroll">
+                {% for category in categories %}
+                <a href="{% url 'category_products' category.slug %}" class="bb-category-item">
+                    <div class="bb-category-circle">
+                        {% if category.image %}
+                        <img src="{{ category.image.url }}" alt="{{ category.name }}" class="bb-category-img">
+                        {% else %}
+                        <i class="bi bi-{{ category.icon|default:'box-seam-fill' }}"></i>
+                        {% endif %}
+                    </div>
+                    <span class="bb-category-label">{{ category.name }}</span>
+                </a>
+                {% empty %}
+                <p class="text-muted">No categories yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
     <!-- Featured Products -->
     <div id="featured" class="bb-featured">
         <div class="container">
@@ -498,9 +707,18 @@
                             <p class="text-muted">{{ product.description|truncatewords:10 }}</p>
                             <p class="bb-price">₹{{ product.price }}</p>
                             <div class="d-flex gap-2">
-                                <a href="{% url 'product_detail' product.id %}" class="bb-btn-outline">View</a>
+                                <a href="{% url 'product_detail' product.id %}"
+                                    class="bb-btn-outline view-product-link">View</a>
                                 <button class="bb-btn-add add-to-cart-btn" data-product-id="{{ product.id }}">
                                     🛒 Add
+                                </button>
+                                <button
+                                    class="bb-btn-wishlist wishlist-btn{% if product.id in wishlist_ids %} active{% endif %}"
+                                    data-product-id="{{ product.id }}"
+                                    data-toggle-url="{% url 'toggle_wishlist' product.id %}"
+                                    aria-label="Add to wishlist"
+                                    aria-pressed="{% if product.id in wishlist_ids %}true{% else %}false{% endif %}">
+                                    <span class="heart-icon">❤️</span>
                                 </button>
                             </div>
                         </div>
@@ -529,7 +747,19 @@
     </div>
 </div>
 
+
 <script>
+    const loginUrl = "{% url 'login' %}?next={{ request.path|urlencode }}";
+    const isAuthenticated = {{ user.is_authenticated|yesno:"true,false" }};
+
+    function requireLogin() {
+        showCartToast('Please login to view in real time', true);
+        setTimeout(function () {
+            window.location.href = loginUrl;
+        }, 1500);
+    }
+
+
     function getCookie(name) {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {
@@ -557,8 +787,54 @@
         toast.show();
     }
 
+    document.querySelectorAll('.wishlist-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            if (!isAuthenticated) {
+                showCartToast('Please login to view in real time', true);
+                requireLogin();
+                return;
+            }
+
+            const csrftoken = getCookie('csrftoken');
+            const toggleUrl = this.dataset.toggleUrl;
+            const button = this;
+
+            fetch(toggleUrl, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrftoken,
+                },
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        button.classList.toggle('active', data.in_wishlist);
+                        button.setAttribute('aria-pressed', data.in_wishlist ? 'true' : 'false');
+                        showCartToast(data.in_wishlist ? 'Added to wishlist ❤️' : 'Removed from wishlist');
+                    } else {
+                        showCartToast('Error: ' + data.message, true);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showCartToast('Something went wrong. Please try again.', true);
+                });
+        });
+    });
+
     document.querySelectorAll('.add-to-cart-btn').forEach(function (btn) {
         btn.addEventListener('click', function () {
+            if (!isAuthenticated) {
+                showCartToast('Please login to view in real time', true);
+                requireLogin();
+                return;
+            }
+
             const productId = this.dataset.productId;
             const csrftoken = getCookie('csrftoken');
 
@@ -594,6 +870,16 @@
                     console.error('Error:', error);
                     showCartToast('Something went wrong. Please try again.', true);
                 });
+        });
+    });
+
+    document.querySelectorAll('.view-product-link').forEach(function (link) {
+        link.addEventListener('click', function (e) {
+            if (!isAuthenticated) {
+                e.preventDefault();
+                requireLogin();
+                showCartToast('Please login to view in real time', true);
+            }
         });
     });
 </script>

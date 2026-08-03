@@ -1,0 +1,96 @@
+{% extends 'dashboard/dashboard_base.html' %}
+{% load static %}
+
+{% block title %}Delete Category · BabyShop Admin{% endblock %}
+
+{% block page_title %}Delete Category{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center">
+    <div class="glass-card text-center" style="max-width: 440px; width: 100%;">
+        <div class="mb-3">
+            <div class="delete-icon-wrap mx-auto mb-3">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+            </div>
+            <h5 style="font-family:'Fredoka', sans-serif; color:var(--plum); font-weight:700;">
+                Delete Category?
+            </h5>
+            <p class="mb-0" style="color:var(--text-secondary); font-size:var(--font-sm);">
+                Are you sure you want to delete
+                <strong style="color:var(--plum);">"{{ category.name }}"</strong>?
+                This action cannot be undone.
+            </p>
+        </div>
+
+        {% if category.image %}
+        <img src="{{ category.image.url }}" alt="{{ category.name }}"
+            style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid var(--border-default);margin-bottom:1rem;">
+        {% elif category.icon %}
+        <div style="font-size:2rem; margin-bottom:1rem;">{{ category.icon }}</div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="d-flex justify-content-center gap-2 mt-2">
+                <a href="{% url 'dashboard_category_list' %}" class="btn candy-btn-outline-secondary">
+                    Cancel
+                </a>
+                <button type="submit" class="btn btn-delete-confirm">
+                    <i class="bi bi-trash-fill me-1"></i>Yes, Delete
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .delete-icon-wrap {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        background: #fef2f2;
+        color: #dc2626;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+    }
+
+    .candy-btn-outline-secondary {
+        background: transparent;
+        border: 2px solid #E0D4C8;
+        color: #5B4A72;
+        border-radius: 999px;
+        padding: 0.6rem 1.4rem;
+        font-weight: 600;
+        font-family: 'Quicksand', sans-serif;
+        transition: all 0.2s;
+        text-decoration: none;
+    }
+
+    .candy-btn-outline-secondary:hover {
+        background: #FFF0F5;
+        border-color: var(--pink-soft);
+        color: var(--pink);
+        transform: translateY(-1px);
+    }
+
+    .btn-delete-confirm {
+        background: linear-gradient(135deg, #dc2626, #f87171);
+        color: #fff;
+        border: none;
+        border-radius: 999px;
+        padding: 0.6rem 1.4rem;
+        font-weight: 700;
+        font-family: 'Quicksand', sans-serif;
+        box-shadow: 0 4px 16px rgba(220, 38, 38, 0.25);
+        transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .btn-delete-confirm:hover {
+        box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+        transform: translateY(-2px) scale(1.02);
+        color: #fff;
+    }
+</style>
+{% endblock %}

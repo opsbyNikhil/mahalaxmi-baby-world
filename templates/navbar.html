@@ -1,654 +1,838 @@
-<nav class="navbar navbar-expand-lg sticky-top bb-navbar" id="bbNavbar">
-    <div class="container bb-navbar-container">
+<!-- ============================================================
+     Mahalaxmi Baby World — Navbar v2
+     Layout inspired by Indian baby-product e-commerce sites
+     (FirstCry / Hopscotch style): top offer strip, logo + pincode,
+     prominent search, category strip with icons.
+     Palette: marigold + deep teal + cream (deliberately different
+     from the earlier blush-pink/baby-blue version).
+     ============================================================ -->
 
-        <a class="navbar-brand bb-navbar-brand" href="{% url 'home' %}">
-            <div class="bb-brand-icon">👶</div>
-            <div class="bb-brand-text">
+<!-- 1. Top utility strip -->
+<div class="bb2-topstrip">
+    <div class="container bb2-topstrip-inner">
+        <div class="bb2-topstrip-marquee">
+            <span>🎉 Flat 20% off on first order — use code WELCOME20</span>
+            <span>🚚 Free delivery on orders above ₹499</span>
+            <span>👶 New arrivals in Sleep &amp; Nursery just dropped</span>
+        </div>
+        <div class="bb2-topstrip-links">
+            <a href="{% url 'my_orders' %}"><i class="bi bi-box-seam"></i> Track Order</a>
+            <a href="#"><i class="bi bi-phone"></i> Get the App</a>
+        </div>
+    </div>
+</div>
+
+<!-- 2. Main bar: logo, location, search, account/wishlist/cart -->
+<nav class="navbar navbar-expand-lg sticky-top bb2-navbar" id="bb2Navbar">
+    <div class="container bb2-navbar-container">
+
+        <!-- Brand -->
+        <a class="navbar-brand bb2-brand" href="{% url 'home' %}">
+            <div class="bb2-brand-icon">👶</div>
+            <div class="bb2-brand-text">
                 Mahalaxmi Baby World
                 <small>Little Steps, Big Smiles</small>
             </div>
         </a>
 
-        <button class="navbar-toggler bb-toggler d-lg-none" type="button" data-bs-toggle="offcanvas"
-            data-bs-target="#navbarNav" aria-controls="navbarNav" aria-label="Open menu">
-            <i class="bi bi-list"></i>
+        <!-- Location / pincode selector -->
+        <button class="bb2-location-btn" type="button" data-bs-toggle="modal" data-bs-target="#bb2LocationModal">
+            <i class="bi bi-geo-alt-fill"></i>
+            <span class="bb2-location-text">
+                <small>Deliver to</small>
+                <strong id="bb2LocationLabel">Select Pincode</strong>
+            </span>
+            <i class="bi bi-chevron-down bb2-location-caret"></i>
         </button>
 
-        <!-- Nav links: normal row on desktop, slide-in drawer on mobile -->
-        <div class="offcanvas offcanvas-start offcanvas-lg bb-offcanvas" tabindex="-1" id="navbarNav"
-            aria-labelledby="navbarNavLabel">
-
-            <div class="offcanvas-header d-lg-none">
-                <h5 class="offcanvas-title bb-navbar-brand" id="navbarNavLabel">Menu</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-            </div>
-
-            <div class="offcanvas-body">
-                <ul class="navbar-nav mx-lg-auto bb-nav-list">
-
-                    <li class="nav-item">
-                        <a class="nav-link bb-nav-link {% if request.path == '/' %}active{% endif %}"
-                            href="{% url 'home' %}"><i class="bi bi-house-fill"></i> Home</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link bb-nav-link {% if '/products/' in request.path %}active{% endif %}"
-                            href="{% url 'product_list' %}"><i class="bi bi-grid-fill"></i> All Products</a>
-                    </li>
-
-                    <!-- Categories Dropdown -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link bb-nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">
-                            <i class="bi bi-tags-fill"></i> Categories
-                        </a>
-                        <ul class="dropdown-menu bb-dropdown-menu">
-                            {% for cat in categories %}
-                            <li>
-                                <a class="dropdown-item bb-dropdown-item" href="{% url 'category_products' cat.slug %}">
-                                    <span class="bb-cat-icon"><i
-                                            class="bi bi-{{ cat.icon|default:'box-seam-fill' }}"></i></span>
-                                    {{ cat.name }}
-                                </a>
-                            </li>
-                            {% empty %}
-                            <li><span class="dropdown-item disabled">No categories</span></li>
-                            {% endfor %}
-                        </ul>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link bb-nav-link {% if request.path == '/about/' %}active{% endif %}"
-                            href="{% url 'about' %}"><i class="bi bi-heart-fill"></i> About</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link bb-nav-link {% if request.path == '/contact/' %}active{% endif %}"
-                            href="{% url 'contact' %}"><i class="bi bi-envelope-fill"></i> Contact</a>
-                    </li>
-
-                    <!-- Account links: mobile only, shown inline in the drawer -->
-                    <li class="nav-item d-lg-none">
-                        {% if user.is_authenticated %}
-                        <a class="nav-link bb-nav-link" href="{% url 'my_orders' %}"><i class="bi bi-receipt"></i> My Orders</a>
-                        {% else %}
-                        <a class="nav-link bb-nav-link" href="{% url 'login' %}"><i
-                                class="bi bi-box-arrow-in-right"></i> Sign In</a>
-                        {% endif %}
-                    </li>
-                    {% if user.is_authenticated %}
-                    <li class="nav-item d-lg-none">
-                        <a class="nav-link bb-nav-link" href="{% url 'logout' %}"><i class="bi bi-box-arrow-right"></i>
-                            Sign Out</a>
-                    </li>
-                    {% endif %}
-
-                </ul>
-            </div>
-        </div>
-
-        <!-- Search: always visible -->
-        <form class="bb-search-form me-2" action="{% url 'search' %}" method="get">
+        <!-- Search -->
+        <form class="bb2-search-form" action="{% url 'search' %}" method="get" autocomplete="off">
             <i class="bi bi-search"></i>
-            <input class="bb-search-input" type="search" name="q" placeholder="Search Products">
-            <button class="bb-search-btn" type="submit">Search</button>
+            <input class="bb2-search-input" type="search" name="q" id="bb2SearchInput"
+                placeholder="Search for diapers, toys, feeding bottles...">
+            <button class="bb2-search-btn" type="submit">Search</button>
+            <div class="bb2-search-suggestions" id="bb2SearchSuggestions"></div>
         </form>
 
-        <!-- Account: desktop only -->
-        <div class="bb-account d-none d-lg-block me-2">
+        <!-- Right icon cluster -->
+        <div class="bb2-icon-cluster">
+
             {% if user.is_authenticated %}
-            <div class="dropdown">
-                <a href="#" class="bb-account-btn dropdown-toggle" role="button" data-bs-toggle="dropdown"
-                    aria-expanded="false">
-                    <span class="bb-account-avatar">{{ user.first_name|default:user.username|slice:":1"|upper }}</span>
-                    <span class="bb-account-name">{{ user.first_name|default:user.username }}</span>
-                </a>
-                <ul class="dropdown-menu dropdown-menu-end bb-dropdown-menu">
-                    <li>
-                        <a class="dropdown-item bb-dropdown-item" href="{% url 'my_orders' %}">
-                            <span class="bb-cat-icon"><i class="bi bi-receipt"></i></span> My Orders
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item bb-dropdown-item" href="{% url 'logout' %}">
-                            <span class="bb-cat-icon"><i class="bi bi-box-arrow-right"></i></span> Sign Out
-                        </a>
-                    </li>
-                </ul>
-            </div>
+        <div class="dropdown bb2-account">
+            <a href="#" class="bb2-icon-btn dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false"
+                aria-label="Account">
+                <i class="bi bi-person-circle"></i>
+                <span class="bb2-icon-label">Account</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end bb2-dropdown-menu">
+                <li>
+                    <p class="bb2-dropdown-greeting">Hi, {{ user.first_name|default:user.username }}</p>
+                </li>
+                <li>
+                    <hr class="bb2-dropdown-divider">
+                </li>
+                <li><a class="dropdown-item bb2-dropdown-item" href="{% url 'account_settings' %}">
+                        <i class="bi bi-gear-fill"></i> Account Settings</a></li>
+                <li><a class="dropdown-item bb2-dropdown-item" href="{% url 'my_orders' %}">
+                        <i class="bi bi-receipt"></i> My Orders</a></li>
+                <li><a class="dropdown-item bb2-dropdown-item" href="{% url 'wishlist' %}">
+                        <i class="bi bi-heart-fill"></i> My Wishlist</a></li>
+                <li><a class="dropdown-item bb2-dropdown-item" href="{% url 'logout' %}">
+                        <i class="bi bi-box-arrow-right"></i> Sign Out</a></li>
+            </ul>
+        </div>
             {% else %}
-            <div class="bb-account-links">
-                <a href="{% url 'login' %}" class="bb-account-login">Sign In</a>
-                <a href="{% url 'signup' %}" class="bb-account-signup">Sign Up</a>
-            </div>
+            <a href="{% url 'login' %}" class="bb2-icon-btn" aria-label="Sign In">
+                <i class="bi bi-person-circle"></i>
+                <span class="bb2-icon-label">Login</span>
+            </a>
             {% endif %}
+
+            <a href="{% url 'wishlist' %}" class="bb2-icon-btn position-relative" aria-label="Wishlist">
+                <i class="bi bi-heart"></i>
+                <span class="bb2-icon-label">Wishlist</span>
+                <span class="bb2-badge" id="wishlist-badge">{{ wishlist_count|default:0 }}</span>
+            </a>
+
+            <a href="{% url 'cart' %}" class="bb2-icon-btn bb2-icon-btn-cart position-relative" aria-label="Cart">
+                <i class="bi bi-bag-heart-fill"></i>
+                <span class="bb2-icon-label">Cart</span>
+                <span class="bb2-badge bb2-badge-cart" id="cart-badge">{{ cart_count|default:0 }}</span>
+            </a>
         </div>
 
-        <!-- Cart: after account, pinned top-right on desktop -->
-        <a href="{% url 'cart' %}" class="bb-cart-btn position-relative">
-            <i class="bi bi-bag-heart-fill"></i>
-            <span class="bb-cart-label">Cart</span>
-            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bb-cart-badge"
-                id="cart-badge">
-                {{ cart_count|default:0 }}
-            </span>
-        </a>
-
+        <!-- Mobile-only hamburger, toggles category strip on small screens -->
+        <button class="bb2-hamburger-btn d-lg-none" type="button" data-bs-toggle="collapse"
+            data-bs-target="#bb2CategoryStrip" aria-expanded="false" aria-label="Open categories">
+            <i class="bi bi-list"></i>
+        </button>
     </div>
 </nav>
 
+<!-- 3. Category strip: horizontal, icon + label per category, mega-menu style on hover (desktop) -->
+<div class="collapse d-lg-block bb2-category-wrap" id="bb2CategoryStrip">
+    <div class="container bb2-category-inner">
+        <a class="bb2-category-link bb2-category-link-all {% if request.path == '/' %}active{% endif %}"
+            href="{% url 'home' %}">
+            <i class="bi bi-house-door-fill"></i> Home
+        </a>
+        {% for cat in categories %}
+        <div class="bb2-category-item">
+            <a class="bb2-category-link" href="{% url 'category_products' cat.slug %}">
+                <i class="bi bi-{{ cat.icon|default:'box-seam-fill' }}"></i> {{ cat.name }}
+            </a>
+        </div>
+        {% empty %}
+        <span class="bb2-category-link disabled">No categories</span>
+        {% endfor %}
+        <a class="bb2-category-link {% if '/products/' in request.path %}active{% endif %}"
+            href="{% url 'product_list' %}">
+            <i class="bi bi-grid-3x3-gap-fill"></i> All Products
+        </a>
+    </div>
+</div>
+
+<!-- 4. Location modal (simple pincode entry, matches the FirstCry-style "deliver to" pattern) -->
+<div class="modal fade" id="bb2LocationModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bb2-modal-content">
+            <div class="modal-header bb2-modal-header">
+                <h5 class="modal-title">Choose delivery location</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <label class="bb2-modal-label" for="bb2PincodeInput">Enter Pincode</label>
+                <div class="bb2-modal-input-row">
+                    <input type="text" id="bb2PincodeInput" class="bb2-modal-input" placeholder="e.g. 500081"
+                        maxlength="6" inputmode="numeric">
+                    <button type="button" class="bb2-modal-apply-btn" id="bb2ApplyPincode">Apply</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <style>
     :root {
-        --cream: #FFF8F0;
-        --pink: #FF6FA0;
-        --pink-strong: #e85d8b;
-        --pink-soft: #FFD3E4;
-        --pink-subtle: #FFF0F5;
-        --sky: #5FC9E8;
-        --sky-soft: #CDEFFA;
-        --sky-subtle: #F0FAFD;
-        --butter: #FFCB47;
-        --butter-soft: #FFF3CC;
-        --plum: #362A4D;
-        --text-secondary: #5B4A72;
-        --text-tertiary: #B0A3BF;
-        --border-default: #F0E4D8;
-        --border-light: #FDF3E9;
-        --shadow-sm: 0 1px 3px rgba(54, 42, 77, 0.06), 0 1px 2px rgba(54, 42, 77, 0.03);
-        --shadow-md: 0 4px 12px -2px rgba(54, 42, 77, 0.08), 0 2px 6px -1px rgba(54, 42, 77, 0.04);
-        --shadow-glow-pink: 0 0 24px rgba(255, 111, 160, 0.25);
-        --radius-md: 14px;
-        --radius-lg: 18px;
-        --radius-pill: 999px;
-        --transition-fast: 160ms cubic-bezier(0.4, 0, 0.2, 1);
-        --transition-bouncy: 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+        /* --- Marigold + deep teal + cream: warm, festive, distinctly
+           "Indian baby-store" without leaning on the pink/blue defaults --- */
+        --bb2-cream: #FFF8EC;
+        --bb2-marigold: #FFA630;
+        --bb2-marigold-deep: #E88A0E;
+        --bb2-marigold-soft: #FFE9C7;
+        --bb2-teal: #0E7C7B;
+        --bb2-teal-deep: #0A5C5B;
+        --bb2-teal-soft: #DCEFEF;
+        --bb2-coral: #FF6B6B;
+        --bb2-coral-soft: #FFE1E1;
+        --bb2-ink: #23303A;
+        --bb2-ink-soft: #5C6B74;
+        --bb2-ink-faint: #97A5AC;
+        --bb2-border: #EFE2CB;
+        --bb2-radius-sm: 8px;
+        --bb2-radius-md: 12px;
+        --bb2-radius-lg: 16px;
+        --bb2-radius-pill: 999px;
+        --bb2-shadow-sm: 0 1px 3px rgba(35, 48, 58, 0.08);
+        --bb2-shadow-md: 0 6px 20px -4px rgba(35, 48, 58, 0.14);
+        --bb2-trans: 180ms cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .bb-navbar {
-        font-family: 'Quicksand', 'Inter', sans-serif;
-        background: rgba(255, 255, 255, 0.85);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border-bottom: 1px solid var(--border-default);
-        box-shadow: var(--shadow-sm);
-        padding: 0.7rem 0;
-        transition: box-shadow 0.3s ease, padding 0.3s ease;
-        border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    /* ---- Top offer strip ---- */
+    .bb2-topstrip {
+        background: var(--bb2-teal-deep);
+        color: #fff;
+        font-family: 'Quicksand', sans-serif;
+        font-weight: 600;
+        font-size: 0.78rem;
     }
 
-    .bb-navbar.bb-scrolled {
-        box-shadow: var(--shadow-md);
-        padding: 0.4rem 0;
-    }
-
-    .bb-navbar-container {
+    .bb2-topstrip-inner {
         display: flex;
         align-items: center;
-        gap: 0.8rem;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 0.4rem 0;
         flex-wrap: wrap;
     }
 
-    /* Brand */
-    .bb-navbar-brand {
+    .bb2-topstrip-marquee {
+        display: flex;
+        gap: 1.5rem;
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+
+    .bb2-topstrip-marquee::-webkit-scrollbar {
+        display: none;
+    }
+
+    .bb2-topstrip-marquee span {
+        white-space: nowrap;
+        opacity: 0.95;
+    }
+
+    .bb2-topstrip-links {
+        display: flex;
+        gap: 1.1rem;
+        flex-shrink: 0;
+    }
+
+    .bb2-topstrip-links a {
+        color: #fff;
+        text-decoration: none;
+        opacity: 0.9;
+        transition: opacity var(--bb2-trans);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+
+    .bb2-topstrip-links a:hover {
+        opacity: 1;
+        text-decoration: underline;
+    }
+
+    /* ---- Main navbar ---- */
+    .bb2-navbar {
+        font-family: 'Quicksand', 'Inter', sans-serif;
+        background: #ffffff;
+        border-bottom: 1px solid var(--bb2-border);
+        box-shadow: var(--bb2-shadow-sm);
+        padding: 0.65rem 0;
+        top: 0;
+    }
+
+    .bb2-navbar-container {
         display: flex;
         align-items: center;
-        gap: 0.6rem;
+        gap: 0.9rem;
+        flex-wrap: nowrap;
+    }
+
+    /* Brand */
+    .bb2-brand {
+        display: flex;
+        align-items: center;
+        gap: 0.55rem;
         text-decoration: none;
-        animation: bbSlideIn 0.5s var(--transition-bouncy) both;
+        flex-shrink: 0;
     }
 
-    @keyframes bbSlideIn {
-        from {
-            opacity: 0;
-            transform: translateX(-16px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateX(0);
-        }
-    }
-
-    .bb-brand-icon {
-        width: 42px;
-        height: 42px;
-        border-radius: var(--radius-md);
-        background: linear-gradient(145deg, var(--pink), var(--butter));
+    .bb2-brand-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: var(--bb2-radius-md);
+        background: linear-gradient(145deg, var(--bb2-marigold), var(--bb2-coral));
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.4rem;
-        box-shadow: 0 3px 12px rgba(255, 111, 160, 0.35);
-        transition: transform var(--transition-bouncy);
+        font-size: 1.5rem;
+        box-shadow: 0 3px 10px rgba(255, 166, 48, 0.35);
+        flex-shrink: 0;
     }
 
-    .bb-navbar-brand:hover .bb-brand-icon {
-        transform: rotate(-10deg) scale(1.1);
-    }
-
-    .bb-brand-text {
+    .bb2-brand-text {
         display: flex;
         flex-direction: column;
         line-height: 1.15;
         font-family: 'Fredoka', sans-serif;
         font-weight: 700;
-        color: var(--plum);
-        font-size: 1.1rem;
+        color: var(--bb2-teal-deep);
+        font-size: 1.08rem;
+        white-space: nowrap;
     }
 
-    .bb-brand-text small {
+    .bb2-brand-text small {
         font-family: 'Quicksand', sans-serif;
         font-weight: 600;
-        font-size: 0.62rem;
-        color: var(--text-tertiary);
+        font-size: 0.6rem;
+        color: var(--bb2-ink-faint);
         text-transform: uppercase;
-        letter-spacing: 0.06em;
+        letter-spacing: 0.07em;
     }
 
-    /* Toggler */
-    .bb-toggler {
-        background: var(--pink-subtle);
-        border: 2px solid var(--pink-soft);
-        color: var(--pink);
-        border-radius: var(--radius-md);
-        padding: 0.4rem 0.65rem;
-        transition: all var(--transition-fast);
-    }
-
-    .bb-toggler:hover {
-        transform: scale(1.06);
-        box-shadow: 0 2px 10px rgba(255, 111, 160, 0.2);
-    }
-
-    .bb-toggler:focus {
-        box-shadow: 0 0 0 3px var(--pink-soft);
-    }
-
-    /* Nav links */
-    .bb-nav-list {
-        display: flex;
-        gap: 0.2rem;
-    }
-
-    .bb-nav-link {
+    /* Location selector — the "deliver to <pincode>" pattern common on
+       Indian e-commerce sites, placed right after the logo */
+    .bb2-location-btn {
         display: flex;
         align-items: center;
         gap: 0.4rem;
-        color: var(--text-secondary);
-        font-weight: 600;
-        font-size: 0.9rem;
-        padding: 0.5rem 0.9rem;
-        border-radius: var(--radius-pill);
-        transition: all var(--transition-fast);
-    }
-
-    .bb-nav-link i {
-        font-size: 0.85rem;
-        color: var(--pink);
-        opacity: 0.7;
-        transition: transform 0.25s ease;
-    }
-
-    .bb-nav-link:hover {
-        background: var(--pink-subtle);
-        color: var(--plum);
-    }
-
-    .bb-nav-link:hover i {
-        transform: translateY(-2px);
-        opacity: 1;
-    }
-
-    .bb-nav-link.active {
-        background: linear-gradient(135deg, var(--pink-soft), var(--butter-soft));
-        color: var(--pink-strong);
-        box-shadow: var(--shadow-glow-pink);
-    }
-
-    .bb-nav-link.active i {
-        color: var(--pink-strong);
-        opacity: 1;
-    }
-
-    /* Dropdown */
-    .bb-dropdown-menu {
-        background: #ffffff;
-        border: 2px solid var(--border-default);
-        border-radius: var(--radius-lg);
-        box-shadow: var(--shadow-md);
-        padding: 0.5rem;
-        z-index: 1050;
-        opacity: 0;
-        transform: translateY(-8px);
-        transition: opacity 0.2s ease, transform 0.2s ease;
-        display: block;
-        visibility: hidden;
-        pointer-events: none;
-        min-width: 200px;
-    }
-
-    .bb-dropdown-menu.show {
-        opacity: 1;
-        transform: translateY(0);
-        visibility: visible;
-        pointer-events: auto;
-    }
-
-    .bb-dropdown-item {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        border-radius: var(--radius-pill);
-        font-weight: 600;
-        font-size: 0.85rem;
-        color: var(--text-secondary);
-        padding: 0.45rem 0.8rem;
-        transition: all var(--transition-fast);
-    }
-
-    .bb-dropdown-item:hover {
-        background: var(--sky-subtle);
-        color: var(--plum);
-        padding-left: 1rem;
-    }
-
-    /* Category icon badge inside dropdown */
-    .bb-cat-icon {
-        width: 26px;
-        height: 26px;
-        border-radius: var(--radius-sm, 10px);
-        background: var(--pink-subtle);
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        background: var(--bb2-teal-soft);
+        border: none;
+        border-radius: var(--bb2-radius-md);
+        padding: 0.4rem 0.7rem;
+        color: var(--bb2-teal-deep);
         flex-shrink: 0;
-        color: var(--pink);
+        transition: background var(--bb2-trans);
+        max-width: 160px;
+    }
+
+    .bb2-location-btn:hover {
+        background: #cfe9e9;
+    }
+
+    .bb2-location-btn>i.bi-geo-alt-fill {
+        font-size: 1rem;
+        flex-shrink: 0;
+    }
+
+    .bb2-location-text {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        line-height: 1.1;
+        min-width: 0;
+        overflow: hidden;
+    }
+
+    .bb2-location-text small {
+        font-size: 0.62rem;
+        font-weight: 600;
+        color: var(--bb2-teal);
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+    }
+
+    .bb2-location-text strong {
         font-size: 0.8rem;
-        transition: all var(--transition-fast);
+        font-weight: 700;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100px;
     }
 
-    .bb-dropdown-item:hover .bb-cat-icon {
-        background: var(--pink);
-        color: #fff;
-        transform: rotate(-8deg) scale(1.08);
+    .bb2-location-caret {
+        font-size: 0.7rem;
+        flex-shrink: 0;
     }
 
-    /* Search */
-    .bb-search-form {
+    /* Search: the widest, most prominent element in the bar */
+    .bb2-search-form {
         display: flex;
         align-items: center;
         position: relative;
-        background: var(--cream);
-        border: 2px solid transparent;
-        border-radius: var(--radius-pill);
-        padding: 0.15rem 0.3rem 0.15rem 1rem;
-        transition: all 0.3s ease;
-        max-width: 260px;
-        flex: 1;
+        background: var(--bb2-cream);
+        border: 2px solid var(--bb2-marigold-soft);
+        border-radius: var(--bb2-radius-pill);
+        padding: 0.2rem 0.3rem 0.2rem 1rem;
+        transition: all var(--bb2-trans);
+        flex: 1 1 auto;
+        min-width: 120px;
     }
 
-    .bb-search-form:focus-within {
-        border-color: var(--sky);
-        box-shadow: 0 0 0 5px var(--sky-soft);
+    .bb2-search-form:focus-within {
+        border-color: var(--bb2-marigold);
+        box-shadow: 0 0 0 4px var(--bb2-marigold-soft);
         background: #fff;
     }
 
-    .bb-search-form>i {
-        color: var(--text-tertiary);
-        font-size: 0.85rem;
+    .bb2-search-form>i.bi-search {
+        color: var(--bb2-ink-faint);
+        font-size: 0.9rem;
         margin-right: 0.5rem;
+        flex-shrink: 0;
     }
 
-    .bb-search-input {
+    .bb2-search-input {
         border: none;
         background: transparent;
         outline: none;
         flex: 1;
+        min-width: 0;
         font-family: 'Quicksand', sans-serif;
         font-weight: 500;
         font-size: 0.85rem;
-        color: var(--plum);
+        color: var(--bb2-ink);
     }
 
-    .bb-search-input::placeholder {
-        color: var(--text-tertiary);
+    .bb2-search-input::placeholder {
+        color: var(--bb2-ink-faint);
     }
 
-    .bb-search-btn {
-        background: linear-gradient(135deg, var(--pink), var(--butter));
+    .bb2-search-btn {
+        background: linear-gradient(135deg, var(--bb2-teal), var(--bb2-teal-deep));
         color: #fff;
         border: none;
-        border-radius: var(--radius-pill);
-        padding: 0.45rem 1.1rem;
+        border-radius: var(--bb2-radius-pill);
+        padding: 0.5rem 1.2rem;
         font-weight: 700;
         font-size: 0.8rem;
         font-family: 'Quicksand', sans-serif;
-        box-shadow: 0 3px 12px rgba(255, 111, 160, 0.3);
-        transition: all var(--transition-bouncy);
+        white-space: nowrap;
+        flex-shrink: 0;
+        transition: all var(--bb2-trans);
     }
 
-    .bb-search-btn:hover {
-        transform: translateY(-2px) scale(1.03);
-        box-shadow: 0 5px 16px rgba(255, 111, 160, 0.4);
+    .bb2-search-btn:hover {
+        background: var(--bb2-teal-deep);
+        transform: translateY(-1px);
     }
 
-    .bb-search-btn:active {
-        transform: scale(0.94);
-    }
-
-    /* Account (logged in) */
-    .bb-account-btn {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        text-decoration: none;
-        padding: 0.35rem 0.9rem 0.35rem 0.35rem;
-        border-radius: var(--radius-pill);
-        border: 2px solid var(--border-default);
+    .bb2-search-suggestions {
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 0;
+        right: 0;
         background: #fff;
-        transition: all var(--transition-fast);
-    }
-
-    .bb-account-btn:hover {
-        border-color: var(--pink-soft);
-        background: var(--pink-subtle);
-    }
-
-    .bb-account-btn::after {
+        border: 2px solid var(--bb2-border);
+        border-radius: var(--bb2-radius-lg);
+        box-shadow: var(--bb2-shadow-md);
+        max-height: 360px;
+        overflow-y: auto;
+        z-index: 1060;
         display: none;
+        padding: 0.4rem;
     }
 
-    /* hide bootstrap's default caret, keep it clean */
-    .bb-account-avatar {
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, var(--pink), var(--butter));
-        color: #fff;
-        font-family: 'Fredoka', sans-serif;
-        font-weight: 700;
-        font-size: 0.8rem;
+    .bb2-search-suggestions.show {
+        display: block;
+    }
+
+    .bb2-search-suggestion-item {
         display: flex;
         align-items: center;
-        justify-content: center;
+        gap: 0.7rem;
+        padding: 0.5rem 0.6rem;
+        border-radius: var(--bb2-radius-sm);
+        text-decoration: none;
+        color: var(--bb2-ink);
+        transition: background var(--bb2-trans);
+    }
+
+    .bb2-search-suggestion-item:hover {
+        background: var(--bb2-marigold-soft);
+    }
+
+    .bb2-search-suggestion-thumb {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        object-fit: cover;
+        background: var(--bb2-teal-soft);
         flex-shrink: 0;
     }
 
-    .bb-account-name {
+    .bb2-search-suggestion-info {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+    }
+
+    .bb2-search-suggestion-name {
+        font-family: 'Quicksand', sans-serif;
         font-weight: 700;
         font-size: 0.85rem;
-        color: var(--plum);
-        max-width: 90px;
+        white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        white-space: nowrap;
     }
 
-    /* Account (logged out) */
-    .bb-account-links {
+    .bb2-search-suggestion-price {
+        font-family: 'Quicksand', sans-serif;
+        font-weight: 600;
+        font-size: 0.75rem;
+        color: var(--bb2-coral);
+    }
+
+    .bb2-search-suggestion-empty {
+        padding: 0.7rem 0.8rem;
+        font-size: 0.82rem;
+        color: var(--bb2-ink-faint);
+        font-weight: 600;
+    }
+
+    /* Right icon cluster: account / wishlist / cart, each with a
+       label under the icon — the FirstCry-style stacked icon-button */
+    .bb2-icon-cluster {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
+        gap: 0.3rem;
+        flex-shrink: 0;
     }
 
-    .bb-account-login {
-        color: var(--text-secondary);
-        font-weight: 700;
-        font-size: 0.85rem;
-        text-decoration: none;
-        padding: 0.5rem 0.8rem;
-        border-radius: var(--radius-pill);
-        transition: all var(--transition-fast);
-    }
-
-    .bb-account-login:hover {
-        background: var(--sky-subtle);
-        color: var(--sky);
-    }
-
-    .bb-account-signup {
-        color: #fff;
-        font-weight: 700;
-        font-size: 0.85rem;
-        text-decoration: none;
-        padding: 0.5rem 1rem;
-        border-radius: var(--radius-pill);
-        background: linear-gradient(135deg, var(--pink), var(--butter));
-        box-shadow: 0 3px 12px rgba(255, 111, 160, 0.3);
-        transition: all var(--transition-bouncy);
-    }
-
-    .bb-account-signup:hover {
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-glow-pink);
-        color: #fff;
-    }
-
-    /* Cart */
-    .bb-cart-btn {
+    .bb2-icon-btn {
         display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.1rem;
+        text-decoration: none;
+        color: var(--bb2-ink-soft);
+        padding: 0.35rem 0.6rem;
+        border-radius: var(--bb2-radius-md);
+        position: relative;
+        transition: all var(--bb2-trans);
+    }
+
+    .bb2-icon-btn:hover {
+        background: var(--bb2-marigold-soft);
+        color: var(--bb2-marigold-deep);
+    }
+
+    .bb2-icon-btn i {
+        font-size: 1.2rem;
+    }
+
+    .bb2-icon-btn-cart:hover {
+        background: var(--bb2-coral-soft);
+        color: var(--bb2-coral);
+    }
+
+    .bb2-icon-label {
+        font-size: 0.65rem;
+        font-weight: 700;
+    }
+
+    .bb2-icon-btn.dropdown-toggle::after {
+        display: none;
+    }
+
+    .bb2-badge {
+        position: absolute;
+        top: 0;
+        right: 4px;
+        background: var(--bb2-teal);
+        color: #fff;
+        font-size: 0.6rem;
+        font-weight: 700;
+        min-width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 3px;
+    }
+
+    .bb2-badge-cart {
+        background: var(--bb2-coral);
+    }
+
+    .bb2-dropdown-menu {
+        background: #fff;
+        border: 2px solid var(--bb2-border);
+        border-radius: var(--bb2-radius-lg);
+        box-shadow: var(--bb2-shadow-md);
+        padding: 0.5rem;
+        min-width: 200px;
+    }
+
+    .bb2-dropdown-greeting {
+        font-family: 'Fredoka', sans-serif;
+        font-weight: 700;
+        font-size: 0.9rem;
+        color: var(--bb2-teal-deep);
+        padding: 0.4rem 0.7rem 0.3rem;
+        margin: 0;
+    }
+
+    .bb2-dropdown-divider {
+        margin: 0.2rem 0.4rem 0.4rem;
+        border: none;
+        border-top: 1px solid var(--bb2-border);
+    }
+
+    .bb2-dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 0.55rem;
+        border-radius: var(--bb2-radius-sm);
+        font-weight: 600;
+        font-size: 0.83rem;
+        color: var(--bb2-ink-soft);
+        padding: 0.4rem 0.7rem;
+        transition: all var(--bb2-trans);
+    }
+
+    .bb2-dropdown-item:hover {
+        background: var(--bb2-teal-soft);
+        color: var(--bb2-teal-deep);
+    }
+
+    .bb2-hamburger-btn {
+        background: var(--bb2-marigold-soft);
+        border: none;
+        color: var(--bb2-marigold-deep);
+        border-radius: var(--bb2-radius-md);
+        padding: 0.5rem 0.7rem;
+        font-size: 1.1rem;
+        flex-shrink: 0;
+    }
+
+    /* ---- Category strip ---- */
+    .bb2-category-wrap {
+        background: var(--bb2-teal);
+        box-shadow: 0 2px 6px rgba(14, 124, 123, 0.2);
+    }
+
+    .bb2-category-inner {
+        display: flex;
+        align-items: center;
+        gap: 0.2rem;
+        overflow-x: auto;
+        padding: 0.1rem 0;
+        scrollbar-width: none;
+    }
+
+    .bb2-category-inner::-webkit-scrollbar {
+        display: none;
+    }
+
+    .bb2-category-item {
+        flex-shrink: 0;
+    }
+
+    .bb2-category-link {
+        display: inline-flex;
         align-items: center;
         gap: 0.4rem;
-        text-decoration: none;
-        color: var(--plum);
+        color: rgba(255, 255, 255, 0.9);
+        font-family: 'Quicksand', sans-serif;
         font-weight: 700;
-        font-size: 0.88rem;
-        background: var(--pink-subtle);
-        border: 2px solid var(--pink-soft);
-        padding: 0.5rem 1rem;
-        border-radius: var(--radius-pill);
+        font-size: 0.85rem;
+        text-decoration: none;
+        padding: 0.65rem 0.9rem;
+        white-space: nowrap;
+        border-bottom: 3px solid transparent;
+        transition: all var(--bb2-trans);
+        flex-shrink: 0;
+    }
+
+    .bb2-category-link:hover {
+        color: #fff;
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    .bb2-category-link.active {
+        color: #fff;
+        border-bottom-color: var(--bb2-marigold);
+    }
+
+    /* ---- Location modal ---- */
+    .bb2-modal-content {
+        border-radius: var(--bb2-radius-lg);
+        border: none;
+    }
+
+    .bb2-modal-header {
+        border-bottom: 1px solid var(--bb2-border);
         font-family: 'Fredoka', sans-serif;
-        transition: all var(--transition-bouncy);
+        color: var(--bb2-teal-deep);
     }
 
-    .bb-cart-btn i {
-        color: var(--pink);
-        font-size: 1rem;
+    .bb2-modal-label {
+        font-family: 'Quicksand', sans-serif;
+        font-weight: 700;
+        font-size: 0.8rem;
+        color: var(--bb2-ink-soft);
+        display: block;
+        margin-bottom: 0.5rem;
     }
 
-    .bb-cart-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-glow-pink);
-        color: var(--plum);
+    .bb2-modal-input-row {
+        display: flex;
+        gap: 0.6rem;
     }
 
-    .bb-cart-badge {
-        background: linear-gradient(135deg, var(--pink), var(--pink-strong)) !important;
-        font-family: 'Fredoka', sans-serif;
-        font-size: 0.65rem;
-        transition: transform 0.3s ease;
+    .bb2-modal-input {
+        flex: 1;
+        border: 2px solid var(--bb2-border);
+        border-radius: var(--bb2-radius-md);
+        padding: 0.55rem 0.8rem;
+        font-family: 'Quicksand', sans-serif;
+        font-weight: 600;
+        outline: none;
     }
 
-    .bb-cart-badge.bb-pulse {
-        animation: bbCartPop 0.4s ease;
+    .bb2-modal-input:focus {
+        border-color: var(--bb2-teal);
     }
 
-    @keyframes bbCartPop {
-        0% {
-            transform: scale(1);
-        }
-
-        40% {
-            transform: scale(1.4);
-        }
-
-        100% {
-            transform: scale(1);
-        }
+    .bb2-modal-apply-btn {
+        background: var(--bb2-teal);
+        color: #fff;
+        border: none;
+        border-radius: var(--bb2-radius-md);
+        padding: 0.55rem 1.1rem;
+        font-weight: 700;
+        font-family: 'Quicksand', sans-serif;
     }
 
-    /* Mobile offcanvas stagger */
+    .bb2-modal-apply-btn:hover {
+        background: var(--bb2-teal-deep);
+    }
+
+    /* ---- Responsive ---- */
     @media (max-width: 991.98px) {
-        .bb-nav-list {
-            flex-direction: column;
+        .bb2-location-text strong {
+            max-width: 70px;
         }
 
-        .offcanvas-body .nav-item {
-            opacity: 0;
-            transform: translateX(-16px);
-            animation: bbItemSlide 0.35s ease forwards;
+        .bb2-icon-label {
+            display: none;
         }
 
-        .offcanvas-body .nav-item:nth-child(1) {
-            animation-delay: 0.05s;
+        .bb2-icon-btn {
+            padding: 0.4rem;
+        }
+    }
+
+    @media (max-width: 767.98px) {
+        .bb2-topstrip-links {
+            display: none;
         }
 
-        .offcanvas-body .nav-item:nth-child(2) {
-            animation-delay: 0.10s;
+        .bb2-brand-text small {
+            display: none;
         }
 
-        .offcanvas-body .nav-item:nth-child(3) {
-            animation-delay: 0.15s;
+        .bb2-location-btn {
+            display: none;
         }
 
-        .offcanvas-body .nav-item:nth-child(4) {
-            animation-delay: 0.20s;
+        .bb2-search-form {
+            order: 3;
+            flex: 1 1 100%;
+            margin-top: 0.5rem;
         }
 
-        .offcanvas-body .nav-item:nth-child(5) {
-            animation-delay: 0.25s;
+        .bb2-navbar-container {
+            flex-wrap: wrap;
         }
 
-        .offcanvas-body .nav-item:nth-child(6) {
-            animation-delay: 0.30s;
-        }
-
-        .offcanvas-body .nav-item:nth-child(7) {
-            animation-delay: 0.35s;
-        }
-
-        @keyframes bbItemSlide {
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        .bb-search-form {
-            max-width: 100%;
-            margin: 0.75rem 0 0;
+        .bb2-category-wrap.collapse:not(.show) {
+            display: none;
         }
     }
 </style>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const navbar = document.getElementById('bbNavbar');
         const cartBadge = document.getElementById('cart-badge');
+        const wishlistBadge = document.getElementById('wishlist-badge');
 
-        function handleScroll() {
-            navbar.classList.toggle('bb-scrolled', window.scrollY > 10);
-        }
-        window.addEventListener('scroll', handleScroll);
-        handleScroll();
-
-        if (cartBadge) {
+        function watchBadge(badge) {
+            if (!badge) return;
             const observer = new MutationObserver(() => {
-                cartBadge.classList.remove('bb-pulse');
-                void cartBadge.offsetWidth;
-                cartBadge.classList.add('bb-pulse');
+                badge.style.transform = 'scale(1.3)';
+                setTimeout(() => { badge.style.transform = 'scale(1)'; }, 200);
             });
-            observer.observe(cartBadge, { characterData: true, childList: true, subtree: true });
+            observer.observe(badge, { characterData: true, childList: true, subtree: true });
+        }
+        watchBadge(cartBadge);
+        watchBadge(wishlistBadge);
+
+        // ---- Pincode modal ----
+        const applyBtn = document.getElementById('bb2ApplyPincode');
+        const pincodeInput = document.getElementById('bb2PincodeInput');
+        const locationLabel = document.getElementById('bb2LocationLabel');
+        if (applyBtn && pincodeInput && locationLabel) {
+            applyBtn.addEventListener('click', function () {
+                const val = pincodeInput.value.trim();
+                if (val.length === 6) {
+                    locationLabel.textContent = val;
+                    const modalEl = document.getElementById('bb2LocationModal');
+                    const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+                    modal.hide();
+                }
+            });
+        }
+
+        // ---- Live search suggestions ----
+        const searchInput = document.getElementById('bb2SearchInput');
+        const suggestionsBox = document.getElementById('bb2SearchSuggestions');
+        let debounceTimer = null;
+        let activeController = null;
+
+        function closeSuggestions() {
+            suggestionsBox.classList.remove('show');
+            suggestionsBox.innerHTML = '';
+        }
+
+        function renderSuggestions(results) {
+            if (!results.length) {
+                suggestionsBox.innerHTML = '<div class="bb2-search-suggestion-empty">No products found</div>';
+                suggestionsBox.classList.add('show');
+                return;
+            }
+            suggestionsBox.innerHTML = results.map(function (item) {
+                const img = item.image
+                    ? '<img class="bb2-search-suggestion-thumb" src="' + item.image + '" alt="">'
+                    : '<div class="bb2-search-suggestion-thumb"></div>';
+                return (
+                    '<a class="bb2-search-suggestion-item" href="' + item.url + '">' +
+                    img +
+                    '<span class="bb2-search-suggestion-info">' +
+                    '<span class="bb2-search-suggestion-name">' + item.name + '</span>' +
+                    '<span class="bb2-search-suggestion-price">₹' + item.price + '</span>' +
+                    '</span>' +
+                    '</a>'
+                );
+            }).join('');
+            suggestionsBox.classList.add('show');
+        }
+
+        if (searchInput && suggestionsBox) {
+            searchInput.addEventListener('input', function () {
+                const query = searchInput.value.trim();
+                clearTimeout(debounceTimer);
+                if (query.length < 2) { closeSuggestions(); return; }
+                debounceTimer = setTimeout(function () {
+                    if (activeController) activeController.abort();
+                    activeController = new AbortController();
+                    fetch('/search/suggestions/?q=' + encodeURIComponent(query), { signal: activeController.signal })
+                        .then(function (res) { return res.json(); })
+                        .then(function (data) { renderSuggestions(data.results || []); })
+                        .catch(function (err) { if (err.name !== 'AbortError') closeSuggestions(); });
+                }, 250);
+            });
+            document.addEventListener('click', function (e) {
+                if (!searchInput.parentElement.contains(e.target)) closeSuggestions();
+            });
+            searchInput.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') closeSuggestions();
+            });
         }
     });
 </script>

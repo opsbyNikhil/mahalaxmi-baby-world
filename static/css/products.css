@@ -1,15 +1,59 @@
+/* ==========================================================
+   products.css -- All Products page
+   Same marigold + deep teal + cream identity as navbar.html,
+   home.html and product_detail.html
+   (marigold #FFA630, teal #0E7C7B, cream #FFF8EC, coral #FF6B6B)
+   ========================================================== */
+
+:root {
+    --cream: #FFF8EC;
+    --pink: #FF6B6B;
+    /* coral accent */
+    --pink-strong: #E85454;
+    --pink-soft: #FFE1E1;
+    --pink-subtle: #FFF1F1;
+    --sky: #0E7C7B;
+    /* deep teal, primary brand color */
+    --sky-strong: #0A5C5B;
+    --sky-soft: #DCEFEF;
+    --sky-subtle: #EFF8F8;
+    --butter: #FFA630;
+    /* marigold */
+    --butter-soft: #FFE9C7;
+    --butter-deep: #E88A0E;
+    --mint: #0E7C7B;
+    --mint-soft: #DCEFEF;
+    --plum: #23303A;
+    --text-secondary: #5C6B74;
+    --text-tertiary: #97A5AC;
+    --border-default: #EFE2CB;
+    --border-light: #F6EEDD;
+    --radius-xl: 20px;
+    --radius-pill: 999px;
+    --shadow-sm: 0 1px 3px rgba(35, 48, 58, 0.08);
+    --shadow-lg: 0 14px 32px -10px rgba(35, 48, 58, 0.18);
+    --shadow-glow-teal: 0 0 24px rgba(14, 124, 123, 0.28);
+    --transition-fast: 180ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bouncy: 260ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
 .bb-page {
     background: var(--cream);
     color: var(--plum);
     font-family: 'Quicksand', 'Nunito Sans', sans-serif;
-    padding: 2rem 0 4rem;
+    min-height: 60vh;
 }
 
-/* ---------- Hero ---------- */
+.bb-page h1,
+.bb-page h5 {
+    font-family: 'Fredoka', sans-serif;
+    color: var(--plum);
+}
+
+/* ---------- Page hero ---------- */
 .bb-products-hero {
+    padding: 2.75rem 0 2rem;
     text-align: center;
-    max-width: 32rem;
-    margin: 0 auto 2.75rem;
 }
 
 .bb-hero-eyebrow {
@@ -23,23 +67,23 @@
     background: var(--sky-subtle);
     padding: 0.35rem 0.9rem;
     border-radius: var(--radius-pill);
-    margin-bottom: 1rem;
+    margin-bottom: 0.85rem;
 }
 
 .bb-products-hero h1 {
-    font-family: 'Fredoka', sans-serif;
-    font-weight: 600;
     font-size: clamp(1.9rem, 3.5vw, 2.6rem);
-    color: var(--plum);
+    font-weight: 600;
     margin-bottom: 0.5rem;
 }
 
 .bb-products-hero p {
-    font-size: 1rem;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 500;
     color: var(--text-secondary);
+    margin: 0;
 }
 
-/* ---------- Product cards ---------- */
+/* ---------- Product card ---------- */
 .bb-product-card {
     background: #fff;
     border: 2px solid var(--border-default);
@@ -51,8 +95,8 @@
 
 .bb-product-card:hover {
     transform: translateY(-6px);
-    box-shadow: var(--shadow-lg), var(--shadow-glow-pink);
-    border-color: var(--pink-soft);
+    box-shadow: var(--shadow-lg), var(--shadow-glow-teal);
+    border-color: var(--sky-soft);
 }
 
 .bb-product-media {
@@ -71,9 +115,17 @@
     object-fit: cover;
 }
 
-.col-lg-3:nth-of-type(4n+2) .bb-product-media { background: var(--pink-soft); }
-.col-lg-3:nth-of-type(4n+3) .bb-product-media { background: var(--butter-soft); }
-.col-lg-3:nth-of-type(4n+4) .bb-product-media { background: var(--mint-soft); }
+.col-lg-3:nth-of-type(4n+2) .bb-product-media {
+    background: var(--pink-soft);
+}
+
+.col-lg-3:nth-of-type(4n+3) .bb-product-media {
+    background: var(--butter-soft);
+}
+
+.col-lg-3:nth-of-type(4n+4) .bb-product-media {
+    background: var(--sky-subtle);
+}
 
 .bb-badge-category {
     position: absolute;
@@ -93,11 +145,9 @@
 }
 
 .bb-product-card h5 {
-    font-family: 'Fredoka', sans-serif;
+    font-size: 1.08rem;
     font-weight: 600;
-    font-size: 1.05rem;
-    color: var(--plum);
-    margin-bottom: 0.3rem;
+    margin-bottom: 0.35rem;
 }
 
 .bb-price {
@@ -105,9 +155,10 @@
     font-weight: 600;
     font-size: 1.1rem;
     color: var(--pink-strong);
-    margin: 0.2rem 0 0.9rem;
+    margin: 0.4rem 0 0.9rem;
 }
 
+/* ---------- Buttons ---------- */
 .bb-btn-outline {
     flex: 1;
     border: 2px solid var(--sky);
@@ -120,7 +171,7 @@
     font-size: 0.9rem;
     text-align: center;
     text-decoration: none;
-    transition: all 0.2s ease;
+    transition: all var(--transition-fast);
 }
 
 .bb-btn-outline:hover,
@@ -129,33 +180,34 @@
     color: #fff;
 }
 
+/* Solid marigold fill -- matches the "Add" button used on the
+   home page grid and product detail page, kept visually distinct
+   from the teal "View" outline button. */
 .bb-btn-add {
     flex: 1;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.35rem;
     border: none;
-    background: linear-gradient(135deg, #FF6FA0, #FF9A56);
+    background: linear-gradient(135deg, var(--butter), var(--butter-deep));
     color: #fff;
     border-radius: var(--radius-pill);
     padding: 0.55rem 0.5rem;
     font-family: 'Quicksand', sans-serif;
     font-weight: 700;
     font-size: 0.9rem;
-    box-shadow: 0 3px 12px rgba(255, 111, 160, 0.35);
-    transition: all 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 3px 12px rgba(255, 166, 48, 0.4);
+    transition: all var(--transition-bouncy);
 }
 
 .bb-btn-add:hover,
 .bb-btn-add:focus-visible {
-    background: linear-gradient(135deg, #e85d8b, #FF9A56);
+    background: linear-gradient(135deg, var(--butter-deep), var(--butter));
     transform: translateY(-2px) scale(1.02);
-    box-shadow: var(--shadow-glow-pink);
+    box-shadow: 0 0 20px rgba(255, 166, 48, 0.45);
 }
 
-.bb-btn-add:active {
-    transform: scale(0.96);
+.bb-page a:focus-visible,
+.bb-page button:focus-visible {
+    outline: 2px solid var(--sky-strong);
+    outline-offset: 2px;
 }
 
 /* ---------- Empty state ---------- */
@@ -163,14 +215,25 @@
     text-align: center;
     font-family: 'Quicksand', sans-serif;
     font-weight: 600;
-    font-size: 1rem;
-    color: var(--text-tertiary);
-    padding: 3rem 0;
+    color: var(--text-secondary);
+    background: #fff;
+    border: 2px dashed var(--border-default);
+    border-radius: var(--radius-xl);
+    padding: 2.5rem 1rem;
 }
 
-.bb-products-empty i {
-    display: block;
-    font-size: 2rem;
-    margin-bottom: 0.6rem;
-    color: var(--pink-soft);
+/* ---------- Toast ---------- */
+#cartToast.text-bg-success {
+    background-color: var(--sky) !important;
+}
+
+#cartToast.text-bg-danger {
+    background-color: var(--pink-strong) !important;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 767.98px) {
+    .bb-products-hero {
+        padding: 2rem 0 1.5rem;
+    }
 }

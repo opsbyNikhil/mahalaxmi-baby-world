@@ -26,8 +26,7 @@
                 <div class="bb-order-card-header">
                     <div>
                         <span class="bb-order-id">Order #{{ order.id }}</span>
-                        <span class="bb-order-date"><i class="bi bi-calendar3"></i> {{ order.created_at|date:"d M Y, h:i
-                            A" }}</span>
+                        <span class="bb-order-date"><i class="bi bi-calendar3"></i> {{ order.created_at|date:"d M Y, h:i A" }}</span>
                     </div>
                     <span class="bb-status-badge bb-status-{{ order.status }}">{{ order.get_status_display }}</span>
                 </div>

@@ -1525,6 +1525,13 @@
                     class="{% if request.resolver_match.url_name == 'dashboard_orders' %}active{% endif %}">
                     <i class="bi bi-receipt"></i> Orders
                 </a>
+                <a href="{% url 'dashboard_category_add' %}">
+                    <i class="bi bi-folder-plus"></i> Add Category
+                </a>
+                <a href="{% url 'dashboard_category_list' %}"
+                    class="{% if request.resolver_match.url_name == 'dashboard_category_list' %}active{% endif %}">
+                    <i class="bi bi-tags"></i> Manage Categories
+                </a>
             </div>
             {% if sidebar_categories %}
             <div class="nav-section">
