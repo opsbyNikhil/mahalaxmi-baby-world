@@ -1,0 +1,48 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: mysql_db
+    restart: always
+
+    environment:
+      MYSQL_PASSWORD: "nikhil@97"
+      MYSQL_DATABASE: baby_shop_db
+      MYSQL_USER: nikhil
+      MYSQL_ROOT_PASSWORD: "nikhil@97"
+
+    volumes:
+      - mysql_date:/var/lib/mysql
+
+    networks:
+      - baby_world_network
+    
+    ports:
+      - "3306:3306"
+
+  web:
+    build:
+      context: .
+      dockerfile: templates/auth/Dockerfile
+    image: baby-world-auth:1.0.0
+    container_name: baby-world-auth-app
+    restart: unless-stopped
+
+    depends_on:
+      - db
+    
+    ports:
+    - "8000:8000"
+
+    env_file:
+      - .env
+
+    networks:
+      - baby_world_network
+
+  volumes:
+    mysql_data:
+      driver: local
+  
+  networks:
+    baby_world_network:
+      driver: local
