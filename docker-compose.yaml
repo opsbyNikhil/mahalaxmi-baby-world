@@ -11,7 +11,7 @@ services:
       MYSQL_ROOT_PASSWORD: "nikhil@97"
 
     volumes:
-      - mysql_date:/var/lib/mysql
+      - mysql_date: /var/lib/mysql
 
     networks:
       - baby_world_network
