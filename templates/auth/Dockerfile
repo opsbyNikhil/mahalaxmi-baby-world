@@ -1,7 +1,7 @@
 FROM python:3.12.12-alpine AS build
 ADD . /Baby-World-Auth
 WORKDIR /Baby-World-Auth
-RUN pip install prefix=/install /Baby-World-Auth/requirements.txt
+RUN pip install --prefix=/install /Baby-World-Auth/requirements.txt
 
 FROM python:3.12.12-alpine AS runtime
 WORKDIR /Baby-World-Auth
