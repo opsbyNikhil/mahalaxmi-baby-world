@@ -39,10 +39,10 @@ services:
     networks:
       - baby_world_network
 
-  volumes:
-    mysql_data:
-      driver: local
+volumes:
+  mysql_data:
+    driver: local
   
-  networks:
-    baby_world_network:
-      driver: local
+networks:
+  baby_world_network:
+    driver: local
