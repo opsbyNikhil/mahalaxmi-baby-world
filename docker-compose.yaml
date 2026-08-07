@@ -19,6 +19,13 @@ services:
     ports:
       - "3306:3306"
 
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+
+
   web:
     build:
       context: .
@@ -28,7 +35,8 @@ services:
     restart: unless-stopped
 
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     
     ports:
     - "8000:8000"
